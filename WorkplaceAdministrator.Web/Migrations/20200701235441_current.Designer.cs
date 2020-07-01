@@ -9,8 +9,8 @@ using WorkplaceAdministrator.Web.Data;
 namespace WorkplaceAdministrator.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200701230602_add-addressedby")]
-    partial class addaddressedby
+    [Migration("20200701235441_current")]
+    partial class current
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

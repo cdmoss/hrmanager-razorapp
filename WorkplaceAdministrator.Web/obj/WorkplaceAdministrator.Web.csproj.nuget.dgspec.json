@@ -1,17 +1,80 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj": {}
+    "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj": {
+    "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj",
-        "projectName": "WorkplaceAdministrator.Web",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj",
+        "projectName": "WorkplaceAdministrator.Common",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj",
         "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Web\\obj\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "Microsoft.Extensions.Identity.Stores": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj",
+        "projectName": "WorkplaceAdministrator.Web",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Web\\WorkplaceAdministrator.Web.csproj",
+        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -31,8 +94,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj": {
-                "projectPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\FBWebsite-V3\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj"
+              "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj": {
+                "projectPath": "C:\\Users\\Chase\\Desktop\\FBWebsite-V3\\Github\\WorkplaceAdministrator.Common\\WorkplaceAdministrator.Common.csproj"
               }
             }
           }
