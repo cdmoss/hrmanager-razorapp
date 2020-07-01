@@ -1,0 +1,18 @@
+﻿.login-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-form {
+    width: 20%;
+}
+
+.email-input {
+    margin-bottom: 5px;
+}

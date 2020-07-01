@@ -1,0 +1,46 @@
+@page "/admin/list"
+@using WorkplaceAdministrator.Blazor.Shared
+@using Syncfusion.Blazor.Grids
+@inject IAccountRepo _accountRepo
+@inject NavigationManager _navManager
+@attribute [Authorize(Roles = "Staff, Admin")]
+
+<h1>Volunteers</h1>
+<br />
+<div class="flex-row">
+    <SfTextBox Placeholder="Search by name..." FloatLabelType="FloatLabelType.Auto"></SfTextBox>
+     <SfGrid @ref="AccountsGrid"
+             DataSource="@Members" 
+             AllowPaging="true"
+              ContextMenuItems=
+             "@(new List<ContextMenuItemModel>() 
+                {
+                    new ContextMenuItemModel { Text = "See Details", Target = ".e-content", Id = "seeDetails" } })">
+         <GridEvents ContextMenuItemClicked="OnContextMenuClick"  TValue="AccountAdminListDto"></GridEvents>
+         <GridColumns>
+             <GridColumn Field="@nameof(AccountAdminListDto.FirstName)" HeaderText="First Name"></GridColumn>
+             <GridColumn Field="@nameof(AccountAdminListDto.LastName)" HeaderText="Last Name"></GridColumn>
+         </GridColumns>
+     </SfGrid>
+</div>
+
+@code {
+    public List<AccountAdminListDto> Members { get; set; }
+
+    private SfGrid<AccountAdminListDto> AccountsGrid;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Members = await _accountRepo.GetAllUsers();
+    }
+
+    private async Task OnContextMenuClick(ContextMenuClickEventArgs args)
+    {
+        if (args.Item.Id == "seeDetails")
+        {
+            var selectedRows = await AccountsGrid.GetSelectedRecords();
+            var id = selectedRows.FirstOrDefault().Id;
+            _navManager.NavigateTo($"/admin/details/{id.ToString()}");
+        }
+    }
+}

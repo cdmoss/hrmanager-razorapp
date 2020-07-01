@@ -1,0 +1,20 @@
+﻿@page "/accounts/{text}/index"
+
+@attribute [Authorize(Roles = "Employee")]
+
+@layout MainLayout
+
+<AuthorizeView>
+    <Authorized>
+        <h1>Welcome @context.User.FindFirst("FirstName").Value</h1>
+    </Authorized>
+    <NotAuthorized>
+        <h1>You must be logged in</h1>
+    </NotAuthorized>
+</AuthorizeView>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+<SurveyPrompt Title="How is Blazor working for you?" />

@@ -1,0 +1,21 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider _authStateProvider 
+
+<AuthorizeView>
+    <Authorized>
+        <a href="authentication/profile">Welcome, @context.User.FindFirst("FirstName").Value</a>
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+    </Authorized>
+</AuthorizeView>
+
+@code{
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        var workplaceAuthStateProvider = (WorkplaceAuthStateProvider)_authStateProvider;
+        await workplaceAuthStateProvider.LogoutAsync();
+        Navigation.NavigateTo("/auth/login");
+    }
+}

@@ -1,0 +1,9 @@
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\bin\Debug\netstandard2.0\WorkplaceAdministrator.Common.deps.json
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\bin\Debug\netstandard2.0\WorkplaceAdministrator.Common.dll
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\bin\Debug\netstandard2.0\WorkplaceAdministrator.Common.pdb
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.AssemblyInfoInputs.cache
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.AssemblyInfo.cs
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.csproj.CoreCompileInputs.cache
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.dll
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.pdb
+C:\Users\Chase\Desktop\FBWebsite-V2\WorkplaceAdministrator\WorkplaceAdministrator.Common\obj\Debug\netstandard2.0\WorkplaceAdministrator.Common.csprojAssemblyReference.cache

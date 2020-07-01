@@ -1,0 +1,83 @@
+﻿@page "/auth/register"
+
+@using WorkplaceAdministrator.Common.Dtos
+@layout AuthLayout
+
+@inject NavigationManager _navManager
+
+<EditForm class="auth-form d-flex align-items-center justify-content-center" Model="registerInfo" OnValidSubmit="AttemptRegisterAsync">
+    <div class="h-50 auth-container">
+        <h1 class="text-center">Register</h1>
+        <br />
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <label>First Name</label>
+        <RadzenTextBox @bind-value="registerInfo.FirstName" class="form-control" />
+
+        <label>Last Name</label>
+        <RadzenTextBox @bind-value="registerInfo.LastName" class="form-control" />
+
+        <label>Email</label>
+        <RadzenTextBox @bind-value="registerInfo.Email" class="form-control" />
+        <br />
+
+        <label>Password</label>
+        <RadzenTextBox type="password" id="pass" @bind-Value="registerInfo.Password" class="form-control" />
+        <br />
+        <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
+
+        <label>Password</label>
+        <RadzenTextBox type="password" id="pass" @bind-Value="registerInfo.ConfirmPassword" class="form-control" />
+        <br />
+        <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
+        <br />
+
+        <button type="submit" class="btn-block btn-primary">Submit Information</button>
+        <button type="button" class="btn-block btn-primary" @onclick="GoToLogin">Back to login</button>
+        <label style="@showOnFailure" >@errorMessage</label>
+
+        <hr />
+
+        <a id="forgot-password">Forgot your password?</a>
+    </div>
+</EditForm>
+
+
+@code {
+    TestRegisterDto registerInfo = new TestRegisterDto();
+    string showOnFailure = "display: none;";
+    string errorMessage;
+
+    protected override void OnInitialized()
+    {
+
+    }
+
+    private async void AttemptRegisterAsync()
+    {
+        HttpClient client = new HttpClient();
+
+        var json = JsonConvert.SerializeObject(registerInfo);
+
+        var httpResponse = await client.PostAsJsonAsync("https://localhost:44335/api/auth/register", registerInfo);
+        var responseJson = await httpResponse.Content.ReadAsStringAsync();
+
+        var responseDto = JsonConvert.DeserializeObject<WorkplaceAdministrator.Common.AuthResponse>(responseJson);
+
+        if (responseDto.IsSuccess)
+        {
+            _navManager.NavigateTo($"auth/login");
+        }
+        else
+        {
+            showOnFailure = "display: block;";
+            errorMessage = responseDto.Message;
+        }
+    }
+
+    private void GoToLogin()
+    {
+        _navManager.NavigateTo("/login");
+    }
+}

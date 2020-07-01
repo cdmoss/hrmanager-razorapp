@@ -1,0 +1,38 @@
+﻿@page "/admin/details/{Id}"
+@inject IAccountRepo _accountRepo
+@if (CurrentAccount == null)
+{
+    <p>Loading Details...</p>
+}
+else
+{
+    <h3>Details for @CurrentAccount.FirstName @CurrentAccount.LastName</h3>
+    <EditForm Model="CurrentAccount" OnValidSubmit="SaveChangesAsync">
+        <label>First Name</label>
+        <SfTextBox @bind-Value="CurrentAccount.FirstName" />
+
+        <label>Last Name</label>
+        <SfTextBox @bind-Value="CurrentAccount.LastName" />
+
+        <label>Email</label>
+        <SfTextBox @bind-Value="CurrentAccount.Email" />
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    public AccountAdminReadEditDto CurrentAccount { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        Guid id = new Guid(Id);
+        CurrentAccount = await _accountRepo.GetUserByIdForAdmin(id);
+    }
+
+    public async void SaveChangesAsync()
+    {
+
+    }
+}
