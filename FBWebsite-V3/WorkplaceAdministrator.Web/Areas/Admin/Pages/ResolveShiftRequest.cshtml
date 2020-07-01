@@ -1,0 +1,301 @@
+﻿@page
+@using WorkplaceAdministrator.Web.Data.Models
+@model WorkplaceAdministrator.Web.Areas.Admin.Pages.ResolveShiftRequestModel
+@{
+    ViewData["Title"] = "ResolveShiftRequest";
+    Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
+}
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            height: 750,
+            nowIndicator: true,
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            eventClick: function (shiftinfo, jsEvent, view) {
+                $('#calendarModalView').modal();
+                var arrDate = new Date(shiftinfo.event.start);
+                var arrEndDate = new Date(shiftinfo.event.end);
+                function appendLeadingZeroes(n) {
+                    if (n <= 9) {
+                        return "0" + n;
+                    }
+                    return n;
+                }
+                document.getElementById("ShiftID").value = shiftinfo.event.id;
+                document.getElementById("ShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
+                document.getElementById("dateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
+                document.getElementById("dateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                document.getElementById("POS").selectedIndex = shiftinfo.event.extendedProps.posWorked;
+            },
+            defaultDate: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")',
+            navLinks: true, // can click day/week names to navigate views
+            selectMirror: true,
+            allDaySlot: false,
+            weekNumbers: true,
+            weekNumbersWithinDays: true,
+            weekNumberCalculation: 'ISO',
+            firstDay: 0,
+            eventLimit: true, // allow "more" link when too many events
+            eventSources: [
+                {
+                    // displays existing shifts
+                    events: [
+                        @foreach (Shift s in Model.AssignedShifts)
+                            {
+                            <text>
+                                {
+                                    id: '@s.Id',
+                                    title: '@s.Description',
+                                    @if (s is RecurringShift recShift)
+                                {
+                                    <text>
+                                        rrule: '@recShift.RecurrenceRule',
+                                        duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                    </text>
+                                }
+                                else
+                                {
+                                    <text>
+                                        start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                        end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                    </text>
+                                }
+                                    posWorked: '@(s.PositionWorked.Id)',
+                                    // shift is worked by someone
+                                    @if (Model.ShiftRequest.NewShift.Volunteer != null)
+                                    {
+                                        <text>vol: '@((int)Model.ShiftRequest.NewShift.Volunteer.Id)'</text>
+                                    }
+                                },
+                            </text>
+                            }
+                    ],
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                },
+                {
+                    // displays existing shifts
+                    events: [
+                        @foreach (Shift s in Model.OpenShifts)
+                            {
+                            <text>
+                                {
+                                    id: '@s.Id',
+                                    title: '@s.Description',
+                                    @if (s is RecurringShift recShift)
+                                    {
+                                    <text>
+                                        rrule: '@recShift.RecurrenceRule',
+                                        duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                    </text>
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                        </text>
+                                    }
+                                    posWorked: '@(s.PositionWorked.Id)',
+                                    // shift is worked by someone
+                                    vol: '-1'
+                                },
+                            </text>
+                            }
+                    ],
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    },
+                    color: '#06A893'
+                },
+                // displays the requested shift if it's a switch request
+                @if (Model.ShiftRequest.NewShift != null)
+                {
+                <text>
+                {
+                    events: [
+                        {
+                            id: '@Model.ShiftRequest.NewShift.Id',
+                            title: '@Model.ShiftRequest.NewShift.Description',
+                            start: '@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")@{string y3 = "T"; @y3}@Model.ShiftRequest.NewShift.StartTime',
+                            end: '@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")@y3@Model.ShiftRequest.NewShift.EndTime',
+                            posWorked: '@(Model.ShiftRequest.NewShift.PositionWorked.Name)',
+
+                            // requested shift is worked by someone
+                            @if (Model.ShiftRequest.NewShift.Volunteer != null)
+                            {
+                                <text>vol: '@((int)Model.ShiftRequest.NewShift.Volunteer.Id)'</text>
+                            }
+                                // requested is open
+                            else
+                            {
+                                <text>vol: '-1'</text>
+                            }
+                        }
+                    ],
+                    color: 'green',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                },
+                </text>
+                }
+                {
+                    // displays the original shift
+                    events: [
+                        {
+                            id: '@Model.ShiftRequest.OldShift.Id',
+                            title: '@Model.ShiftRequest.OldShift.Description',
+                            start: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")@{string y4 = "T"; @y4}@Model.ShiftRequest.OldShift.StartTime',
+                            end: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")@y4@Model.ShiftRequest.OldShift.EndTime',
+                            posWorked: '@(Model.ShiftRequest.OldShift.PositionWorked.Name)',
+                            vol: '@((int)Model.ShiftRequest.OldShift.Volunteer.Id)'
+                        }
+                ],
+                    color: 'red',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                }
+            ]
+        });
+        calendar.render();
+        $('#calendar').addClass("h-75");
+    });
+    </script>
+    <div class="ml-5 mr-5">
+    <div class="row">
+            <h1 class="col-md-6">Resolve Shift Change Request</h1>
+            <div class="col-md-4"></div>
+            <div class="col-md-2">
+                <div class="row mb-1">
+                    <div style="background-color: red;" class="col-md-2"></div>
+                    <span class="col-md-10">Original shift</span>
+                </div>
+                <div class="row mb-1">
+                    <div style="background-color: green;" class="col-md-2"></div>
+                    <span class="col-md-10">Shift to be switched</span>
+                </div>
+                <div class="row">
+                    <div style="background-color: #3788D8;" class="col-md-2"></div>
+                    <span class="col-md-10">All other shifts</span>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-2">
+                <div>
+                    <h4>Original Shift</h4>
+                    <dl>
+                        <dt>Volunteer</dt>
+                        <dd>
+                            @Model.ShiftRequest.OldShift.Volunteer.FirstName @Model.ShiftRequest.OldShift.Volunteer.LastName
+                        </dd>
+                    </dl>
+                    <dl>
+                        <dt>Shift Date</dt>
+                        <dd type="date" class="" readonly>@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")
+                        <dd />
+                    </dl>
+                    <dl>
+                        <dt>Start Time</dt>
+                        <dd type="text" class="">@Model.ShiftRequest.OldShift.StartTime.ToString(@"hh\:mm")
+                        <dd />
+                    </dl>
+                    <dl>
+                        <dt>End Time</dt>
+                        <dd type="text" class="">@Model.ShiftRequest.OldShift.EndTime.ToString(@"hh\:mm")
+                        <dd />
+                    </dl>
+                    <dl>
+                        <dt>Position</dt>
+                        <dd type="text" class="">@Model.ShiftRequest.OldShift.PositionWorked.Name
+                        <dd />
+                    </dl>
+                    <br />
+                    @if (Model.ShiftRequest.NewShift != null)
+                    {
+                        <h4>Requested Shift</h4>
+                        <dl>
+                            @if (Model.ShiftRequest.NewShift.Volunteer != null)
+                            {
+                                <dt>Volunteer</dt>
+                                <dd readonly>@Model.ShiftRequest.NewShift.Volunteer.FirstName @Model.ShiftRequest.NewShift.Volunteer.LastName</dd>
+                            }
+                            else
+                            {
+                                <dt>Open Shift</dt>
+                            }
+                        </dl>
+                        <dl>
+                            <dt>Shift Date</dt>
+                            <dd type="date" class="" readonly>@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")
+                            <dd />
+                        </dl>
+                        <dl>
+                            <dt>Start Time</dt>
+                            <dd type="text" class="">@Model.ShiftRequest.NewShift.StartTime.ToString(@"hh\:mm")
+                            <dd />
+                        </dl>
+                        <dl>
+                            <dt>End Time</dt>
+                            <dd type="text" class="">@Model.ShiftRequest.NewShift.EndTime.ToString(@"hh\:mm")
+                            <dd />
+                        </dl>
+                        <dl>
+                            <dt>Position</dt>
+                            <dd type="text" class="">@Model.ShiftRequest.NewShift.PositionWorked.Name
+                            <dd />
+                        </dl>
+                    }
+                    else
+                    {
+                        <h4 class="mt-5">Request for Removal</h4>
+                    }
+                    <hr />
+                    @if (Model.ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Pending)
+                    {
+                        <form method="post">
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <button class="btn btn-danger" asp-page-handler="Decline" asp-route-alertId="@Model.ShiftRequest.Id">Decline</button>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <button class="btn btn-success" asp-page-handler="Accept" asp-route-alertId="@Model.ShiftRequest.Id">Accept</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                    else if (Model.ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Accepted)
+                    {
+                        <p>This request has been accepted.</p>
+                    }
+                    else if (Model.ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Declined)
+                    {
+                        <p>This request has been declined.</p>
+                    }
+                </div>
+            </div>
+            <div class="col-md-10">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+

@@ -1,0 +1,74 @@
+﻿@page
+@using WorkplaceAdministrator.Web.Data.Models
+@using WorkplaceAdministrator.Web.Areas.Admin.Pages
+@model WorkplaceAdministrator.Web.Areas.Volunteer.Pages.ShiftRequestsModel
+@{
+    ViewData["Title"] = "ShiftRequests";
+    Layout = "~/Areas/Volunteer/Pages/Shared/_Layout.cshtml";
+}
+
+
+    <div class="ml-5 mr-5">
+        <div class="row">
+            <h1 class="col-md-4">Shift Change Requests</h1>
+            <div class="col-md-6"></div>
+            <form method="post" class="col-md-2">
+                <button class="btn btn-warning w-100" asp-page-handler="Calendar">Request Shift Change</button>
+            </form>
+        </div>
+        @if (Model.Alerts.Count == 0)
+        {
+            <hr />
+            <h4>No Shift Requests</h4>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>Original Shift Date</th>
+                    <th>Request</th>
+                    <th>Status</th>
+                </tr>
+                @foreach (ShiftRequestAlert alert in Model.Alerts)
+                {
+            <tr>
+                <td>@alert.OldShift.StartDate.ToString("yyyy-MM-dd"), @alert.OldShift.StartTime.ToString(@"hh\:mm") to @alert.OldShift.EndTime.ToString(@"hh\:mm")</td>
+                <!--Request To Change Shift-->
+                @if (alert.NewShift != null)
+                {
+                    <td>Change to @alert.NewShift.StartDate.ToString("yyyy-MM-dd"), @alert.NewShift.StartTime.ToString(@"hh\:mm") to @alert.NewShift.EndTime.ToString(@"hh\:mm")</td>
+                }
+                else
+                {
+                    <td>Remove Shift</td>
+                }
+                @if (alert.Status == ShiftRequestAlert.RequestStatus.Pending)
+                {
+                    <td>Pending</td>
+                }
+                else
+                {
+                    @if (alert.Status == ShiftRequestAlert.RequestStatus.Accepted)
+                    {
+                        <td>Accepted</td>
+                    }
+                    else if (alert.Status == ShiftRequestAlert.RequestStatus.Declined)
+                    {
+                        <td>Declined</td>
+                    }
+                }
+                @if (alert.Status != ShiftRequestAlert.RequestStatus.Pending)
+                {
+                    <td>
+                        <form method="post">
+                            <button class="btn btn-sm btn-danger" asp-page-handler="Delete" asp-route-id="@alert.Id">Delete</button>
+                        </form>
+                    </td>
+                }
+            </tr>
+                }
+            </table>
+        }
+    </div>
+
+
