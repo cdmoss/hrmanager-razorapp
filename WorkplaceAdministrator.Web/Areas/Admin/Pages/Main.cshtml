@@ -1,0 +1,87 @@
+﻿@page
+@using WorkplaceAdministrator.Web.Data.Models
+@inject Microsoft.AspNetCore.Identity.UserManager<WorkplaceAdministrator.Web.Data.AppUser> userManager
+@model WorkplaceAdministrator.Web.Areas.Admin.Pages.MainModel
+@{ Layout = "Shared/_Layout";
+                ViewData["Title"] = "Volunteers"; }
+
+<div class="ml-5 mr-5">
+    <h1>Volunteers</h1>
+    <br />
+    <form class="row w-50 mb-3 ml-1" method="post">
+        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+        {
+<input class="form-control col-md-4 mr-1" placeholder="Search by name..." asp-for="@Model.SearchedName" /> }
+            else
+            {
+<input class="form-control col-md-4 mr-1" value="@Model.SearchedName" asp-for="@Model.SearchedName" />            }
+
+        @if (@Model.SearchedPosition == null)
+        {
+<select class="form-control col-md-4" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+</select> }
+            else
+            {
+<select class="form-control col-md-4" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+</select>            }
+        <div class="col-md-3" method="post">
+            <button class="btn btn-sm btn-primary w-50 h-100" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+        </div>
+    </form>
+    @if (@Model.Volunteers.Count() > 0)
+    {
+    <table class="table w-50">
+        @foreach (VolunteerProfile volunteer in @Model.Volunteers)
+        {
+<thead>
+    <tr>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Details</th>
+        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+        {
+<th>Delete</th>                    }
+    </tr>
+</thead>
+                    <tr>
+                        <td>@volunteer.FirstName</td>
+                        <td>@volunteer.LastName</td>
+                        <td><a class="btn-link btn" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a><input type="hidden" value="@volunteer.Id" id="volunteer-id" /></td>
+                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                        {
+                            //Delete button goes here
+                            <td><button class="btn-link btn" onclick="openDeleteModal()">Delete</button></td>
+                        }
+                    </tr>}
+    </table>
+}
+</div>
+
+<script>
+    function openDeleteModal() {
+        $('#delete-volunteer-prompt').modal();
+        document.getElementById("volunteer-id-modal").value = document.getElementById("volunteer-id").value;
+    }
+</script>
+
+<form method="post">
+    <div id="delete-volunteer-prompt" class="modal fade">
+        <input type="hidden" name="volunteer-id-modal" id="volunteer-id-modal" value="" />
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Attention</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <p>You are about to delete a volunteer from the Medicine Hat Food Bank. This will also delete everything that is attached to this volunteer. All of the shifts that are assigned to this volunteer will be changed to open shifts.</p>
+                    <p>Would you like to permanently delete this volunteer?</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-danger" asp-page-handler="DeleteVolunteer">Delete</button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

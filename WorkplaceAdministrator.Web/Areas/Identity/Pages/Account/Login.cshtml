@@ -1,0 +1,84 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Member Log in";
+}
+<div class="mt-5">
+    <h1 class="text-center">@ViewData["Title"]</h1>
+    @if (Model.NewUser)
+    {
+        <div class="alert alert-success alert-dismissible">
+            <a href="#" class="close" data-dismiss="requestAlert" aria-label="close">&times;</a>
+            Thanks for applying! We will review your information and email you to tell you whether you've been approved.
+        </div>
+    }
+    <div class="row justify-content-center">
+        <div class="col-md-4 text-left">
+            <section>
+                <form id="account" method="post">
+                    <hr />
+                    <div asp-validation-summary="All" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Input.Email"></label>
+                        <input asp-for="Input.Email" class="form-control" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Password"></label>
+                        <input id="pass" asp-for="Input.Password" class="form-control" />
+                        <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <!--<div class="form-group">
+        <div class="checkbox">
+            <label asp-for="Input.RememberMe">
+                <input asp-for="Input.RememberMe" />
+                @@Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
+        </div>
+    </div>-->
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary w-100">Log in</button>
+                    </div>
+                    <div class="form-group text-center">
+                        <p>
+                            <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                        </p>
+                    </div>
+                    <br/>
+                    <div class="form-group text-center">
+                        <h3>Don't have an account?</h3>
+                        <hr/>
+                        <p>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Apply for a volunteer position</a>
+                        </p>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get the input field
+    var input = document.getElementById("pass");
+
+    // Get the warning text
+    var text = document.getElementById("text");
+
+    // When the user presses any key on the keyboard, run the function
+    input.addEventListener("keyup", function (event) {
+
+        // If "caps lock" is pressed, display the warning text
+        if (event.getModifierState("CapsLock")) {
+            text.style.display = "block";
+        } else {
+            text.style.display = "none"
+        }
+    });
+</script>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
