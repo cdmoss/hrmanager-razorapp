@@ -161,6 +161,10 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             recurringShift.CreateDescription();
             recurringShift.EndDate = Convert.ToDateTime(Request.Form["add-recshift-enddate"]);
             recurringShift.Weekdays = GetSelectedWeekdays();
+            if (string.IsNullOrEmpty(recurringShift.Weekdays))
+            {
+                return RedirectToPage(new { statusMessage = "Error: You must select weekdays on which the shift should repeat."});
+            }
             recurringShift.UpdateRecurrenceRule();
 
             _context.RecurringShifts.Add(recurringShift);
@@ -193,16 +197,17 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostEditRecurringShift()
         {
-            Shift shift = _context.Shifts
+            RecurringShift recurringShift = _context.RecurringShifts
                 .Include(p => p.Volunteer)
                 .Include(p => p.PositionWorked)
+                .Include(p => p.ExcludedShifts)
                 .FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-id"]));
-            _context.Shifts.Update(shift);
+            _context.Shifts.Update(recurringShift);
 
             // this method will handle scheduling reminders
-            await EditNonRecurringShift(shift);
+            recurringShift = await EditRecurringShift(recurringShift);
 
-            shift.CreateDescription();
+            recurringShift.CreateDescription();
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = "You have successfully edited the chosen shift." });
@@ -662,7 +667,7 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             }
         }
 
-        private async Task EditRecurringShift(RecurringShift recShift)
+        private async Task<RecurringShift> EditRecurringShift(RecurringShift recShift)
         {
             _context.Update(recShift);
             if (EditType == RecurringShiftEditType.Single)
@@ -675,6 +680,8 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             }
 
             recShift.UpdateRecurrenceRule();
+
+            return recShift;
         }
 
         private async Task<RecurringShift> EditSingleShiftFromRecurringSet(RecurringShift recShift)
@@ -693,9 +700,25 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             // and add the new shift to the list of excluded shifts
             await _context.Entry(recShift).Collection(p => p.ExcludedShifts).LoadAsync();
             Shift excludedShift = new Shift();
-            MapFormDataToSingleShiftFromRecurringSet(excludedShift);
+            excludedShift = MapFormDataToSingleShiftFromRecurringSet(excludedShift);
+
             excludedShift.CreateDescription();
-            recShift.ExcludedShifts.Add(excludedShift);
+            if (recShift.StartTime == excludedShift.StartTime)
+            {
+                recShift.ExcludedShifts.Add(excludedShift);
+            }
+            else
+            {
+                Shift excludedShiftWithAdjustedStartTime = new Shift
+                {
+                    StartTime = recShift.StartTime,
+                    EndTime = excludedShift.EndTime,
+                    StartDate = excludedShift.StartDate,
+                    Hidden = true
+                };
+                recShift.ExcludedShifts.Add(excludedShiftWithAdjustedStartTime);
+                await _context.AddAsync(excludedShift);
+            }
 
             // delete the recurring shift if all of its child shifts are now excluded
             bool allShiftsInRecurringSetAreExcluded = recShift.ConstituentShifts.Count == recShift.ExcludedShifts.Count;

@@ -293,8 +293,8 @@
                 selectedShiftStartDate = new Date(arg.start);
                 selectedShiftEndDate = new Date(arg.end);
                 document.getElementById("add-shift-date").value = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
-                document.getElementById("add-shift-starttime").value = appendLeadingZeroes(selectedShiftStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftStartDate.getMinutes());
-                document.getElementById("add-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
+                document.getElementById("add-shift-starttime").value = "8:30";
+                document.getElementById("add-shift-endtime").value = "16:30";
                 calendar.unselect();
             },
             weekNumbers: true,
@@ -323,7 +323,7 @@
                                         <text>
                                             start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T";@y}@s.StartTime',
                                             end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
+   </text>
                                     }
                                     posWorked: '@(s.PositionWorked.Id)',
                                     wasPartOfRecurring: '@s.ParentRecurringShift'
@@ -332,11 +332,6 @@
                             </text>
                         }
                     ],
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        meridiem: false
-                    }
                 },
                 {
                     events: [
@@ -368,13 +363,14 @@
                             }
                     ],
                     color: '#06A893',
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        meridiem: false
-                    }
                 }
-            ]
+            ],
+            eventTimeFormat: {
+                hour: "2-digit",
+                minute: "2-digit",
+                meridiem: false,
+                hour12: false
+            }
         });
         calendar.render();
         $('#calendar').addClass("h-75");
@@ -431,7 +427,6 @@
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="position-add">New Name for Position</label>
                     <input type="text" class="form-control" id="add-position-name" name="add-position-name" required>
-                    <hr />
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="AddPosition">Add</button>
