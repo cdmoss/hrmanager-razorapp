@@ -1,0 +1,326 @@
+﻿@page
+@using MHFoodBank.Web.Data.Models
+@model MHFoodBank.Web.Areas.Volunteer.Pages.RequestChangeModel
+@{
+    ViewData["Title"] = "RequestChange";
+    Layout = "~/Areas/Volunteer/Pages/Shared/_Layout.cshtml";
+}
+<style>
+        .fc-content {
+            cursor: pointer;
+        }
+    </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            height: 750,
+            nowIndicator: true,
+            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'],
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            eventClick: function (shiftinfo, jsEvent, view) {
+                if (shiftinfo.event.id !== '@Model.OldShift.Id') {
+                    $('#calendarModalRequest').modal();
+                    var arrDate = new Date(shiftinfo.event.start);
+                    var arrEndDate = new Date(shiftinfo.event.end);
+                    document.getElementById("ShiftID").value = shiftinfo.event.id;
+                    document.getElementById("ShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
+                    document.getElementById("dateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
+                    document.getElementById("dateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                    document.getElementById("POS").selectedIndex = shiftinfo.event.extendedProps.posWorked;
+                }
+                else {
+                    $('#calendarModalView').modal();
+                    var arrDate = new Date(shiftinfo.event.start);
+                    var arrEndDate = new Date(shiftinfo.event.end);
+                    document.getElementById("viewShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
+                    document.getElementById("viewDateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
+                    document.getElementById("viewDateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                    document.getElementById("POS").selectedIndex = shiftinfo.event.extendedProps.posWorked;
+                }
+
+            },
+            navLinks: true, // can click day/week names to navigate views
+            selectMirror: true,
+            allDaySlot: false,
+            weekNumbers: true,
+            weekNumbersWithinDays: true,
+            firstDay: 0,
+            weekNumberCalculation: 'ISO',
+            eventLimit: true, // allow "more" link when too many events
+            eventSources: [
+                {
+                    events: [
+                        @foreach (Shift s in Model.TakenShifts)
+                        {
+                            <text>
+                                {
+                                    id: '@s.Id',
+                                    title: '@s.Description',
+                                    @if (s is RecurringShift recShift)
+                                    {
+                                        <text>
+                                            rrule: '@recShift.RecurrenceRule',
+                                            duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                        </text>
+                                    }
+                                    posWorked: '@(s.PositionWorked.Name)',
+                                    vol: '@((int)s.Volunteer.Id)'
+                                },
+                            </text>
+                        }
+                    ],
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                },
+                {
+                    events: [
+                        {
+                            id: '@Model.OldShift.Id',
+                            title: '@Model.OldShift.Description',
+                            @if(Model.IndividualDate != null)
+                            {
+                                <text>
+                                start: '@Model.IndividualDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OldShift.StartTime.ToString(@"hh\:mm")',
+                                </text>
+                            }
+                            else
+                            {
+                                <text>
+                                start: '@Model.OldShift.StartDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OldShift.StartTime.ToString(@"hh\:mm")',
+                                </text>
+                            }
+                            end: '@Model.OldShift.StartDate.ToString("yyyy-MM-dd")"T"@Model.OldShift.EndTime.ToString(@"hh\:mm")',
+                            posWorked: '@(Model.OldShift.PositionWorked.Name)',
+                            vol: '@((int)Model.OldShift.Volunteer.Id)'
+                        }
+                    ],
+                    color: 'yellow',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                },
+                {
+                    events: [
+                        @foreach (Shift s in Model.OpenShifts)
+                        {
+                            <text>
+                                {
+                                    id: '@s.Id',
+                                    title: '@s.Description',
+                                    @if (s is RecurringShift recShift)
+                                    {
+                                        <text>
+                                            rrule: '@recShift.RecurrenceRule',
+                                            duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                        </text>
+                                    }
+                                    else
+                                    {
+                                        <text>
+                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                        </text>
+                                    }
+                                    posWorked: '@(s.PositionWorked.Name)',
+                                    vol: '-1'
+                                },
+                            </text>
+                        }
+                    ],
+                    color: '#06A893',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        meridiem: false
+                    }
+                }
+            ]
+        });
+        calendar.render();
+        $('#calendar').addClass("h-75");
+    });
+
+    function appendLeadingZeroes(n) {
+        if (n <= 9) {
+            return "0" + n;
+        }
+        return n;
+    }
+</script>
+
+<form method="post" class="ml-5 mr-5">
+    <div class="row">
+        <h1 class="col-md-4">Request Shift Change</h1>
+        <div class="col-md-6"></div>
+        <div class="col-md-2">
+            <div class="row mb-1">
+                <div style="background-color: yellow;" class="col-md-2"></div>
+                <span class="col-md-10">Your Shift</span>
+            </div>
+            <div class="row mb-1">
+                <div style="background-color: #3788D8;" class="col-md-2"></div>
+                <span class="col-md-10">Other Volunteer's Shifts</span>
+            </div>
+            <div class="row">
+                <div style="background-color: #06A893;" class="col-md-2"></div>
+                <span class="col-md-10">Open Shifts</span>
+            </div>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <h4 class="mb-4">Old Shift</h4>
+            <dl>
+                <input type="hidden" value="@Model.IndividualDate" asp-for="@Model.IndividualDate"/>
+                <dt>Shift Date</dt>
+                <dd readonly>@Model.IndividualDate.ToString("yyyy-MM-dd")
+                <dd />
+            </dl>
+            <dl>
+                <dt>Start Time</dt>
+                <dd type="text" class="">@Model.OldShift.StartTime.ToString(@"hh\:mm")
+                <dd />
+            </dl>
+            <dl>
+                <dt>End Time</dt>
+                <dd type="text" class="">@Model.OldShift.EndTime.ToString(@"hh\:mm")
+                <dd />
+            </dl>
+            <dl>
+                <dt>Position</dt>
+                <dd type="text" class="">@Model.OldShift.PositionWorked.Name
+                <dd />
+            </dl>
+            <br />
+            <br />
+            <h4>Choose a shift from the calendar to switch yours with</h4>
+            <br />
+            <h5 align="center">or</h5>
+            <br />
+            <button class="btn btn-danger w-100" asp-page-handler="Remove">Request Shift Removal</button>
+        </div>
+        <div class="col-md-9" id="calendar"></div>
+    </div>
+    <input type="hidden" value="@Model.OldShift.Id" asp-for="OldShiftId" />
+    <div id="calendarModalRequest" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Viewing Shift</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <input type="hidden" id="ShiftID" name="ShiftID">
+
+                    <label style="margin-top: 3px; padding-right: 10px;" for="ShiftDate">Shift Date</label>
+                    <input value="" type="date" class="form-control" id="ShiftDate" name="ShiftDate" readonly>
+
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;" for="dateTimeStart">Start Time</label>
+                    <input type="text" class="time form-control" id="dateTimeStart" name="dateTimeStart" value="" readonly>
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                    <input type="text" class="time form-control" id="dateTimeEnd" name="dateTimeEnd" value="" readonly>
+
+                    <hr />
+                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="POS" name="cmbPositions" required>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="shiftId" value="" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" asp-page-handler="Change">Choose Shift</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="calendarModalView" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Viewing Original Shift</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <label style="margin-top: 3px; padding-right: 10px;" for="viewShiftDate">Shift Date</label>
+                    <input value="" type="date" class="form-control" id="viewShiftDate" name="viewShiftDate" readonly>
+
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;" for="viewDateTimeStart">Start Time</label>
+                    <input type="text" class="time form-control" id="viewDateTimeStart" name="viewDateTimeStart" value="" readonly>
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                    <input type="text" class="time form-control" id="viewDateTimeEnd" name="viewDateTimeEnd" value="" readonly>
+
+                    <hr />
+                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="POS" disabled>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="shiftId" value="" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="calendarModalOpen" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Viewing Original Shift</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <label style="margin-top: 3px; padding-right: 10px;" for="viewShiftDate">Shift Date</label>
+                    <input value="" type="date" class="form-control" id="openShiftDate" name="openShiftDate" readonly>
+
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;" for="viewDateTimeStart">Start Time</label>
+                    <input type="text" class="time form-control" id="openDateTimeStart" name="openDateTimeStart" value="" readonly>
+                    <hr />
+
+                    <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                    <input type="text" class="time form-control" id="openDateTimeEnd" name="openDateTimeEnd" value="" readonly>
+
+                    <hr />
+                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="openPOS" disabled>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" name="shiftId" value="" />
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" asp-page-handler="Change">Choose Shift</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+

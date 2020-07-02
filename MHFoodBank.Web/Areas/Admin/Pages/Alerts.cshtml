@@ -1,0 +1,149 @@
+﻿@page
+@using MHFoodBank.Web.Data.Models
+@model MHFoodBank.Web.Areas.Admin.Pages.AlertsModel
+@{
+    ViewData["Title"] = "Alerts";
+    Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
+}
+
+    <div class="ml-5 mr-5">
+        <h1>Alerts</h1>
+        <partial name="_AdminStatusMessage" for="StatusMessage" />
+        <hr />
+        <!--<br />
+        <form class="row w-50 mb-3 ml-1" method="post">
+            if (String.IsNullOrWhiteSpace(Model.SearchedName))
+            {
+            <input class="form-control col-md-4 mr-1" placeholder="Search by name..." asp-for="Model.SearchedName" />
+            }
+            else
+            {
+            <input class="form-control col-md-4 mr-1" value="Model.SearchedName" asp-for="Model.SearchedName" />
+            }
+            <div class="col-md-3" method="post">
+                <button class="btn btn-sm btn-primary w-50 h-100" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+            </div>
+        </form>-->
+        <h3>New Applicants</h3>
+        @if (Model.ApplicationAlerts.Count == 0)
+        {
+            <hr />
+            <p><strong>No new applicants</strong></p>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>Actions</th>
+                </tr>
+                @foreach (Alert alert in @Model.ApplicationAlerts)
+                {
+                    <tr>
+                        @if (!alert.HasBeenRead)
+                        {
+                            <td><strong>@alert.Date</strong></td>
+                            <td><strong>@alert.Volunteer.FirstName @alert.Volunteer.LastName</strong></td>
+                        }
+                        else
+                        {
+                            <td>@alert.Date</td>
+                            <td><span>@alert.Volunteer.FirstName</span>&nbsp;<span>@alert.Volunteer.LastName</span></td>
+                        }
+                        <td>
+                            <form method="post">
+                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewApplicant" asp-route-id="@alert.Id">See Applicant Information</button>
+                                <button class="btn btn-danger btn-sm" asp-page-handler="DeleteAlert" asp-route-id="@alert.Id">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                </tr>
+            </table>
+        }
+        <br />
+        <br />
+        <h3>Shift Requests</h3>
+        <br />
+        <h5>Pending Requests</h5>
+        @if (Model.PendingRequests.Count < 1)
+        {
+            <hr />
+            <p><strong>No pending requests</strong></p>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>Date</th>
+                    <th>From</th>
+                    <th>Actions</th>
+                </tr>
+                @foreach (Alert alert in @Model.PendingRequests)
+                {
+                    <tr>
+                        @if (!alert.HasBeenRead)
+                        {
+                            <td><strong>@alert.Date</strong></td>
+                            <td><strong>@alert.Volunteer.FirstName @alert.Volunteer.LastName</strong></td>
+                        }
+                        else
+                        {
+                            <td>@alert.Date</td>
+                            <td><span>@alert.Volunteer.FirstName</span>&nbsp;<span>@alert.Volunteer.LastName</span></td>
+                        }
+                        <td>
+                            <form method="post">
+                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-alertId="@alert.Id">See Request</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                </tr>
+            </table>
+        }
+        <br />
+        <h5>Archived Requests</h5>
+        @if (Model.ArchivedRequests.Count < 1)
+        {
+            <hr />
+            <p><strong>No archived requests</strong></p>
+        }
+        else
+        {
+            <table class="table">
+                <tr>
+                    <th>Date</th>
+                    <th>Addressed By</th>
+                    <th>From</th>
+                    <th>Actions</th>
+                </tr>
+                @foreach (Alert alert in @Model.ArchivedRequests)
+                {
+                    <tr>
+                        <td>@alert.Date</td>
+                        @if (alert is ShiftRequestAlert shiftRequestAlert)
+                        {
+                            <td><span>@shiftRequestAlert.AddressedBy</span></td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                        <td><span>@alert.Volunteer.FirstName</span>&nbsp;<span>@alert.Volunteer.LastName</span></td>
+                        <td>
+                            <form method="post">
+                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-alertId="@alert.Id">See Request</button>
+                                <button class="btn btn-danger btn-sm" asp-page-handler="DeleteAlert" asp-route-alertId="@alert.Id">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                </tr>
+            </table>
+        }
+    </div>

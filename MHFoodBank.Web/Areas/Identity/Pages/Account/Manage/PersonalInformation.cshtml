@@ -1,0 +1,84 @@
+﻿@page
+@using MHFoodBank.Web.Data.Models
+@model PersonalInformationModel
+@{
+    ViewData["Title"] = "Change password";
+    ViewData["ActivePage"] = ManageNavPages.PersonalInformation;
+}
+
+    <form method="post">
+        <div class="ml-5">
+            <h4 class="col-md-6">Personal Information</h4>
+            <partial name="_StatusMessage" for="StatusMessage" />
+            <hr />
+            <div class="row col-md-12">
+                <dl class="row col-md-6">
+                    <dt class="col-md-5 mb-1">Email:</dt>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.Email" asp-for="@Model.PersonalInfo.Email" /></dd>
+                    <dt class="col-md-5 mb-1">Main Phone:</dt>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.MainPhone" asp-for="@Model.PersonalInfo.MainPhone" /></dd>
+                    <dt class="col-md-5 mb-1">Alternate Phone 1:</dt>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone1" asp-for="@Model.PersonalInfo.AlternatePhone1" /></dd>
+                    <dt class="col-md-5 mb-1">Alternate Phone 2:</dt>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone2" asp-for="@Model.PersonalInfo.AlternatePhone2" /></dd>
+                </dl>
+                <dl class="row col-md-6">
+                    <dt class="col-md-5 mb-1">Address:</dt>
+                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.Address" asp-for="@Model.PersonalInfo.Address" /></dd>
+                    <dt class="col-md-5 mb-1 ">City:</dt>
+                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.City" asp-for="@Model.PersonalInfo.City" /></dd>
+                    <dt class="col-md-5 mb-1 ">Postal Code:</dt>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.PostalCode" asp-for="@Model.PersonalInfo.PostalCode" /></dd>
+                </dl>
+            </div>
+            <hr class="mt-2 mb-4" />
+            <div class="row col-md-12">
+                <dl class="row col-md-6 mb-4">
+                    <dt class="col-md-6 mb-1">Emergency Contact Name:</dt>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyName" value="@Model.PersonalInfo.EmergencyName" /></dd>
+                    <dt class="col-md-6 mb-1">Relationship to Emergency Contact</dt>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyRelationship" value="@Model.PersonalInfo.EmergencyRelationship" /></dd>
+                    <dt class="col-md-6 mb-1">Emergency Phone 1:</dt>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone1" value="@Model.PersonalInfo.EmergencyPhone1" /></dd>
+                    <dt class="col-md-6 mb-1">Emergency Phone 2:</dt>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone2" value="@Model.PersonalInfo.EmergencyPhone2" /></dd>
+                </dl>
+                <div class="col-md-6 row">
+                    <dl class="col-md-5"><dt>Preferred Positions:</dt></dl>
+                    <div class="col-md-7">
+                        @foreach (Position position in @Model.Positions)
+                        {
+                            <div class="form-check row mb-1">
+                                @if (@Model.PersonalInfo.Positions.Any(p =>
+                                   p.Position == position &&
+                                   p.Association != PositionVolunteer.AssociationType.Assigned))
+                                {
+                                    <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
+                                }
+                                else
+                                {
+                                    <input class="mr-3" type="checkbox" name="preferred-@position.Name" />
+                                }
+                                <label for="@position.Name">@position.Name,</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-2 mb-4" />
+
+            <!--<hr class="mt-2 mb-4" />
+            <dl class="col-md-12 row">
+                <dt class="col-md-2">Preferred Positions:</dt>
+                <dd class="col-md-10">
+                    @*foreach (string position in @Model.PreferredPositions)
+    {
+        <span>@position, &nbsp;</span>
+    }*@
+                </dd>
+            </dl>-->
+            <button class="btn-primary btn" asp-page-handler="SaveChanges">Save Changes</button>
+        </div>
+    </form>
+<script src="~/js/ediatble.js"></script>
+

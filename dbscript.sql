@@ -269,5 +269,5 @@ CREATE UNIQUE INDEX `IX_VolunteerProfiles_UserID` ON `VolunteerProfiles` (`UserI
 CREATE INDEX `IX_WorkExperiences_VolunteerId` ON `WorkExperiences` (`VolunteerId`);
 
 INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20200702163146_current', '3.1.3');
+VALUES ('20200702224126_current', '3.1.3');
 
