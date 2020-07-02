@@ -320,7 +320,7 @@
                                 <input asp-for="@Model.WorkExperiences[@i].EndDate" class="form-control">
                             </div>
                             <div class="form-check col-md-12" style="text-align: right;">
-                                <input id="work-exp-current-@i" onclick="makeWorkExperienceCurrent(@i)" type="checkbox" />
+                                <input id="work-exp-current-@i" onclick="makeWorkExperienceCurrent(@i)" asp-for="@Model.WorkExperiences[@i].CurrentJob" />
                                 <label >Current Job</label>
                             </div>
                         </div>

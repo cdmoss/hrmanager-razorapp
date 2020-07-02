@@ -403,7 +403,7 @@
     initializeWorkExperiences();
 
     function initializeWorkExperiences() {
-        let checkboxes = $('[id^="work-exp-current"]');
+        let checkboxes = document.querySelectorAll('*[id^="workexp-current"]');
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked === true) {
                 let checkedId = checkboxes[i].id[checkboxes[i].id.length - 1];
@@ -430,7 +430,7 @@
         let workExperienceLabel = document.getElementById(workExperienceLabelId);
 
         // get all checkboxes that weren't selected
-        let checkboxes = $('[id^="work-exp-current"]');
+        let checkboxes = $('[id^="workexp-current"]');
 
         // hide/show end date and other checkboxes based on checked value
         if (workExperienceCheck.checked === true) {
