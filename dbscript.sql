@@ -2,6 +2,10 @@
 CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET latin1 */;
 USE `foodbankhangfire`;
 
+-- Dumping database structure for foodbankhangfire
+CREATE DATABASE IF NOT EXISTS `foodbankdb` /*!40100 DEFAULT CHARACTER SET latin1 */;
+USE `foodbankdb`;
+
 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(95) NOT NULL,
     `ProductVersion` varchar(32) NOT NULL,

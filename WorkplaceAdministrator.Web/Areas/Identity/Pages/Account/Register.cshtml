@@ -114,6 +114,7 @@
                     <div class="col-md-6 form-group text-left">
                         <label asp-for="Volunteer.EmergencyPhone2"></label>
                         <input asp-for="Volunteer.EmergencyPhone2" class="form-control" />
+                        <span asp-validation-for="Volunteer.EmergencyPhone2" class="text-danger"></span>
                     </div>
                 </div>
                 <hr class="mt-4 mb-4" />
@@ -385,7 +386,7 @@
         // hide/show end date and other checkboxes based on checked value
         if (workExperienceCheck.checked === true) {
             workExperienceEndDate.style.display = 'none';
-            workExperienceEndDate.value = new Date(0);
+            workExperienceEndDate.value = "2050-01-01";
 
             for (var i = 0; i < checkboxes.length; i++) {
                 if (checkboxes[i].checked === false) {
