@@ -9,7 +9,7 @@ using WorkplaceAdministrator.Web.Data;
 namespace WorkplaceAdministrator.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200701235441_current")]
+    [Migration("20200702163146_current")]
     partial class current
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -544,6 +544,9 @@ namespace WorkplaceAdministrator.Web.Migrations
                     b.Property<string>("ContactPerson")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("CurrentJob")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EmployerAddress")
                         .IsRequired()

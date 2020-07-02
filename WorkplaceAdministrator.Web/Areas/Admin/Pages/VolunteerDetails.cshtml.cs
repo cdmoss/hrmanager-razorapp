@@ -22,6 +22,8 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages.Shared
     {
         [BindProperty]
         public VolunteerAdminReadEditDto DetailsModel { get; set; }
+        [BindProperty]
+        public bool test { get; set; }
         [BindProperty] 
         public Dictionary<string, List<Availability>> Availability { get; set; } = new Dictionary<string, List<Availability>>();
         [BindProperty]
@@ -47,7 +49,7 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages.Shared
         public async Task<IActionResult> OnPostChangeStatusAsync(int check, int id)
         {
             PrepareModel(id);
-            UpdateStatus(check);
+            await UpdateStatus(check);
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { id = id});
@@ -67,42 +69,41 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages.Shared
 
         private async Task UpdateStatus(int statusChangeType)
         {
-            var VolunteerUserProfile = await _context.Users
-                .Include(p => p.VolunteerProfile).FirstOrDefaultAsync(u => u.Id == DetailsModel.Id);
+            var VolunteerProfile = await _context.VolunteerProfiles.FirstOrDefaultAsync(u => u.Id == DetailsModel.Id);
 
             switch (statusChangeType)
             {
                 case 1:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.CriminalRecordCheck = !VolunteerUserProfile.VolunteerProfile.CriminalRecordCheck;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.CriminalRecordCheck = !VolunteerProfile.CriminalRecordCheck;
                     break;
                 case 2:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.DrivingAbstract = !VolunteerUserProfile.VolunteerProfile.DrivingAbstract;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.DrivingAbstract = !VolunteerProfile.DrivingAbstract;
                     break;
                 case 3:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.ConfirmationOfProfessionalDesignation = !VolunteerUserProfile.VolunteerProfile.ConfirmationOfProfessionalDesignation;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.ConfirmationOfProfessionalDesignation = !VolunteerProfile.ConfirmationOfProfessionalDesignation;
                     break;
                 case 4:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.ChildWelfareCheck = !VolunteerUserProfile.VolunteerProfile.ChildWelfareCheck;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.ChildWelfareCheck = !VolunteerProfile.ChildWelfareCheck;
                     break;
                 case 5:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.OfficiallyApproved = !VolunteerUserProfile.VolunteerProfile.OfficiallyApproved;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.OfficiallyApproved = !VolunteerProfile.OfficiallyApproved;
                     break;
                 case 6:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.FoodSafe = !VolunteerUserProfile.VolunteerProfile.FoodSafe;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.FoodSafe = !VolunteerProfile.FoodSafe;
                     break;
                 case 7:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.Cpr = !VolunteerUserProfile.VolunteerProfile.Cpr;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.Cpr = !VolunteerProfile.Cpr;
                     break;
                 case 8:
-                    _context.Entry(VolunteerUserProfile).State = EntityState.Modified;
-                    VolunteerUserProfile.VolunteerProfile.FirstAid = !VolunteerUserProfile.VolunteerProfile.FirstAid;
+                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
+                    VolunteerProfile.FirstAid = !VolunteerProfile.FirstAid;
                     break;
             }
         }
@@ -134,10 +135,10 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages.Shared
             user.Email = DetailsModel.Email;
             VolunteerProfile newVolunteerProfile = _mapper.Map<VolunteerProfile>(DetailsModel);
             user.VolunteerProfile = newVolunteerProfile;
-            _context.Entry(volunteerProfile).State = EntityState.Detached;
 
             // update preferred and assigned positions
             UpdateVolunteerPositions(user.VolunteerProfile);
+            _context.Entry(volunteerProfile).State = EntityState.Detached;
             await _context.SaveChangesAsync();
         }
 

@@ -49,7 +49,7 @@
                         @foreach (Position position in @Model.Positions)
                         {
                             <div class="form-check row mb-1">
-                                @if (@Model.CurrentUser.VolunteerProfile.Positions.Any(p =>
+                                @if (@Model.PersonalInfo.Positions.Any(p =>
                                    p.Position == position &&
                                    p.Association != PositionVolunteer.AssociationType.Assigned))
                                 {

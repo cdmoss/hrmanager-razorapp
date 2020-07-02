@@ -36,5 +36,6 @@ namespace WorkplaceAdministrator.Web.Data.Models
         [Required]
         [Display(Name = "Position Worked")]
         public string PositionWorked { get; set; }
+        public bool CurrentJob { get; set; }
     }
 }

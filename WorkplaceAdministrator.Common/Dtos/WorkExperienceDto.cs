@@ -14,5 +14,6 @@ namespace WorkplaceAdministrator.Common.Dtos
         public string EmployerPhone { get; set; }
         public string ContactPerson { get; set; }
         public string PositionWorked { get; set; }
+        public bool CurrentJob { get; set; }
     }
 }

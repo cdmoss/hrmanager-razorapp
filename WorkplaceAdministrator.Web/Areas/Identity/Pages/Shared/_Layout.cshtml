@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/jquery-timepicker/jquery.timepicker.css" crossorigin="anonymous" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/lib/jquery-timepicker/jquery.timepicker.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/availability.js"></script>
 </head>
 <body>
 <div class="container">
@@ -23,13 +29,6 @@
             <a href="https://www.mhfoodbank.com/">Medicine Hat Food Bank</a> &bull; <a href="mailto:info@mhfoodbank.com">info@mhfoodbank.com</a>
         </div>
     </footer>
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="text/javascript" src="~/lib/jquery-validate/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="~/lib/jquery-timepicker/jquery.timepicker.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/availability.js"></script>
 
 
 @RenderSection("Scripts", required: false)

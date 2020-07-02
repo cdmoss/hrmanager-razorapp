@@ -543,6 +543,9 @@ namespace WorkplaceAdministrator.Web.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<bool>("CurrentJob")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("EmployerAddress")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

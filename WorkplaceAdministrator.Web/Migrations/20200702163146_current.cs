@@ -383,7 +383,8 @@ namespace WorkplaceAdministrator.Web.Migrations
                     EndDate = table.Column<DateTime>(nullable: false),
                     EmployerPhone = table.Column<string>(nullable: false),
                     ContactPerson = table.Column<string>(nullable: false),
-                    PositionWorked = table.Column<string>(nullable: false)
+                    PositionWorked = table.Column<string>(nullable: false),
+                    CurrentJob = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
