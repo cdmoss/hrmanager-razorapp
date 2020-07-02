@@ -686,12 +686,14 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
 
         private async Task<RecurringShift> EditSingleShiftFromRecurringSet(RecurringShift recShift)
         {
+            // get original date of selected shift
+            DateTime originalDate = Convert.ToDateTime(Request.Form["edit-recshift-single-initial-startdate"]);
+
             // check if shift had a volunteer
             if (recShift.Volunteer != null)
             {
-                // if so, cancel the notification scheduled for it
-                DateTime selectedDate = Convert.ToDateTime(Request.Form["edit-recshift-single-startdate"]);
-                await ReminderScheduler.CancelReminder(recShift, _context, selectedDate);
+                // if so, cancel the original notification scheduled for it
+                await ReminderScheduler.CancelReminder(recShift, _context, originalDate);
             }
 
             // make a new shift which will be excluded from the selected recurring shift, 
@@ -703,12 +705,11 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             excludedShift = MapFormDataToSingleShiftFromRecurringSet(excludedShift);
 
             excludedShift.CreateDescription();
-            if (recShift.StartTime == excludedShift.StartTime)
+            // handle all special cases
+            if (recShift.StartTime != excludedShift.StartTime)
             {
-                recShift.ExcludedShifts.Add(excludedShift);
-            }
-            else
-            {
+                // if start time has been changed, an additional shift entity with the original start time 
+                // must be created and added to the recurring shift's excluded shifts so that the shift isn't duplicated
                 Shift excludedShiftWithAdjustedStartTime = new Shift
                 {
                     StartTime = recShift.StartTime,
@@ -719,6 +720,27 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
                 recShift.ExcludedShifts.Add(excludedShiftWithAdjustedStartTime);
                 await _context.AddAsync(excludedShift);
             }
+            else if (originalDate != excludedShift.StartDate)
+            {
+                // if start date has been changed, an additional shift entity with the original start date
+                // must be created and added to the recurring shift's excluded shifts so that the shift isn't duplicated
+                // (same process as changed start time handling above)
+                Shift excludedShiftWithAdjustedStartDate = new Shift
+                {
+                    StartTime = excludedShift.StartTime,
+                    EndTime = excludedShift.EndTime,
+                    StartDate = originalDate,
+                    Hidden = true
+                };
+
+                recShift.ExcludedShifts.Add(excludedShiftWithAdjustedStartDate);
+                await _context.AddAsync(excludedShift);
+            }
+            else
+            // trivial case: something besides start date or start time has been changed
+            {
+                recShift.ExcludedShifts.Add(excludedShift);
+            }
 
             // delete the recurring shift if all of its child shifts are now excluded
             bool allShiftsInRecurringSetAreExcluded = recShift.ConstituentShifts.Count == recShift.ExcludedShifts.Count;
@@ -728,10 +750,12 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
             }
             await _context.SaveChangesAsync();
 
+            // cancelling the old reminder
+
             // check if recurring shift has a volunteer after being edited
             if (excludedShift.Volunteer != null)
             {
-                // if so, schedule a reminder for it
+                // if so, schedule a new reminder for it
                 AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == excludedShift.Volunteer.Id);
                 ReminderScheduler.ScheduleReminder(volunteerAccount.Email, excludedShift.Volunteer, excludedShift, _context);
             }
@@ -776,7 +800,7 @@ namespace WorkplaceAdministrator.Web.Areas.Admin.Pages
 
         private Shift MapFormDataToSingleShiftFromRecurringSet(Shift shift)
         {
-            shift.StartDate = Convert.ToDateTime(Request.Form["edit-recshift-single-startdate"]);
+            shift.StartDate = Convert.ToDateTime(Request.Form["edit-recshift-single-final-startdate"]);
             shift.StartTime = TimeSpan.Parse(Request.Form["edit-recshift-starttime"]);
             shift.EndTime = TimeSpan.Parse(Request.Form["edit-recshift-endtime"]);
             shift.Volunteer = _context.VolunteerProfiles.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-volunteer"]));

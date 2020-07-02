@@ -179,7 +179,8 @@
                 if (selectedShiftIsRecurring) {
                     $('#edit-recshift-modal').modal();
 
-                    var selectedShiftStartDate;
+                    var selectedShiftInitialStartDate;
+                    var selectedShiftFinalStartDate;
                     var recurringShiftStartDate;
                     var selectedShiftEndDate;
                     var recurringShiftEndDate;
@@ -188,7 +189,9 @@
 
                     if (selectedShiftHasExcludedDates) {
                         // when the event has excluded dates, dtstart, until and weekdays must be accessed from typeData._rrule[0].origOptions
-                        selectedShiftStartDate = new Date(selectedShift.start);
+
+                        selectedShiftInitialStartDate = new Date(selectedShift.start);
+                        selectedShiftFinalStartDate = new Date(selectedShift.start);
                         recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.dtstart);
                         selectedShiftEndDate = new Date(selectedShift.end);
                         recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.until);
@@ -204,7 +207,8 @@
                     }
                     else {
                         // when the event doesn't have excluded dates, dtstart, until and weekdays must be accessed from typeData.options
-                        selectedShiftStartDate = new Date(selectedShift.start);
+                        selectedShiftInitialStartDate = new Date(selectedShift.start);
+                        selectedShiftFinalStartDate = new Date(selectedShift.start);
                         recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.dtstart);
                         selectedShiftEndDate = new Date(selectedShift.end);
                         recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.until);
@@ -227,7 +231,8 @@
                     toggleEditRecurringShiftControls();
 
                     // creates strings for all shift properties from selected shift's date info
-                    var selectedStartDateStr = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
+                    var selectedInitialStartDateStr = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
+                    var selectedFinalStartDateStr = selectedShiftFinalStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getDate());
                     var recurringStartDateStr = recurringShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftStartDate.getDate());
                     var endDateStr = recurringShiftEndDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftEndDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftEndDate.getDate());
                     var startTimeStr = appendLeadingZeroes(selectedShiftStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftStartDate.getMinutes());
@@ -237,7 +242,8 @@
                     document.getElementById("edit-recshift-id").value = shiftinfo.event.id;
 
                     // populates both selected shift and recurring shift start date field
-                    document.getElementById("edit-recshift-single-startdate").value = selectedStartDateStr
+                    document.getElementById("edit-recshift-single-initial-startdate").value = selectedInitialStartDateStr
+                    document.getElementById("edit-recshift-single-final-startdate").value = selectedFinalStartDateStr
                     document.getElementById("edit-recshift-all-startdate").value = recurringStartDateStr
 
                     // populates fields with properties of clicked event
@@ -635,7 +641,8 @@
                 <div class="modal-body">
                     <input type="hidden" id="edit-recshift-id" name="edit-recshift-id">
                     <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-                    <input type="date" class="form-control" id="edit-recshift-single-startdate" name="edit-recshift-single-startdate" required>
+                    <input type="date" class="form-control" id="edit-recshift-single-initial-startdate" name="edit-recshift-single-final-startdate" required>
+                    <input type="hidden" id="edit-recshift-single-final-startdate" name="edit-recshift-single-initial-startdate" required>
                     <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" name="edit-recshift-all-startdate" required>
 
                     <hr />
@@ -706,10 +713,10 @@
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <select class="form-control" 
-                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
-                            id="edit-recshift-position" 
-                            name="edit-recshift-position" 
+                    <select class="form-control"
+                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                            id="edit-recshift-position"
+                            name="edit-recshift-position"
                             required>
                     </select>
                     <hr />
@@ -720,10 +727,10 @@
                     <br />
                     <div id="volunteer-container-edit-rec">
                         <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
-                        <select class="form-control" 
-                                id="edit-recshift-volunteer" 
-                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))" 
-                                name="edit-recshift-volunteer" 
+                        <select class="form-control"
+                                id="edit-recshift-volunteer"
+                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
+                                name="edit-recshift-volunteer"
                                 required>
                         </select>
                     </div>
