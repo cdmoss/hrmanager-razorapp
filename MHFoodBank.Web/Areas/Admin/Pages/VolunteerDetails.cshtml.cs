@@ -22,8 +22,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
     {
         [BindProperty]
         public VolunteerAdminReadEditDto DetailsModel { get; set; }
-        [BindProperty]
-        public bool test { get; set; }
         [BindProperty] 
         public Dictionary<string, List<Availability>> Availability { get; set; } = new Dictionary<string, List<Availability>>();
         [BindProperty]
@@ -31,11 +29,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
 
         [BindProperty] 
         public List<Position> Positions { get; set; }
-        [BindProperty] public string StatusMessage { get; set; }
+        [BindProperty] 
+        public string StatusMessage { get; set; }
 
         private readonly IMapper _mapper;
 
-        public VolunteerDetailsModel(FoodBankContext context, IMapper mapper) : base(context)
+        public VolunteerDetailsModel(FoodBankContext context, IMapper mapper, string currentPage = "Volunteer Details") : base(context, currentPage)
         {
             _mapper = mapper;
         }
@@ -46,25 +45,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             PrepareModel(id);
         }
 
-        public async Task<IActionResult> OnPostChangeStatusAsync(int check, int id)
+        public async Task<IActionResult> OnPostChangeStatusAsync(int check, int volunteerId)
         {
-            PrepareModel(id);
+            PrepareModel(volunteerId);
             await UpdateStatus(check);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { id = id});
+            return RedirectToPage(new { id = volunteerId});
         }
 
-        // id == VolunteerProfile id
-        public async Task<IActionResult> OnPostSaveChangesAsync(int id)
+        public async Task<IActionResult> OnPostSaveChangesAsync(int volunteerId)
         {
-            await UpdateUserProfile(id);
-            AppUser user = await _context.Users
-                .Include(p => p.VolunteerProfile)
-                .FirstOrDefaultAsync(p => p.VolunteerProfile.Id == id);
-            StatusMessage = $"You successfully saved the changes to {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName}'s profile.";
+            await UpdateUserProfile(volunteerId);
+            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == volunteerId);
+            StatusMessage = $"You successfully saved the changes to {volunteer.FirstName} {volunteer.LastName}'s profile.";
 
-            return RedirectToPage(new { id = user.VolunteerProfile.Id, statusMessage = StatusMessage});
+            return RedirectToPage(new { id = volunteerId, statusMessage = StatusMessage});
         }
 
         private async Task UpdateStatus(int statusChangeType)
@@ -108,37 +104,36 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             }
         }
 
-        private async Task UpdateUserProfile(int userId)
+        private async Task UpdateUserProfile(int volunteerId)
         {
             // get positions for display
             Positions = await _context.Positions.ToListAsync();
 
-            // retrieve the user to be updated and load volunteer profile
-            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == userId);
+            // retrieve the user to be updated, load volunteer profile and all navigation properties
+            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == volunteerId);
             await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.References).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.WorkExperiences).LoadAsync();
 
             // tag it for change
             _context.Update(user);
-            
-            // load volunteer profile and all navigation properties
-            VolunteerProfile volunteerProfile = user.VolunteerProfile;
-            await _context.Entry(volunteerProfile).Collection(p => p.Availabilities).LoadAsync();
-            await _context.Entry(volunteerProfile).Collection(p => p.References).LoadAsync();
-            await _context.Entry(volunteerProfile).Collection(p => p.WorkExperiences).LoadAsync();
 
             // keep all properties that won't be edited
-            DetailsModel.Id = volunteerProfile.Id;
-            DetailsModel.FirstName = volunteerProfile.FirstName;
-            DetailsModel.LastName = volunteerProfile.LastName;
+            DetailsModel.Id = user.VolunteerProfile.Id;
+            DetailsModel.FirstName = user.VolunteerProfile.FirstName;
+            DetailsModel.LastName = user.VolunteerProfile.LastName;
 
             // for all properties that can be edited, replace old values with new values via model
-            user.Email = DetailsModel.Email;
             VolunteerProfile newVolunteerProfile = _mapper.Map<VolunteerProfile>(DetailsModel);
+            newVolunteerProfile.User = user;
+            newVolunteerProfile.UserID = user.Id;
             user.VolunteerProfile = newVolunteerProfile;
+            // email is attached to the AppUser entity so it has to be updated individually
+            user.Email = DetailsModel.Email;
 
             // update preferred and assigned positions
             UpdateVolunteerPositions(user.VolunteerProfile);
-            _context.Entry(volunteerProfile).State = EntityState.Detached;
             await _context.SaveChangesAsync();
         }
 
@@ -161,32 +156,39 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             List<PositionVolunteer> oldPositions = _context.PositionVolunteers
                 .Where(p => p.Volunteer == volunteer).ToList();
             _context.PositionVolunteers.RemoveRange(oldPositions);
+
+            // load new position selection into volunteerprofile
             volunteer.Positions = new List<PositionVolunteer>();
+
+            // iterate through all positions (via model property that contains every selectable position)
             foreach (Position position in Positions)
             {
-                var preferred = Request.Form["preferred-" + position.Name];
-                var assigned = Request.Form["assigned-" + position.Name];
-
+                // prepare an entity to be added to the volunteer's list of positions
                 PositionVolunteer posVol = new PositionVolunteer()
                 {
                     Volunteer = volunteer,
                     Position = position,
                 };
 
-                // this means it was preferred, StringValues are weird
-                if (preferred.Count > 0 && assigned.Count == 0)
+                // for each position, check to see if it was selected as a preferred position or an assigned position
+                var preferred = Request.Form["preferred-" + position.Name];
+                var assigned = Request.Form["assigned-" + position.Name];
+
+                bool selectedAsPreferredPosition = preferred.Count > 0 && assigned.Count == 0;
+                bool selectedAsAssignedPosition = preferred.Count == 0 && assigned.Count > 0;
+                bool selectedAsBoth = preferred.Count > 0 && assigned.Count > 0;
+
+                if (selectedAsPreferredPosition)
                 {
                     posVol.Association = PositionVolunteer.AssociationType.Preferred;
                     volunteer.Positions.Add(posVol);
                 }
-                // this means it was assigned
-                else if (preferred.Count == 0 && assigned.Count > 0)
+                else if (selectedAsAssignedPosition)
                 {
                     posVol.Association = PositionVolunteer.AssociationType.Assigned;
                     volunteer.Positions.Add(posVol);
                 }
-                // this means it was both
-                else if (preferred.Count > 0 && assigned.Count > 0)
+                else if (selectedAsBoth)
                 {
                     posVol.Association = PositionVolunteer.AssociationType.PreferredAndAssigned;
                     volunteer.Positions.Add(posVol);
@@ -210,6 +212,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             Positions = _context.Positions.Where(p => p.Name != "All").ToList();
             
             GetSortedAvailability(volunteerUserProfile.VolunteerProfile.Availabilities);
+
+            CurrentPage = $"Volunteer Details for {volunteerUserProfile.VolunteerProfile.FirstName} {volunteerUserProfile.VolunteerProfile.LastName}";
         }
 
         private void GetSortedAvailability(IList<Availability> availabilities)
@@ -221,12 +225,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
                 List<Availability> currentDayAvailbilities = availabilities.Where(a => a.AvailableDay == day).OrderBy(a => a.StartTime).ToList();
                 Availability.Add(day, currentDayAvailbilities);
             }
-        }
-
-        public class VolunteerDetails
-        {
-            public string Email { get; set; }
-            
         }
     }
 }

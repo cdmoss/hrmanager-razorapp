@@ -25,7 +25,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             FoodBankContext context,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ILogger<ChangePasswordModel> logger) : base(context)
+            ILogger<ChangePasswordModel> logger, string currentPage = "Change Volunteer Password") : base(context, currentPage)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -62,7 +62,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
             await _context.Entry(Volunteer).Reference(p => p.VolunteerProfile).LoadAsync();
 
             if (Volunteer == null)

@@ -35,7 +35,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string SearchedName { get; set; }
 
-        public MainModel(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, FoodBankContext context) : base(context)
+        public MainModel(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, FoodBankContext context, string currentPage = "Volunteers") : base(context, currentPage)
         {
             _signInManager = signInManager;
             _userManager = userManager;

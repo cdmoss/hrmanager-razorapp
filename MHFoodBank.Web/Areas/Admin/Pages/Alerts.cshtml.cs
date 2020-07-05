@@ -22,7 +22,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public string SearchedName { get; set; }
         public string StatusMessage { get; set; }
 
-        public AlertsModel(FoodBankContext context) : base(context)
+        public AlertsModel(FoodBankContext context, string currentPage = "Alerts") : base(context, currentPage)
         {
 
         }

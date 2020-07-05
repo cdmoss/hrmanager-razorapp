@@ -8,51 +8,6 @@
     ViewData["Title"] = "Admin Calendar";
 }
 
-<style>
-    #container {
-        display: grid;
-        grid-template-columns: 2fr 2fr 1fr 2fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button . email add-shift add-position remove-position";
-        gap: .5rem;
-    }
-
-    #search-name {
-        grid-area: search-name;
-    }
-
-    #search-position {
-        grid-area: search-position;
-    }
-
-    #search-button {
-        grid-area: search-button;
-    }
-
-    #email {
-        grid-area: email;
-    }
-
-    #add-shift {
-        grid-area: add-shift;
-    }
-
-    #add-position {
-        grid-area: add-position;
-    }
-
-    #remove-position {
-        grid-area: remove-position;
-    }
-
-    #calendar {
-        grid-area: calendar;
-    }
-
-    .fc-content {
-        cursor: pointer;
-    }
-</style>
 <script>$('.shift-form').validate();</script>
 <script>
     // these are global so that the start date can be changed when the recurring shift controls are toggled on edit recurring shifts
@@ -166,15 +121,17 @@
 
                 // determine if shift is recurring
                 let selectedShift = shiftinfo.event;
-                let selectedShiftIsRecurring = typeof selectedShift._def.recurringDef !== "undefined";
+                let selectedShiftIsRecurring = typeof selectedShift._def.recurringDef !== "undefined" || typeof selectedShift._def.recurringDef !== "";
 
                 // determine if shift is open
                 let volunteerId = selectedShift.extendedProps.vol - 1;
                 let shiftIsOpen = volunteerId < 0
 
                 // determine if shift was previously part of a recurring set
-                let wasPartOfRecurringSet = typeof selectedShift.extendedProps.wasPartOfRecurring !== "undefined";
-                wasPartOfRecurringSet = selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
+                let wasPartOfRecurringSet =
+                    typeof selectedShift._def.recurringDef !== "undefined" ||
+                    typeof selectedShift._def.recurringDef !== "" ||
+                    selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
 
                 if (selectedShiftIsRecurring) {
                     $('#edit-recshift-modal').modal();
@@ -185,7 +142,10 @@
                     let selectedShiftEndDate;
                     let recurringShiftEndDate;
 
-                    let selectedShiftHasExcludedDates = typeof shiftinfo.event._def.recurringDef.typeData._rrule !== 'undefined';
+                    let selectedShiftHasExcludedDates =
+                        typeof selectedShift._def.recurringDef !== "undefined" ||
+                        typeof selectedShift._def.recurringDef !== "" ||
+                        selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
 
                     if (selectedShiftHasExcludedDates) {
                         // when the event has excluded dates, dtstart, until and weekdays must be accessed from typeData._rrule[0].origOptions
@@ -383,42 +343,39 @@
     });
 
 </script>
-
-<h1 class="ml-5 mr-5">Scheduling</h1>
 <div class="ml-5 mr-5">
     <partial name="_AdminStatusMessage" for="StatusMessage" />
-</div>
-<br />
-<form method="post" id="container" class="ml-5 mr-5">
-    @if (String.IsNullOrWhiteSpace(Model.SearchedName))
-    {
-        <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-    }
-    else
-    {
-        <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-    }
+    <form method="post" id="container">
+        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+        {
+            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
+        }
+        else
+        {
+            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+        }
 
-    @if (@Model.SearchedPosition == null)
-    {
-        <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
-        </select>
-    }
-    else
-    {
-        <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
-        </select>
-    }
-    <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-    <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>
-    <div id="add-shift" onclick="$('#add-shift-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
-    <div id="add-position" onclick="$('#add-position-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Position</div>
-    <div id="remove-position" onclick="$('#edit-position-modal').modal();" class="btn btn-primary">
-        <i class="fa fa-edit"></i> Positions
-    </div>
-</form>
-<hr class="ml-5 mr-5" />
-<div class="ml-5 mr-5" id='calendar'></div>
+        @if (@Model.SearchedPosition == null)
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            </select>
+        }
+        else
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            </select>
+        }
+        <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+        <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>
+        <div id="add-shift" onclick="$('#add-shift-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
+        <div id="add-position" onclick="$('#add-position-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Position</div>
+        <div id="remove-position" onclick="$('#edit-position-modal').modal();" class="btn btn-primary">
+            <i class="fa fa-edit"></i> Positions
+        </div>
+    </form>
+    <hr />
+    <div id='calendar'></div>
+</div>
 
 
 <!--modal for adding a new position-->

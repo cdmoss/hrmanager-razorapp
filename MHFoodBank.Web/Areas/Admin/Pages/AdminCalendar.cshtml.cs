@@ -83,7 +83,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private readonly IMapper _mapper;
 
-        public AdminCalendar(FoodBankContext context, IMapper mapper) : base(context)
+        public AdminCalendar(FoodBankContext context, IMapper mapper, string currentPage = "Scheduling") : base(context, currentPage)
         {
             _mapper = mapper;
         }

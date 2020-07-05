@@ -24,13 +24,14 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             ArchivedSwitch,
             ArchivedRemoval
         }
+
         // when ShiftRequest.NewShift is null it means its a request to remove shift entirely
         public ShiftRequestAlert ShiftRequest { get; set; }
         public List<Shift> OpenShifts { get; set; }
         public List<Shift> AssignedShifts { get; set; }
         public RequestResolvePageViewType ViewType { get; set; }
 
-        public ResolveShiftRequestModel(FoodBankContext context) : base(context)
+        public ResolveShiftRequestModel(FoodBankContext context, string currentPage = "Shift Request") : base(context, currentPage)
         {
 
         }
@@ -38,8 +39,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public async Task OnGet(int alertId, string requestType)
         {
             ShiftRequest = await LoadAlertForDisplay(alertId);
-            OpenShifts = await LoadOpenShifts();
-            AssignedShifts = await LoadAssignedShifts();
+            if (ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Pending)
+            {
+                OpenShifts = await LoadOpenShifts();
+                AssignedShifts = await LoadAssignedShifts();
+            }
             // if shift request is for a switch and the requested shift is part of a recurring set, 
             // this method will ensure that only one instance of that shift will be displayed
             ResolveRecurringShiftDisplay();
@@ -234,24 +238,18 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task<List<Shift>> LoadOpenShifts()
         {
-            if (ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Pending)
-            {
-                return await _context.Shifts
-                    .Include(p => p.Volunteer)
-                    .Include(p => p.PositionWorked)
-                    .Where(
-                        s => s.Hidden == false &&
-                             s != ShiftRequest.NewShift &&
-                             s != ShiftRequest.OldShift &&
-                             s.Volunteer == null).ToListAsync();
-            }
-            return new List<Shift>();
+            return await _context.Shifts
+                .Include(p => p.Volunteer)
+                .Include(p => p.PositionWorked)
+                .Where(
+                    s => s.Hidden == false &&
+                            s != ShiftRequest.NewShift &&
+                            s != ShiftRequest.OldShift &&
+                            s.Volunteer == null).ToListAsync();
         }
 
         private async Task<List<Shift>> LoadAssignedShifts()
         {
-            if (ShiftRequest.Status == ShiftRequestAlert.RequestStatus.Pending)
-            {
                 return await _context.Shifts
                     .Include(p => p.Volunteer)
                     .Include(p => p.PositionWorked)
@@ -260,8 +258,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                              s != ShiftRequest.NewShift &&
                              s != ShiftRequest.OldShift &&
                              s.Volunteer != null).ToListAsync();
-            }
-            return new List<Shift>();
         }
 
         private async Task<ShiftRequestAlert> LoadAlertForResolution(int alertId)
@@ -301,7 +297,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await _context.Entry(shiftRequest.OldShift).Reference(p => p.Volunteer).LoadAsync();
             await _context.Entry(shiftRequest).Reference(p => p.NewShift).LoadAsync();
 
-            // determine how to display the page based on if it is open or not
             if (shiftRequest.NewShift != null)
             {
                 await _context.Entry(shiftRequest.NewShift).Reference(p => p.PositionWorked).LoadAsync();

@@ -15,11 +15,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
 
         public int NotifcationCount { get; set; }
         public string FullName { get; set; }
+        public string CurrentPage { get; set; }
 
-        public AdminPageModel(FoodBankContext context)
+        public AdminPageModel(FoodBankContext context, string currentPage)
         {
             _context = context;
             NotifcationCount = context.Alerts.Count(a => a.HasBeenRead == false);
+            CurrentPage = currentPage;
         }
     }
 }

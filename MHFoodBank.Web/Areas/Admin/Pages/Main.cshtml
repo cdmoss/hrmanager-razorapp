@@ -5,27 +5,78 @@
 @{ Layout = "Shared/_Layout";
                 ViewData["Title"] = "Volunteers"; }
 
+    <style>
+        #container {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr 5fr;
+            grid-template-rows: auto;
+            grid-template-areas: "search-name search-position search-button .";
+            gap: .5rem;
+        }
+
+        @@media (min-width: 1800px) {
+            
+        }
+
+        @@media (min-width: 1370px) {
+            .volunteer-table {
+                width: 75%;
+            }
+        }
+
+        @@media (max-width: 1369px) {
+            .volunteer-table {
+                width: 100%
+            }
+
+            #container {
+                display: grid;
+                grid-template-columns: 2fr 2fr 1fr;
+                grid-template-rows: auto;
+                grid-template-areas: "search-name search-position search-button";
+                gap: .5rem;
+            }
+        }
+
+        #search-name {
+            grid-area: search-name;
+        }
+
+        #search-position {
+            grid-area: search-position;
+        }
+
+        #search-button {
+            grid-area: search-button;
+        }
+    </style>
+
 <div class="ml-5 mr-5">
-    <h1>Volunteers</h1>
-    <br />
-    <form class="row w-50 mb-3 ml-1" method="post">
+    <form id="container" class="mb-3" method="post">
         @if (String.IsNullOrWhiteSpace(Model.SearchedName))
         {
-            <input class="form-control col-md-4 mr-1" placeholder="Search by name..." asp-for="@Model.SearchedName" /> 
+            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
         }
         else
         {
-            <input class="form-control col-md-4 mr-1" value="@Model.SearchedName" asp-for="@Model.SearchedName" />            
+            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
         }
-        <select class="form-control col-md-4" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
-        </select> 
-        <div class="col-md-3" method="post">
-            <button class="btn btn-sm btn-primary w-50 h-100" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-        </div>
+
+        @if (@Model.SearchedPosition == null)
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            </select>
+        }
+        else
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            </select>
+        }
+        <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
     </form>
     @if (@Model.Volunteers.Count() > 0)
     {
-        <table class="table w-50">
+        <table class="table volunteer-table">
         @foreach (VolunteerProfile volunteer in @Model.Volunteers)
         {
             <thead>

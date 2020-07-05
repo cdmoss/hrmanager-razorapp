@@ -19,6 +19,7 @@
     <link href='~/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
+    <link href="~/css/admincalendar.css" rel="stylesheet" />
 
     <style>
         body {
@@ -31,9 +32,11 @@
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand" style="font-size: 1.3em;" asp-page="/Main"><img style="height: 50px; width: 50px; margin-right: 10px;" src="~/MHFB.png" alt="MHFB Logo" />MH Food Bank</a><button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
+        <button class="btn btn-link btn-sm order-1 order-lg-0 ml-3" id="sidebarToggle" href="#">
             <i class="fas fa-bars"></i>
         </button>
+        <a class="navbar-brand" style="font-size: 1.3em;" asp-page="/Main"><img style="height: 50px; width: 50px; margin-right: 10px;" src="~/MHFB.png" alt="MHFB Logo" /><span class="site-title"><strong>MH Food Bank</strong></span></a>
+        <div class="ml-3" style="font-size: 1.3em; color: #fff;">@Model.CurrentPage</div>
         <ul class="navbar-nav ml-auto ml-md-12">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="userDropdown" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-user fa-fw"></i> Welcome @_userManager.GetUserAsync(User).Result.UserName!</a>
@@ -57,6 +60,11 @@
                             Volunteers
                         </a>
 
+                        <a class="nav-link" asp-page="/AdminCalendar">
+                            <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
+                            Scheduling
+                        </a>
+
                         <a class="nav-link" asp-page="/Alerts">
                             <div class="sb-nav-link-icon"><i class="fas fa-exclamation-circle"></i></div>
                             @if (@Model.NotifcationCount > 0)
@@ -67,11 +75,6 @@
                             {
                                 <span>Alerts</span>
                             }
-                        </a>
-
-                        <a class="nav-link" asp-page="/AdminCalendar">
-                            <div class="sb-nav-link-icon"><i class="fas fa-calendar"></i></div>
-                            Scheduling
                         </a>
                         @if (await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), "Admin"))
                         {

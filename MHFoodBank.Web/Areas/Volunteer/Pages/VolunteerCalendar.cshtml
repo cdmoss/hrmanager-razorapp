@@ -35,20 +35,20 @@
                     var arrEndDate = new Date(shiftinfo.event.end);
 
                     if (shiftinfo.event.extendedProps.vol !== '-1') {
-                        $('#calendarModalView').modal();
-                        document.getElementById("myShiftID").value = shiftinfo.event.id;
-                        document.getElementById("myShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
-                        document.getElementById("myDateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
-                        document.getElementById("myDateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
-                        document.getElementById("myPOS").selectedIndex = shiftinfo.event.extendedProps.posWorked - 1;
+                        $('#shift-modal-assigned').modal();
+                        document.getElementById("assigned-shift-id").value = shiftinfo.event.id;
+                        document.getElementById("assigned-shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
+                        document.getElementById("assigned-shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
+                        document.getElementById("assigned-shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                        document.getElementById("assigned-shift-position").selectedIndex = shiftinfo.event.extendedProps.selectedIndex - 1;
                     }
                     else {
-                        $('#calendarModalOpen').modal();
-                        document.getElementById("openShiftID").value = shiftinfo.event.id;
-                        document.getElementById("openShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
-                        document.getElementById("openDateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
-                        document.getElementById("openDateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
-                        document.getElementById("openPOS").selectedIndex = shiftinfo.event.extendedProps.posWorked - 1;
+                        $('#shift-modal-open').modal();
+                        document.getElementById("open-shift-id").value = shiftinfo.event.id;
+                        document.getElementById("open-shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
+                        document.getElementById("open-shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
+                        document.getElementById("open-shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                        document.getElementById("open-shift-position").selectedIndex = shiftinfo.event.extendedProps.posWorked - 1;
                     }
                 },
                 navLinks: true, // can click day/week names to navigate views
@@ -148,7 +148,7 @@
     <partial name="_VolunteerStatusMessage" for="StatusMessage" />
     <hr />
     <form method="post">
-        <div id="calendarModalView" class="modal fade">
+        <div id="shift-modal-assigned" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -156,23 +156,23 @@
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                     </div>
                     <div id="modalBody" class="modal-body">
-                        <input type="hidden" id="myShiftID" name="myShiftID">
+                        <input type="hidden" id="assigned-shift-id" name="assigned-shift-id">
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="ShiftDate">Shift Date</label>
-                        <input value="" type="date" class="form-control" id="myShiftDate" name="myShiftDate" readonly>
+                        <label style="margin-top: 3px; padding-right: 10px;" for="assigned-0shift-date">Shift Date</label>
+                        <input value="" type="date" class="form-control" id="assigned-shift-date" name="assigned-shift-date" readonly>
 
                         <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="dateTimeStart">Start Time</label>
-                        <input type="text" class="time form-control" id="myDateTimeStart" name="myDateTimeStart" value="" readonly>
+                        <label style="margin-top: 3px; padding-right: 10px;" for="assigned-shift-starttime">Start Time</label>
+                        <input type="text" class="time form-control" id="assigned-shift-starttime" name="assigned-shift-starttime"  readonly>
                         <hr />
 
                         <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                        <input type="text" class="time form-control" id="myDateTimeEnd" name="myDateTimeEnd" value="" readonly>
+                        <input type="text" class="time form-control" id="assigned-shift-endtime" name="assigned-shift-endtime" readonly>
 
                         <hr />
                         <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                        <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" id="myPOS" name="myPOS" disabled>
+                        <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" id="assigned-shift-position" readonly disabled>
                         </select>
                     </div>
                     <div class="modal-footer">
@@ -182,31 +182,31 @@
                 </div>
             </div>
         </div>
-        <div id="calendarModalOpen" class="modal fade">
+        <div id="shift-modal-open" class="modal fade">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 id="modalTitle" class="modal-title">Viewing Shift</h4>
+                        <h4 class="modal-title">Viewing Shift</h4>
                         <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                     </div>
-                    <div id="modalBody" class="modal-body">
-                        <input type="hidden" id="openShiftID" name="OpenShiftID">
+                    <div class="modal-body">
+                        <input type="hidden" id="open-shift-id" name="open-shift-id">
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="openShiftDate">Shift Date</label>
-                        <input value="" type="date" class="form-control" id="openShiftDate" name="openShiftDate" readonly>
+                        <label style="margin-top: 3px; padding-right: 10px;" for="open-shift-date">Shift Date</label>
+                        <input value="" type="date" class="form-control" id="open-shift-date" name="open-shift-date" readonly>
 
                         <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="openDateTimeStart">Start Time</label>
-                        <input type="text" class="time form-control" id="openDateTimeStart" name="openDateTimeStart" value="" readonly>
+                        <label style="margin-top: 3px; padding-right: 10px;" for="open-shift-starttime">Start Time</label>
+                        <input type="text" class="time form-control" id="open-shift-starttime" name="open-shift-starttime" value="" readonly>
                         <hr />
 
                         <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                        <input type="text" class="time form-control" id="openDateTimeEnd" name="openDateTimeEnd" value="" readonly>
+                        <input type="text" class="time form-control" id="open-shift-endtime" name="open-shift-endtime" value="" readonly>
 
                         <hr />
                         <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                        <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" id="openPOS" disabled>
+                        <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" id="open-shift-position" readonly disabled>
                         </select>
                     </div>
                     <div class="modal-footer">

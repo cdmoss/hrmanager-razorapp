@@ -10,33 +10,24 @@
     <input type="hidden" asp-for="@Model.DetailsModel.FirstName" value="@Model.DetailsModel.FirstName" />
     <input type="hidden" asp-for="@Model.DetailsModel.LastName" value="@Model.DetailsModel.LastName" />
     <div class="ml-5 mr-5">
-        <div class="row">
-            <div class="col-md-9">
-                <h1>Details for @Model.DetailsModel.FirstName @Model.DetailsModel.LastName</h1>
-                <br />
-                <br />
-                <button class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
-                <a class="btn-primary btn-sm btn" asp-page="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</a>
-            </div>
-            <div class="col-md-3">
-                <div>
-                    <h3><strong>Volunteer Approval Status:</strong></h3>
-                    @if (@Model.DetailsModel.OfficiallyApproved)
-                    {
-                        <h4 text-align="right">Approved</h4>
-                        <input type="hidden" asp-for="@Model.DetailsModel.OfficiallyApproved" value="true" />
-                    }
-                    else
-                    {
-                        <h4 text-align="right">Pending or not approved</h4>
-                        <input type="hidden" asp-for="@Model.DetailsModel.OfficiallyApproved" value="false" />
-                    }
-                </div>
-                <br />
-                <button class="btn btn-sm btn-primary" asp-page-handler="ChangeStatus" asp-route-check="5" asp-route-id="@Model.DetailsModel.Id">Change Status</button>
-            </div>
+        <div class="row mb-2">
+            <h4 class="mr-2"><strong>Volunteer Approval Status: </strong></h4>
+            @if (@Model.DetailsModel.OfficiallyApproved)
+            {
+                <h4 class="ml-2">Approved</h4>
+                <input type="hidden" asp-for="@Model.DetailsModel.OfficiallyApproved" value="true" />
+            }
+            else
+            {
+                <h4> Pending or not approved</h4>
+                <input type="hidden" asp-for="@Model.DetailsModel.OfficiallyApproved" value="false" />
+            }
         </div>
-        <br />
+        <div class="row">
+            <button class="btn btn-sm btn-primary mr-auto" asp-page-handler="ChangeStatus" asp-route-check="5" asp-route-volunteerId="@Model.DetailsModel.Id">Change Status</button>
+            <button class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-volunteerId="@Model.DetailsModel.Id">Save Changes</button>
+            <a align="right" class="btn-primary btn-sm btn ml-2" asp-page="AdminChangePassword" asp-route-volunteerId="@Model.DetailsModel.Id">Change Password</a>
+        </div>
         <partial name="_AdminStatusMessage" for="StatusMessage" />
         <hr class="mt-4 mb-4" />
         <div class="row col-md-12">
@@ -78,7 +69,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2 pl-1 pr-1">
-                    <button asp-page-handler="ChangeStatus" asp-route-check="6" asp-route-id="@Model.DetailsModel.Id" class="btn-sm btn btn-light">Change</button>
+                    <button asp-page-handler="ChangeStatus" asp-route-check="6" asp-route-volunteerId="@Model.DetailsModel.Id" class="btn-sm btn btn-light">Change</button>
                 </div>
                 <div class="col-md-2">Expires:</div>
                 <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.FoodSafeExpiry.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
@@ -98,7 +89,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2 pl-1 pr-1">
-                    <button asp-page-handler="ChangeStatus" asp-route-check="7" asp-route-id="@Model.DetailsModel.Id" class=" btn-sm btn btn-light">Change</button>
+                    <button asp-page-handler="ChangeStatus" asp-route-check="7" asp-route-volunteerId="@Model.DetailsModel.Id" class=" btn-sm btn btn-light">Change</button>
                 </div>
                 <div class="col-md-2">Expires:</div>
                 <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.CprExpiry.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.CprExpiry" />
@@ -118,7 +109,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2 pl-1 pr-1">
-                    <button asp-page-handler="ChangeStatus" asp-route-check="8" asp-route-id="@Model.DetailsModel.Id" class="btn-sm btn btn-light">Change</button>
+                    <button asp-page-handler="ChangeStatus" asp-route-check="8" asp-route-volunteer-Id="@Model.DetailsModel.Id" class="btn-sm btn btn-light">Change</button>
                 </div>
                 <div class="col-md-2">Expires:</div>
                 <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.FirstAidExpiry.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidExpiry" />
@@ -162,7 +153,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2"></div>
-                <button asp-page-handler="ChangeStatus" asp-route-check="1" asp-route-id="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn mb-4 btn-light">Change</button>
+                <button asp-page-handler="ChangeStatus" asp-route-check="1" asp-route-volunteerId="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn mb-4 btn-light">Change</button>
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Driving Abstract:</dt>
                     <dd class="col-md-2">
@@ -179,7 +170,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2"></div>
-                <button asp-page-handler="ChangeStatus" asp-route-check="2" asp-route-id="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
+                <button asp-page-handler="ChangeStatus" asp-route-check="2" asp-route-volunteerId="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Confirmation of Professional Designation:</dt>
                     <dd class="col-md-2">
@@ -196,7 +187,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2"></div>
-                <button asp-page-handler="ChangeStatus" asp-route-check="3" asp-route-id="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
+                <button asp-page-handler="ChangeStatus" asp-route-check="3" asp-route-volunteerId="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Child Welfare Check:</dt>
                     <dd class="col-md-2">
@@ -213,7 +204,7 @@
                     </dd>
                 </dl>
                 <div class="col-md-2"></div>
-                <button asp-page-handler="ChangeStatus" asp-route-check="4" asp-route-id="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
+                <button asp-page-handler="ChangeStatus" asp-route-check="4" asp-route-volunteerId="@Model.DetailsModel.Id" class="col-md-2 btn-sm btn btn-light mb-4">Change</button>
             </div>
         </div>
         <hr class="mt-2 mb-4" />
