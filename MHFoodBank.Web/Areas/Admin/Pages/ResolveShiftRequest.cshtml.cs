@@ -71,7 +71,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
                 Shift removedShift = ShiftRequest.OldShift;
 
-                await ReminderScheduler.CancelReminder(removedShift, _context);
+                ReminderScheduler.CancelReminder(removedShift, _context);
             }
 
             // this is to control the displayed status of the alert in the volunteer inbox

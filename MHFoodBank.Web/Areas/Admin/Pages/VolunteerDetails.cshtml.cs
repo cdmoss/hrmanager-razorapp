@@ -22,14 +22,14 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
     {
         [BindProperty]
         public VolunteerAdminReadEditDto DetailsModel { get; set; }
-        [BindProperty] 
+        [BindProperty]
         public Dictionary<string, List<Availability>> Availability { get; set; } = new Dictionary<string, List<Availability>>();
         [BindProperty]
         public int MaxAvailabilityCount { get { return GetMaxAvailabilityCount(); } }
 
-        [BindProperty] 
+        [BindProperty]
         public List<Position> Positions { get; set; }
-        [BindProperty] 
+        [BindProperty]
         public string StatusMessage { get; set; }
 
         private readonly IMapper _mapper;
@@ -45,22 +45,27 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             PrepareModel(id);
         }
 
-        public async Task<IActionResult> OnPostChangeStatusAsync(int check, int volunteerId)
+        public async Task<IActionResult> OnPostChangeStatusAsync(int check, int id)
         {
-            PrepareModel(volunteerId);
+            PrepareModel(id);
             await UpdateStatus(check);
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { id = volunteerId});
+            return RedirectToPage(new { id = id });
         }
 
-        public async Task<IActionResult> OnPostSaveChangesAsync(int volunteerId)
+        public async Task<IActionResult> OnPostSaveChangesAsync(int id)
         {
-            await UpdateUserProfile(volunteerId);
-            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == volunteerId);
-            StatusMessage = $"You successfully saved the changes to {volunteer.FirstName} {volunteer.LastName}'s profile.";
+            var errors = ModelState.Values.Select(v => v.Errors);
+            if (ModelState.IsValid)
+            {
+                await UpdateUserProfile(id);
+                var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
 
-            return RedirectToPage(new { id = volunteerId, statusMessage = StatusMessage});
+                return RedirectToPage(new { statusMessage = $"You successfully saved the changes to {volunteer.FirstName} {volunteer.LastName}'s profile." });
+            }
+
+            return Page();
         }
 
         private async Task UpdateStatus(int statusChangeType)
@@ -104,13 +109,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             }
         }
 
-        private async Task UpdateUserProfile(int volunteerId)
+        private async Task UpdateUserProfile(int id)
         {
             // get positions for display
             Positions = await _context.Positions.ToListAsync();
 
             // retrieve the user to be updated, load volunteer profile and all navigation properties
-            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == volunteerId);
+            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
             await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(user.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
             await _context.Entry(user.VolunteerProfile).Collection(p => p.References).LoadAsync();
@@ -210,7 +215,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             DetailsModel.Email = volunteerUserProfile.Email;
 
             Positions = _context.Positions.Where(p => p.Name != "All").ToList();
-            
+
             GetSortedAvailability(volunteerUserProfile.VolunteerProfile.Availabilities);
 
             CurrentPage = $"Volunteer Details for {volunteerUserProfile.VolunteerProfile.FirstName} {volunteerUserProfile.VolunteerProfile.LastName}";

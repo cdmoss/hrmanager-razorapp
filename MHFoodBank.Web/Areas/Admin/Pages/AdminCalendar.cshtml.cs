@@ -236,7 +236,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     if (shift.Volunteer != null)
                     {
                         // if so, cancel the notification scheduled for it
-                        await ReminderScheduler.CancelReminder(shift, _context);
+                        ReminderScheduler.CancelReminder(shift, _context);
                     }
 
                     _context.Shifts.Remove(shift);
@@ -271,7 +271,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     if (shift.Volunteer != null)
                     {
                         // if so, cancel the notification scheduled for it
-                        await ReminderScheduler.CancelReminder(shift, _context);
+                        ReminderScheduler.CancelReminder(shift, _context);
                     }
 
                     // shift is hidden from the calendar but will stay in the 
@@ -328,7 +328,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     if (recurringShift.Volunteer != null)
                     {
                         // if so, cancel the notification scheduled for it
-                        await ReminderScheduler.CancelReminder(recurringShift, _context);
+                        ReminderScheduler.CancelReminder(recurringShift, _context);
                     }
 
                     await _context.SaveChangesAsync();
@@ -365,7 +365,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     {
                         // if so, cancel the notification scheduled for it
                         var reminder = await _context.Reminders.FirstOrDefaultAsync(r => r.ShiftId == shift.Id);
-                        await ReminderScheduler.CancelReminder(shift, _context, shift.StartDate);
+                        ReminderScheduler.CancelReminder(shift, _context, shift.StartDate);
                     }
 
                     _context.Shifts.Remove(shift);
@@ -653,7 +653,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             if (shift.Volunteer != null)
             {
                 // if so, cancel the notification scheduled for it
-                await ReminderScheduler.CancelReminder(shift, _context);
+                ReminderScheduler.CancelReminder(shift, _context);
             }
 
             shift = MapFormDataToNonRecurringShift(shift);
@@ -693,7 +693,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             if (recShift.Volunteer != null)
             {
                 // if so, cancel the original notification scheduled for it
-                await ReminderScheduler.CancelReminder(recShift, _context, originalDate);
+                ReminderScheduler.CancelReminder(recShift, _context, originalDate);
             }
 
             // make a new shift which will be excluded from the selected recurring shift, 
@@ -769,7 +769,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             if (recShift.Volunteer != null)
             {
                 // if so, cancel the notification scheduled for it
-                await ReminderScheduler.CancelReminder(recShift, _context);
+                ReminderScheduler.CancelReminder(recShift, _context);
             }
 
             recShift = MapFormDataToRecurringSet(recShift);

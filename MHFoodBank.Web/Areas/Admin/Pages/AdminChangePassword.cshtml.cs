@@ -81,7 +81,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
            await _context.Entry(Volunteer).Reference(p => p.VolunteerProfile).LoadAsync();
 
             if (!ModelState.IsValid)

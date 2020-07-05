@@ -94,7 +94,7 @@
                         }
                         <td>
                             <form method="post">
-                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-alertId="@alert.Id">See Request</button>
+                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-id="@alert.Id">See Request</button>
                             </form>
                         </td>
                     </tr>
@@ -134,8 +134,8 @@
                         <td><span>@alert.Volunteer.FirstName</span>&nbsp;<span>@alert.Volunteer.LastName</span></td>
                         <td>
                             <form method="post">
-                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-alertId="@alert.Id">See Request</button>
-                                <button class="btn btn-danger btn-sm" asp-page-handler="DeleteAlert" asp-route-alertId="@alert.Id">Delete</button>
+                                <button class="btn btn-primary btn-sm" asp-page-handler="ViewRequest" asp-route-id="@alert.Id">See Request</button>
+                                <button class="btn btn-danger btn-sm" asp-page-handler="DeleteAlert" asp-route-id="@alert.Id">Delete</button>
                             </form>
                         </td>
                     </tr>

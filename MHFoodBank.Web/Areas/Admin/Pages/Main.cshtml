@@ -77,8 +77,6 @@
     @if (@Model.Volunteers.Count() > 0)
     {
         <table class="table volunteer-table">
-        @foreach (VolunteerProfile volunteer in @Model.Volunteers)
-        {
             <thead>
                 <tr>
                     <th>First Name</th>
@@ -90,14 +88,16 @@
                     }
                 </tr>
             </thead>
+        @foreach (VolunteerProfile volunteer in @Model.Volunteers)
+        {
             <tr>
                 <td>@volunteer.FirstName</td>
                 <td>@volunteer.LastName</td>
-                <td><a class="btn-link btn" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a><input type="hidden" value="@volunteer.Id" id="volunteer-id" /></td>
+                <td><a class="btn-link" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a><input type="hidden" value="@volunteer.Id" id="volunteer-id" /></td>
                 @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
                 {
                     //Delete button goes here
-                    <td><button class="btn-link btn" onclick="openDeleteModal()">Delete</button></td>
+                    <td><a class="btn-link" href="#" onclick="openDeleteModal()">Delete</a></td>
                 }
             </tr>
         }

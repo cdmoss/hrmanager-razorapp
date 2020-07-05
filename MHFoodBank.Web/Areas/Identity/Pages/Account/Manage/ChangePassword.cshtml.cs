@@ -13,7 +13,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : VolunteerPageModel
     {
-        private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
 
@@ -23,7 +22,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             SignInManager<AppUser> signInManager,
             ILogger<ChangePasswordModel> logger) : base(userManager, context)
         {
-            _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
         }

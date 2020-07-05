@@ -33,9 +33,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await PrepareModel();
         }
 
-        public async Task<IActionResult> OnPostViewApplicant(int alertId)
+        public async Task<IActionResult> OnPostViewApplicant(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == alertId);
+            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
             //TODO: This is throwing a null error
             await _context.Entry(selectedAlert).Reference(a => a.Volunteer).LoadAsync();
             _context.Alerts.Update(selectedAlert);
@@ -44,19 +44,19 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return RedirectToPage("VolunteerDetails", new { id = selectedAlert.Volunteer.Id });
         }
 
-        public async Task<IActionResult> OnPostViewRequest(int alertId)
+        public async Task<IActionResult> OnPostViewRequest(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == alertId);
+            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
             await _context.Entry(selectedAlert).Reference(a => a.Volunteer).LoadAsync();
             _context.Alerts.Update(selectedAlert);
             selectedAlert.HasBeenRead = true;
             await _context.SaveChangesAsync();
-            return RedirectToPage("ResolveShiftRequest", new { alertId = selectedAlert.Id });
+            return RedirectToPage("ResolveShiftRequest", new { id = selectedAlert.Id });
         }
 
-        public async Task<IActionResult> OnPostDeleteAlert(int alertId)
+        public async Task<IActionResult> OnPostDeleteAlert(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == alertId);
+            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
 
             if (selectedAlert is ShiftRequestAlert)
             {

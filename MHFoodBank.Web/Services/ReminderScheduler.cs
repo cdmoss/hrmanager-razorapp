@@ -67,7 +67,7 @@ namespace MHFoodBank.Web.Data
 
         // in the instance that a single shift from a recurring set needs to have its reminder canceled,
         // the datetime of the selected shift will be passed in
-        public static async Task CancelReminder(Shift shift, FoodBankContext context, DateTime? shiftDate = null)
+        public static void CancelReminder(Shift shift, FoodBankContext context, DateTime? shiftDate = null)
         {
             if (shift is RecurringShift recurringShift)
             {
