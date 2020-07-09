@@ -157,9 +157,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public async Task<IActionResult> OnPostAddRecurringShift()
         {
             RecurringShift recurringShift = new RecurringShift();
-            MapFormDataToNewNonRecurringShift(recurringShift);
-            recurringShift.CreateDescription();
+            MapFormDataToNewShift(recurringShift);
             recurringShift.EndDate = Convert.ToDateTime(Request.Form["add-recshift-enddate"]);
+            recurringShift.CreateDescription();
             recurringShift.Weekdays = GetSelectedWeekdays();
             if (string.IsNullOrEmpty(recurringShift.Weekdays))
             {
@@ -451,7 +451,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private async Task AddShift()
         {
             Shift shift = new Shift();
-            MapFormDataToNewNonRecurringShift(shift);
+            MapFormDataToNewShift(shift);
+
             shift.CreateDescription();
             await _context.Shifts.AddAsync(shift);
             await _context.SaveChangesAsync();
@@ -597,7 +598,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return selectedDays;
         }
 
-        private void MapFormDataToNewNonRecurringShift(Shift shift)
+        private void MapFormDataToNewShift(Shift shift)
         {
             shift.StartDate = Convert.ToDateTime(Request.Form["add-shift-date"]);
             shift.StartTime = TimeSpan.Parse(Request.Form["add-shift-starttime"]);

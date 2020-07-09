@@ -345,7 +345,7 @@ namespace MHFoodBank.Web.Migrations
                     Discriminator = table.Column<string>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: true),
                     Weekdays = table.Column<string>(nullable: true),
-                    RecurrenceRule = table.Column<string>(nullable: true)
+                    RecurringShift = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -1,6 +1,6 @@
 ﻿@page
 @using MHFoodBank.Web.Data.Models
-@using MHFoodBank.Web.Dtos 
+@using MHFoodBank.Web.Dtos
 @using System.Web
 @model MHFoodBank.Web.Areas.Admin.Pages.AdminCalendar
 @{
@@ -8,96 +8,12 @@
     ViewData["Title"] = "Admin Calendar";
 }
 
-<script>$('.shift-form').validate();</script>
+<script src="~/js/admincalendar_events_recurring.js"></script>
+<script src="~/js/admincalendar_ui.js"></script>
+<script src="~/js/admincalendar_events_main.js"></script>
+
 <script>
-    // these are global so that the start date can be changed when the recurring shift controls are toggled on edit recurring shifts
-    function appendLeadingZeroes(n) {
-        if (n <= 9) {
-            return "0" + n;
-        }
-        return n;
-    }
-
-    // open shifts
-    function setShiftAsOpenAdd() {
-        var markedAsOpen = $('#open-shift-add').prop('checked');
-        var volunteerContainer = document.getElementById('volunteer-container-add');
-        var volunteerField = document.getElementById('add-shift-volunteer');
-        if (markedAsOpen == true) {
-            volunteerField.disabled = true;
-            volunteerContainer.style.display = "none";
-        } else {
-            volunteerField.disabled = false;
-            volunteerContainer.style.display = "inline";
-        }
-    }
-
-    function setShiftAsOpenEdit() {
-        var markedAsOpen = $('#open-shift-edit').prop('checked');
-        var volunteerContainer = document.getElementById('volunteer-container-edit');
-        var volunteerField = document.getElementById('edit-shift-volunteer');
-        if (markedAsOpen == true) {
-            volunteerField.disabled = true;
-            volunteerContainer.style.display = "none";
-        } else {
-            volunteerField.disabled = false;
-            volunteerContainer.style.display = "inline";
-        }
-    }
-
-    function setRecurringShiftAsOpen() {
-        var markedAsOpen = $('#open-shift-edit-rec').prop('checked');
-        var volunteerContainer = document.getElementById('volunteer-container-edit-rec');
-        var volunteerField = document.getElementById('edit-recshift-volunteer');
-        if (markedAsOpen == true) {
-            volunteerField.disabled = true;
-            volunteerContainer.style.display = "none";
-        } else {
-            volunteerField.disabled = false;
-            volunteerContainer.style.display = "inline";
-        }
-    }
-
-    // for changing the modal display based on recurring shift checkbox
-    function toggleAddRecurringShiftControls() {
-        if ($("#add-recshift-display").prop("checked") == true) {
-            // shows recurring shift controls
-            $('#add-recshift-container').prop('style', 'display: block');
-            // shows add recurring shift button, hides add shift button
-            $('#add-recshift-submit').prop('style', 'display: block');
-            $('#add-shift-submit').prop('style', 'display: none');
-            $('#add-recshift-enddate').prop('required', true);
-        }
-        else if ($("#add-recshift-display").prop("checked") == false) {
-            // hides recurring shift controls
-            $('#add-recshift-container').prop('style', 'display: none');
-            // hides add recurring shift button, shows add shift button
-            $('#add-recshift-submit').prop('style', 'display: none');
-            $('#add-shift-submit').prop('style', 'display: block');
-            $('#add-recshift-enddate').prop('required', false);
-        }
-    }
-
-    function toggleEditRecurringShiftControls() {
-        var markedAsSelectedShift = $('#edit-recshift-display-single').prop('checked');
-        var startDateLabel = document.getElementById('edit-recshift-startdate-label');
-        if (markedAsSelectedShift) {
-            $('#edit-recshift-container').prop('style', 'display: none');
-            $('#edit-recshift-single-final-startdate').prop('style', 'display: block');
-            $('#edit-recshift-all-startdate').prop('style', 'display: none');
-            $('#edit-recshift-enddate').prop('required', false);
-
-            startDateLabel.innerHTML = "Selected Shift Date"
-        }
-        else if (markedAsSelectedShift == false) {
-            $('#edit-recshift-container').prop('style', 'display: block');
-            $('#edit-recshift-single-final-startdate').prop('style', 'display: none');
-            $('#edit-recshift-all-startdate').prop('style', 'display: block');
-            $('#edit-recshift-enddate').prop('required', true);
-
-            startDateLabel.innerHTML = "Recurring Shift Start Date"
-        }
-    }
+    $('.shift-form').validate();
 
     // calendar stuff
     document.addEventListener('DOMContentLoaded', function () {
@@ -117,142 +33,8 @@
             selectMirror: true,
             allDaySlot: false,
             firstDay: 0,
-            eventClick: function (shiftinfo, jsEvent, view) {
-
-                // determine if shift is recurring
-                let selectedShift = shiftinfo.event;
-                let selectedShiftIsRecurring = typeof selectedShift._def.recurringDef !== "undefined" || typeof selectedShift._def.recurringDef !== "";
-
-                // determine if shift is open
-                let volunteerId = selectedShift.extendedProps.vol - 1;
-                let shiftIsOpen = volunteerId < 0
-
-                // determine if shift was previously part of a recurring set
-                let wasPartOfRecurringSet =
-                    typeof selectedShift._def.recurringDef !== "undefined" ||
-                    typeof selectedShift._def.recurringDef !== "" ||
-                    selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
-
-                if (selectedShiftIsRecurring) {
-                    $('#edit-recshift-modal').modal();
-
-                    let selectedShiftInitialStartDate;
-                    let selectedShiftFinalStartDate;
-                    let recurringShiftStartDate;
-                    let selectedShiftEndDate;
-                    let recurringShiftEndDate;
-
-                    let selectedShiftHasExcludedDates =
-                        typeof selectedShift._def.recurringDef !== "undefined" ||
-                        typeof selectedShift._def.recurringDef !== "" ||
-                        selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
-
-                    if (selectedShiftHasExcludedDates) {
-                        // when the event has excluded dates, dtstart, until and weekdays must be accessed from typeData._rrule[0].origOptions
-
-                        selectedShiftInitialStartDate = new Date(selectedShift.start);
-                        selectedShiftFinalStartDate = new Date(selectedShift.start);
-                        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.dtstart);
-                        selectedShiftEndDate = new Date(selectedShift.end);
-                        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.until);
-
-                        // loads selected weekdays for chosen shift into checkboxes
-                        document.getElementById('edit-recshift-weekday-monday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 0);
-                        document.getElementById('edit-recshift-weekday-tuesday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 1);
-                        document.getElementById('edit-recshift-weekday-wednesday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 2);
-                        document.getElementById('edit-recshift-weekday-thursday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 3);
-                        document.getElementById('edit-recshift-weekday-friday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 4);
-                        document.getElementById('edit-recshift-weekday-saturday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 5);
-                        document.getElementById('edit-recshift-weekday-sunday').checked = selectedShift._def.recurringDef.typeData._rrule[0].origOptions.byweekday.find(({ weekday }) => weekday === 6);
-                    }
-                    else {
-                        // when the event doesn't have excluded dates, dtstart, until and weekdays must be accessed from typeData.options
-                        selectedShiftInitialStartDate = new Date(selectedShift.start);
-                        selectedShiftFinalStartDate = new Date(selectedShift.start);
-                        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.dtstart);
-                        selectedShiftEndDate = new Date(selectedShift.end);
-                        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.until);
-
-                        // loads selected weekdays for chosen shift into checkboxes
-                        document.getElementById('edit-recshift-weekday-monday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(0) !== -1;
-                        document.getElementById('edit-recshift-weekday-tuesday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(1) !== -1;
-                        document.getElementById('edit-recshift-weekday-wednesday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(2) !== -1;
-                        document.getElementById('edit-recshift-weekday-thursday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(3) !== -1;
-                        document.getElementById('edit-recshift-weekday-friday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(4) !== -1;
-                        document.getElementById('edit-recshift-weekday-saturday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(5) !== -1;
-                        document.getElementById('edit-recshift-weekday-sunday').checked = selectedShift._def.recurringDef.typeData.options.byweekday.indexOf(6) !== -1;
-                    }
-
-
-
-                    // resets the modal
-                    $('#edit-recshift-display-single').prop('checked', true);
-                    $('#edit-recshift-display-all').prop('checked', false);
-                    toggleEditRecurringShiftControls();
-
-                    // creates strings for all shift properties from selected shift's date info
-                    let selectedInitialStartDateStr = selectedShiftInitialStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getDate());
-                    let selectedFinalStartDateStr = selectedShiftFinalStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getDate());
-                    let recurringStartDateStr = recurringShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftStartDate.getDate());
-                    let endDateStr = recurringShiftEndDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftEndDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftEndDate.getDate());
-                    let startTimeStr = appendLeadingZeroes(selectedShiftInitialStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftInitialStartDate.getMinutes());
-                    let endTimeStr = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
-
-                    // embeds id of selected shift into modal form
-                    document.getElementById("edit-recshift-id").value = shiftinfo.event.id;
-
-                    // populates both selected shift and recurring shift start date field
-                    document.getElementById("edit-recshift-single-initial-startdate").value = selectedInitialStartDateStr
-                    document.getElementById("edit-recshift-single-final-startdate").value = selectedFinalStartDateStr
-                    document.getElementById("edit-recshift-all-startdate").value = recurringStartDateStr
-
-                    // populates fields with properties of clicked event
-                    document.getElementById("edit-recshift-enddate").value = endDateStr
-                    document.getElementById("edit-recshift-starttime").value = startTimeStr
-                    document.getElementById("edit-recshift-endtime").value = endTimeStr
-                    document.getElementById("edit-recshift-position").selectedIndex = (selectedShift.extendedProps.posWorked - 1);
-
-                    if (shiftIsOpen) {
-                        document.getElementById("open-shift-edit-rec").checked = true;
-                        setRecurringShiftAsOpen();
-                    }
-                    else {
-                        document.getElementById("edit-recshift-volunteer").selectedIndex = volunteerId;
-                    }
-                }
-                else {
-
-                    $('#edit-shift-modal').modal();
-                    selectedShiftStartDate = new Date(selectedShift.start);
-                    selectedShiftEndDate = new Date(selectedShift.end);
-                    document.getElementById("edit-shift-id").value = selectedShift.id;
-                    document.getElementById("edit-shift-date").value = selectedShiftInitialStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getDate());
-                    document.getElementById("edit-shift-starttime").value = appendLeadingZeroes(selectedShiftInitialStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftInitialStartDate.getMinutes());
-                    document.getElementById("edit-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
-                    document.getElementById("edit-shift-position").selectedIndex = (shiftinfo.event.extendedProps.posWorked - 1);
-
-                    let volunteerId = selectedShift.extendedProps.vol - 1;
-
-                    if (shiftIsOpen) {
-                        document.getElementById("open-shift-edit").checked = true;
-                        setShiftAsOpenEdit();
-                    }
-
-                    else {
-                        document.getElementById("open-shift-edit").checked = false;
-                        document.getElementById("edit-shift-volunteer").selectedIndex = volunteerId;
-                    }
-
-                    if (wasPartOfRecurringSet) {
-                        $('#edit-shift-delete-prompt').prop('style', 'display: block');
-                        $('#edit-shift-delete-noprompt').prop('style', 'display: none');
-                        document.getElementById('edit-recshift-single-confirm-id').value = selectedShift.id
-                    }
-                    else {
-                        $('#edit-shift-delete-prompt').prop('style', 'display: none');
-                        $('#edit-shift-delete-noprompt').prop('style', 'display: block');
-                    }
-                }
+            eventClick: function (shiftInfo) {
+                handleEventClick(shiftInfo)
             },
             select: function (arg) {
                 $('#add-shift-modal').modal();
@@ -289,9 +71,12 @@
                                         <text>
                                             start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T";@y}@s.StartTime',
                                             end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-   </text>
+                                        </text>
                                     }
+
                                     posWorked: '@(s.PositionWorked.Id)',
+                                    vol: '@s.Volunteer.Id',
+                                    // this is set so that the recurring shift modal is displayed even though this is an individual shift
                                     wasPartOfRecurring: '@s.ParentRecurringShift'
 
                                 },
@@ -411,10 +196,10 @@
                 </div>
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="edit-position-original">Position</label>
-                    <select class="form-control" 
-                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
-                            id="edit-position-original" 
-                            name="edit-position-original" 
+                    <select class="form-control"
+                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                            id="edit-position-original"
+                            name="edit-position-original"
                             required>
                     </select>
                     <br />
@@ -501,19 +286,19 @@
                     <br />
                     <div id="volunteer-container-add">
                         <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
-                        <select class="form-control" 
-                                id="add-shift-volunteer" 
-                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))" 
-                                name="add-shift-volunteer" 
+                        <select class="form-control"
+                                id="add-shift-volunteer"
+                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
+                                name="add-shift-volunteer"
                                 required>
                         </select>
                     </div>
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <select class="form-control" 
-                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
-                            id="add-shift-position" 
-                            name="add-shift-position" 
+                    <select class="form-control"
+                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                            id="add-shift-position"
+                            name="add-shift-position"
                             required>
                     </select>
                 </div>
@@ -553,10 +338,10 @@
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <select class="form-control" 
-                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
-                            id="edit-shift-position" 
-                            name="edit-shift-position" 
+                    <select class="form-control"
+                            asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                            id="edit-shift-position"
+                            name="edit-shift-position"
                             required>
                     </select>
                     <hr />
@@ -567,10 +352,10 @@
                     <br />
                     <div id="volunteer-container-edit">
                         <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
-                        <select class="form-control" 
-                                id="edit-shift-volunteer" 
-                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))" 
-                                name="edit-shift-volunteer" 
+                        <select class="form-control"
+                                id="edit-shift-volunteer"
+                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
+                                name="edit-shift-volunteer"
                                 required>
                         </select>
                     </div>

@@ -1,24 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dofus\\Downloads\\FBWebsite-V3-master(5)\\FBWebsite-V3-master\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {}
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dofus\\Downloads\\FBWebsite-V3-master(5)\\FBWebsite-V3-master\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3-master(5)\\FBWebsite-V3-master\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
         "projectName": "MHFoodBank.Web",
-        "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3-master(5)\\FBWebsite-V3-master\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
-        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3-master(5)\\FBWebsite-V3-master\\MHFoodBank.Web\\obj\\",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -114,12 +113,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -128,7 +121,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.301\\RuntimeIdentifierGraph.json"
         }
       }
     }
