@@ -41,8 +41,17 @@
                 selectedShiftStartDate = new Date(arg.start);
                 selectedShiftEndDate = new Date(arg.end);
                 document.getElementById("add-shift-date").value = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
-                document.getElementById("add-shift-starttime").value = "8:30";
-                document.getElementById("add-shift-endtime").value = "16:30";
+
+                if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
+                    // if an initial time isn't given via drag controls, set default times
+                    document.getElementById("add-shift-starttime").value = "8:30";
+                    document.getElementById("add-shift-endtime").value = "16:30";
+                }
+                else {
+                    document.getElementById("add-shift-starttime").value = appendLeadingZeroes(selectedShiftStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftStartDate.getMinutes());
+                    document.getElementById("add-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
+                }
+                
                 calendar.unselect();
             },
             weekNumbers: true,

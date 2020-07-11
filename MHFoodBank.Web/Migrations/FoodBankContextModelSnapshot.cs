@@ -624,7 +624,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("RecurringShift")
+                    b.Property<string>("RecurrenceRule")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Weekdays")
