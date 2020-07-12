@@ -9,14 +9,30 @@ using System.Threading.Tasks;
 
 namespace MHFoodBank.Web.Data
 {
-    public static class ReminderScheduler
+    public interface IReminderManager
     {
-        public static void ScheduleReminder(string email, VolunteerProfile volunteer, Shift shift, FoodBankContext context, DateTime? shiftDate = null)
+        void ScheduleReminder(string email, VolunteerProfile volunteer, Shift shift, DateTime? shiftDate = null);
+        void CancelReminder(Shift shift, DateTime? shiftDate = null);
+        void SendEmail(string email, string firstName, string lastName, string startTime, string endTime, string position);
+        MimeMessage CreateEmail(string email, string firstName, string lastName, string startTime, string endTime, string position);
+    }
+
+
+    public class ReminderManager : IReminderManager
+    {
+        private readonly FoodBankContext _context;
+
+        public ReminderManager(FoodBankContext context)
+        {
+            _context = context;
+        }
+
+        public void ScheduleReminder(string email, VolunteerProfile volunteer, Shift shift, DateTime? shiftDate = null)
         {
             if (shift is RecurringShift recurringShift)
             {
-                if (shiftDate == null)
-                {
+                //if (shiftDate == null)
+                //{
                     foreach (var constituentShift in recurringShift.ConstituentShifts)
                     {
                         var idForRecurring = BackgroundJob.Schedule(() =>
@@ -28,25 +44,23 @@ namespace MHFoodBank.Web.Data
                                 shift.PositionWorked.Name),
                             constituentShift.StartDate.AddHours(-12));
 
-                        context.Add(new Reminder() { ShiftId = recurringShift.Id, ShiftDate = constituentShift.StartDate, HangfireJobId = idForRecurring });
-                        context.SaveChanges();
+                        _context.Add(new Reminder() { ShiftId = recurringShift.Id, ShiftDate = constituentShift.StartDate, HangfireJobId = idForRecurring });
                     }
-                }
-                else
-                {
-                    var id = BackgroundJob.Schedule(() =>
-                    SendEmail(
-                        email,
-                        volunteer.FirstName,
-                        volunteer.LastName,
-                        shift.StartTime.ToString(),
-                        shift.EndTime.ToString(),
-                        shift.PositionWorked.Name),
-                    ((DateTime)shiftDate).AddHours(-12));
+                //}
+                //else
+                //{
+                //    var id = BackgroundJob.Schedule(() =>
+                //    SendEmail(
+                //        email,
+                //        volunteer.FirstName,
+                //        volunteer.LastName,
+                //        shift.StartTime.ToString(),
+                //        shift.EndTime.ToString(),
+                //        shift.PositionWorked.Name),
+                //    ((DateTime)shiftDate).AddHours(-12));
 
-                    context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
-                    context.SaveChanges();
-                }
+                //    _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
+                //}
             }
             else
             {
@@ -60,42 +74,41 @@ namespace MHFoodBank.Web.Data
                         shift.PositionWorked.Name), 
                     shift.StartDate.AddHours(-12));
 
-                context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
-                context.SaveChanges();
+                _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
             }
         }
 
         // in the instance that a single shift from a recurring set needs to have its reminder canceled,
         // the datetime of the selected shift will be passed in
-        public static void CancelReminder(Shift shift, FoodBankContext context, DateTime? shiftDate = null)
+        public void CancelReminder(Shift shift, DateTime? shiftDate = null)
         {
             if (shift is RecurringShift recurringShift)
             {
                 if (shiftDate == null)
                 {
-                    List<Reminder> remindersForRecurringShift = context.Reminders.Where(r => r.ShiftId == recurringShift.Id).ToList();
+                    List<Reminder> remindersForRecurringShift = _context.Reminders.Where(r => r.ShiftId == recurringShift.Id).ToList();
                     foreach (var reminder in remindersForRecurringShift)
                     {
                         BackgroundJob.Delete(reminder.HangfireJobId);
-                        context.Reminders.Remove(reminder);
+                        _context.Reminders.Remove(reminder);
                     }
                 }
                 else
                 {
-                    Reminder reminderForSelectedShift = context.Reminders.FirstOrDefault(r => r.ShiftId == recurringShift.Id && r.ShiftDate == shiftDate);
+                    Reminder reminderForSelectedShift = _context.Reminders.FirstOrDefault(r => r.ShiftId == recurringShift.Id && r.ShiftDate == shiftDate);
                     BackgroundJob.Delete(reminderForSelectedShift.HangfireJobId);
-                    context.Reminders.Remove(reminderForSelectedShift);
+                    _context.Reminders.Remove(reminderForSelectedShift);
                 }
             }
             else
             {
-                var reminder = context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shift.StartDate);
+                var reminder = _context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shift.StartDate);
                 BackgroundJob.Delete(reminder.HangfireJobId);
-                context.Reminders.Remove(reminder);
+                _context.Reminders.Remove(reminder);
             }
         }
 
-        public static void SendEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)
+        public void SendEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)
         {
             SmtpClient client = new SmtpClient();
             client.Connect("smtp.gmail.com", 587);
@@ -105,7 +118,7 @@ namespace MHFoodBank.Web.Data
             client.Disconnect(true);
         }
 
-        public static MimeMessage CreateEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)
+        public MimeMessage CreateEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)
         {
             MimeMessage emailMessage = new MimeMessage();
             emailMessage.From.Add(new MailboxAddress("Chase", "chase.mossing2@mymhc.ca"));

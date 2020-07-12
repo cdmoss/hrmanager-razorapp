@@ -27,6 +27,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
     [Authorize(Roles = "Staff, Admin" )]
     public class AdminCalendar : AdminPageModel
     {
+        private readonly IReminderManager _reminderManager;
         public enum RecurringShiftEditType
         {
             Single,
@@ -41,6 +42,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public int SelectedVolunteerId { get; set; }
         [BindProperty]
         public int SelectedPositionId { get; set; }
+        [BindProperty]
+        public DateTime StartDateInitial { get; set; }
+        [BindProperty]
+        public DateTime RecurrenceSetStartDate { get; set; }
         [BindProperty]
         public RecurringShiftReadEditDto SelectedShift { get; set; }
         // for choosing a volunteer when editing/adding a shift
@@ -90,9 +95,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private readonly IMapper _mapper;
 
-        public AdminCalendar(FoodBankContext context, IMapper mapper, string currentPage = "Scheduling") : base(context, currentPage)
+        public AdminCalendar(FoodBankContext context, IMapper mapper, IReminderManager reminderManager, string currentPage = "Scheduling") : base(context, currentPage)
         {
             _mapper = mapper;
+            _reminderManager = reminderManager;
         }
 
         public async Task OnGet(string statusMessage = null)
@@ -168,14 +174,18 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var shift = await MapShiftData(SelectedShift, new Shift());
 
             await _context.Shifts.AddAsync(shift);
+
             await _context.SaveChangesAsync();
 
             // schedule email notification for shift
             if (shift.Volunteer != null)
             {
                 AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
+                _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift);
             }
+
+            await _context.SaveChangesAsync();
+
             return RedirectToPage();
         }
 
@@ -190,29 +200,29 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
 
             _context.RecurringShifts.Add(shift);
-            await _context.SaveChangesAsync();
 
             // schedule email notification for shift
             if (shift.Volunteer != null)
             {
                 AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
+                _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift);
             }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage();
         }
 
         private async Task<Shift> MapShiftData(RecurringShiftReadEditDto dto, Shift shift)
         {
-            bool isRecurringShift = shift.GetType() == typeof(RecurringShift);
             VolunteerProfile volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(x => x.Id == SelectedVolunteerId);
             Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Id == SelectedPositionId);
 
-            if(isRecurringShift)
+            if(shift is RecurringShift recurringShift)
             {
-                _mapper.Map(dto, (RecurringShift)shift);
-                ((RecurringShift)shift).Weekdays = GetSelectedWeekdays();
-                ((RecurringShift)shift).UpdateRecurrenceRule();
+                _mapper.Map(dto, recurringShift);
+                recurringShift.Weekdays = GetSelectedWeekdays();
+                recurringShift.UpdateRecurrenceRule();
             }
             else
             {
@@ -228,13 +238,28 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostEditShift()
         {
-            var shift = await _context.Shifts.FirstOrDefaultAsync(x => x.Id == SelectedShift.Id);
+            var shift = await _context.Shifts.Include(x => x.Volunteer)
+                .Include(v => v.PositionWorked)
+                .FirstOrDefaultAsync(x => x.Id == SelectedShift.Id);
 
             _context.Shifts.Update(shift);
 
+            // check if shift had a volunteer
+            if (shift.Volunteer != null)
+            {
+                // if so, cancel the notification scheduled for it
+                _reminderManager.CancelReminder(shift);
+            }
+
             shift = await MapShiftData(SelectedShift, shift);
 
-            //await EditNonRecurringShift(shift);
+            // check if shift has volunteer after edit
+            if (shift.Volunteer != null)
+            {
+                // if so, schedule a reminder for it
+                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
+                _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift);
+            }
 
             await _context.SaveChangesAsync();
 
@@ -249,9 +274,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.ExcludedShifts)
                 .FirstOrDefault(x => x.Id == SelectedShift.Id);
 
-            recurringShift = (RecurringShift)(await MapShiftData(SelectedShift, recurringShift));
+            _context.Update(recurringShift);
 
-            await EditRecurringShift(recurringShift);
+            recurringShift = await EditRecurringShift(recurringShift);
+
+            //recurringShift = (RecurringShift)(await MapShiftData(SelectedShift, recurringShift));
 
             //// this method will handle scheduling reminders
             //recurringShift = await EditRecurringShift(recurringShift);
@@ -262,7 +289,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostDeleteShift()
         {
-            Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-shift-id"]));
+            Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == SelectedShift.Id);
             await _context.Entry(shift).Reference(p => p.Volunteer).LoadAsync();
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.NewShift)
@@ -283,7 +310,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     if (shift.Volunteer != null)
                     {
                         // if so, cancel the notification scheduled for it
-                        ReminderScheduler.CancelReminder(shift, _context);
+                        _reminderManager.CancelReminder(shift);
                     }
 
                     _context.Shifts.Remove(shift);
@@ -296,7 +323,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostDeleteShiftFromRecurringSet()
         {
-            Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-single-confirm-id"]));
+            // Only for shifts that have already been edited for their recurring set.
+            //TODO: Come back and decide what to do for alerts/reminders.
+            Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == SelectedShift.Id);
+
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.NewShift)
                 .Include(p => p.OldShift)
@@ -318,7 +348,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     if (shift.Volunteer != null)
                     {
                         // if so, cancel the notification scheduled for it
-                        ReminderScheduler.CancelReminder(shift, _context);
+                        _reminderManager.CancelReminder(shift);
                     }
 
                     // shift is hidden from the calendar but will stay in the 
@@ -331,56 +361,28 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return RedirectToPage();
         }
 
+
+
         public async Task<IActionResult> OnPostDeleteRecurringShift()
         {
-            RecurringShift recurringShift = _context.RecurringShifts.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-id"]));
-            await _context.Entry(recurringShift).Collection(p => p.ExcludedShifts).LoadAsync();
-            _context.Update(recurringShift);
+            RecurringShift recurringShift = _context.RecurringShifts.Include(y => y.Volunteer).Include(v => v.ExcludedShifts).FirstOrDefault(x => x.Id == SelectedShift.Id);
+            
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.NewShift)
                 .Include(p => p.OldShift)
                 .Where(a => a.NewShift == recurringShift || a.OldShift == recurringShift)
                 .ToListAsync();
-
-            if (recurringShift != null)
+            
+            if (alertsWithChosenShift.Any())
             {
-                if (alertsWithChosenShift.Any())
-                {
-                    return RedirectToPage(new { statusMessage = $"Error: The shift you tried to delete is part of an existing shift request. The shift request must be addressed before the shift can be deleted." });
-                }
-                else
-                {
-                    // find all shifts in this recurring set that have already been deleted and clear then from the database
-                    // all child shifts must be deleted or detached from the parent shift to avoid violating the foreign key constraint
-                    foreach (var shift in recurringShift.ExcludedShifts)
-                    {
-                        bool shiftHasBeenDeleted = shift.Hidden;
-                        if (shiftHasBeenDeleted)
-                        {
-                            _context.Remove(shift);
-                        }
-                        else
-                        {
-                            // if it hasn't been deleted from the set. let it remain and set its parentrecurringshiftproperty to null
-                            _context.Update(shift);
-                            shift.ParentRecurringShift = null;
-                        }
-                    }
-
-                    recurringShift.ExcludedShifts.Clear();
-                    _context.Shifts.Remove(recurringShift);
-
-                    await _context.Entry(recurringShift).Reference(p => p.Volunteer).LoadAsync();
-                    // check if shift had a volunteer
-                    if (recurringShift.Volunteer != null)
-                    {
-                        // if so, cancel the notification scheduled for it
-                        ReminderScheduler.CancelReminder(recurringShift, _context);
-                    }
-
-                    await _context.SaveChangesAsync();
-                }
+                return RedirectToPage(new { statusMessage = $"Error: The shift you tried to delete is part of an existing shift request. The shift request must be addressed before the shift can be deleted." });
             }
+            
+            _context.Update(recurringShift);
+
+            recurringShift = DeleteRecurringShift(recurringShift);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage();
         }
@@ -412,7 +414,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     {
                         // if so, cancel the notification scheduled for it
                         var reminder = await _context.Reminders.FirstOrDefaultAsync(r => r.ShiftId == shift.Id);
-                        ReminderScheduler.CancelReminder(shift, _context, shift.StartDate);
+                        _reminderManager.CancelReminder(shift, shift.StartDate);
                     }
 
                     _context.Shifts.Remove(shift);
@@ -425,7 +427,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     {
                         // schedule email notification for shift
                         AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.ParentRecurringShift.Volunteer.Id);
-                        ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.ParentRecurringShift.Volunteer, shift.ParentRecurringShift, _context, shift.StartDate);
+                        _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.ParentRecurringShift.Volunteer, shift.ParentRecurringShift, shift.StartDate);
                     }
 
                     await _context.SaveChangesAsync();
@@ -668,27 +670,27 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return $"You must select a position.";
         }
 
-        private async Task EditNonRecurringShift(Shift domainShift)
-        {
-            // check if shift had a volunteer
-            if (domainShift.Volunteer != null)
-            {
-                // if so, cancel the notification scheduled for it
-                ReminderScheduler.CancelReminder(domainShift, _context);
-            }
+        //private async Task HandleReminders(Shift domainShift)
+        //{
+        //    // check if shift had a volunteer
+        //    if (domainShift.Volunteer != null)
+        //    {
+        //        // if so, cancel the notification scheduled for it
+        //        ReminderScheduler.CancelReminder(domainShift, _context);
+        //    }
 
-            // check if shift has volunteer after edit
-            if (domainShift.Volunteer != null)
-            {
-                // if so, schedule a reminder for it
-                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == domainShift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, domainShift.Volunteer, domainShift, _context);
-            }
-        }
+        //    // check if shift has volunteer after edit
+        //    if (domainShift.Volunteer != null)
+        //    {
+        //        // if so, schedule a reminder for it
+        //        AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == domainShift.Volunteer.Id);
+        //        ReminderScheduler.ScheduleReminder(volunteerAccount.Email, domainShift.Volunteer, domainShift, _context);
+        //    }
+        //}
 
         private async Task<RecurringShift> EditRecurringShift(RecurringShift recShift)
         {
-            _context.Update(recShift);
+
             if (EditType == RecurringShiftEditType.Single)
             {
                 recShift = await EditSingleShiftFromRecurringSet(recShift);
@@ -703,27 +705,44 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return recShift;
         }
 
+        private RecurringShift DeleteRecurringShift(RecurringShift recShift)
+        {
+            if (EditType == RecurringShiftEditType.Single)
+            {
+                DeleteSingleShiftFromRecurringSet(recShift);
+            }
+            else if (EditType == RecurringShiftEditType.WholeSet)
+            {
+                DeleteWholeRecurringSet(recShift);
+            }
+
+            return recShift;
+        }
+
         private async Task<RecurringShift> EditSingleShiftFromRecurringSet(RecurringShift recShift)
         {
             // get original date of selected shift
-            DateTime originalDate = Convert.ToDateTime(Request.Form["edit-recshift-single-initial-startdate"]);
+            DateTime originalDate = StartDateInitial;
 
             // check if shift had a volunteer
             if (recShift.Volunteer != null)
             {
                 // if so, cancel the original notification scheduled for it
-                ReminderScheduler.CancelReminder(recShift, _context, originalDate);
+                _reminderManager.CancelReminder(recShift, originalDate);
             }
 
             // make a new shift which will be excluded from the selected recurring shift, 
             // map the the selected recurring shift's properties to it, 
             // load the recurring shift's excluded shifts 
             // and add the new shift to the list of excluded shifts
-            await _context.Entry(recShift).Collection(p => p.ExcludedShifts).LoadAsync();
-            Shift excludedShift = new Shift();
+            var excludedShift = new Shift();
             //excludedShift = MapFormDataToSingleShiftFromRecurringSet(excludedShift);
 
-            excludedShift.CreateDescription();
+            excludedShift = await MapShiftData(SelectedShift, excludedShift);
+            // Setting the Id to 0, it is trying to map the Id of the recurring set.
+            // In this case we dont want the Ids to match.
+            excludedShift.Id = 0;
+
             // handle all special cases
             if (recShift.StartTime != excludedShift.StartTime)
             {
@@ -767,7 +786,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 _context.Remove(recShift);
             }
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
 
             // cancelling the old reminder
 
@@ -776,7 +795,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 // if so, schedule a new reminder for it
                 AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == excludedShift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, excludedShift.Volunteer, excludedShift, _context);
+                _reminderManager.ScheduleReminder(volunteerAccount.Email, excludedShift.Volunteer, excludedShift);
             }
 
             return recShift;
@@ -788,20 +807,61 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             if (recShift.Volunteer != null)
             {
                 // if so, cancel the notification scheduled for it
-                ReminderScheduler.CancelReminder(recShift, _context);
+                _reminderManager.CancelReminder(recShift);
             }
 
-            //recShift = MapFormDataToRecurringSet(recShift);
+            recShift = (RecurringShift)(await MapShiftData(SelectedShift, recShift));
 
             // check if recurring shift has volunteer after edit
             if (recShift.Volunteer != null)
             {
                 // if so, schedule a reminder for it
                 AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == recShift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, recShift.Volunteer, recShift, _context);
+                _reminderManager.ScheduleReminder(volunteerAccount.Email, recShift.Volunteer, recShift);
             }
 
             return recShift;
+        }
+
+        private void DeleteSingleShiftFromRecurringSet(RecurringShift recShift)
+        {
+            var shift = new Shift();
+            shift.StartDate = StartDateInitial;
+            shift.StartTime = recShift.StartTime;
+            shift.Hidden = true;
+
+            recShift.ExcludedShifts.Add(shift);
+            recShift.UpdateRecurrenceRule();
+        }
+
+        private void DeleteWholeRecurringSet(RecurringShift recurringShift)
+        {
+            // find all shifts in this recurring set that have already been deleted and clear then from the database
+            // all child shifts must be deleted or detached from the parent shift to avoid violating the foreign key constraint
+            foreach (var shift in recurringShift.ExcludedShifts)
+            {
+                bool shiftHasBeenDeleted = shift.Hidden;
+                if (shiftHasBeenDeleted)
+                {
+                    _context.Remove(shift);
+                }
+                else
+                {
+                    // if it hasn't been deleted from the set. let it remain and set its parentrecurringshiftproperty to null
+                    _context.Update(shift);
+                    shift.ParentRecurringShift = null;
+                }
+            }
+
+            recurringShift.ExcludedShifts.Clear();
+            _context.Shifts.Remove(recurringShift);
+
+            // check if shift had a volunteer
+            if (recurringShift.Volunteer != null)
+            {
+                // if so, cancel the notification scheduled for it
+                _reminderManager.CancelReminder(recurringShift);
+            }
         }
     }
 }

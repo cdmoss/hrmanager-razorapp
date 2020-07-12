@@ -69,6 +69,7 @@ namespace MHFoodBank.Web
                     )));
 
             services.AddHangfireServer();
+            services.AddScoped<IReminderManager, ReminderManager>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();

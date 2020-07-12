@@ -17,6 +17,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
     [Authorize(Roles = "Staff, Admin")]
     public class ResolveShiftRequestModel : AdminPageModel
     {
+        private readonly IReminderManager _reminderManager;
         public enum RequestResolvePageViewType
         {
             NewSwitch,
@@ -31,9 +32,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public List<Shift> AssignedShifts { get; set; }
         public RequestResolvePageViewType ViewType { get; set; }
 
-        public ResolveShiftRequestModel(FoodBankContext context, string currentPage = "Shift Request") : base(context, currentPage)
+        public ResolveShiftRequestModel(FoodBankContext context, IReminderManager reminderManager, string currentPage = "Shift Request") : base(context, currentPage)
         {
-
+            _reminderManager = reminderManager;
         }
 
         public async Task OnGet(int alertId, string requestType)
@@ -71,7 +72,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
                 Shift removedShift = ShiftRequest.OldShift;
 
-                ReminderScheduler.CancelReminder(removedShift, _context);
+                _reminderManager.CancelReminder(removedShift);
             }
 
             // this is to control the displayed status of the alert in the volunteer inbox
@@ -190,11 +191,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 if (ShiftRequest.OldShift.ParentRecurringShift != null)
                 {
-                    ReminderScheduler.CancelReminder(ShiftRequest.OldShift.ParentRecurringShift, _context, ShiftRequest.OldShift.StartDate);
+                    _reminderManager.CancelReminder(ShiftRequest.OldShift.ParentRecurringShift, ShiftRequest.OldShift.StartDate);
                 }
                 else
                 {
-                    ReminderScheduler.CancelReminder(ShiftRequest.OldShift, _context);
+                    _reminderManager.CancelReminder(ShiftRequest.OldShift);
                 }
             }
 
@@ -202,11 +203,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 if (ShiftRequest.NewShift.ParentRecurringShift != null)
                 {
-                    ReminderScheduler.CancelReminder(ShiftRequest.NewShift.ParentRecurringShift, _context, ShiftRequest.NewShift.StartDate);
+                    _reminderManager.CancelReminder(ShiftRequest.NewShift.ParentRecurringShift, ShiftRequest.NewShift.StartDate);
                 }
                 else
                 {
-                    ReminderScheduler.CancelReminder(ShiftRequest.NewShift, _context);
+                    _reminderManager.CancelReminder(ShiftRequest.NewShift);
                 }
             }
 
@@ -215,11 +216,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 if (OldShift.ParentRecurringShift != null)
                 {
-                    ReminderScheduler.ScheduleReminder(OldShift.Volunteer.User.Email, OldShift.Volunteer, OldShift, _context, OldShift.StartDate);
+                    _reminderManager.ScheduleReminder(OldShift.Volunteer.User.Email, OldShift.Volunteer, OldShift, OldShift.StartDate);
                 }
                 else
                 {
-                    ReminderScheduler.ScheduleReminder(OldShift.Volunteer.User.Email, OldShift.Volunteer, OldShift, _context);
+                    _reminderManager.ScheduleReminder(OldShift.Volunteer.User.Email, OldShift.Volunteer, OldShift);
                 }
             }
 
@@ -227,11 +228,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 if (NewShift.ParentRecurringShift != null)
                 {
-                    ReminderScheduler.ScheduleReminder(NewShift.Volunteer.User.Email, NewShift.Volunteer, NewShift, _context, NewShift.StartDate);
+                    _reminderManager.ScheduleReminder(NewShift.Volunteer.User.Email, NewShift.Volunteer, NewShift, NewShift.StartDate);
                 }
                 else
                 {
-                    ReminderScheduler.ScheduleReminder(NewShift.Volunteer.User.Email, NewShift.Volunteer, NewShift, _context);
+                    _reminderManager.ScheduleReminder(NewShift.Volunteer.User.Email, NewShift.Volunteer, NewShift);
                 }
             }
         }

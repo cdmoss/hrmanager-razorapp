@@ -394,8 +394,8 @@
                     <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
                     <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
                     <input type="date" class="form-control" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
-                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.SelectedShift.StartDate" required>
-                    <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.SelectedShift.StartDate" required>
+                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.StartDateInitial" required>
+                    <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.RecurrenceSetStartDate" required>
 
                     <hr />
 
