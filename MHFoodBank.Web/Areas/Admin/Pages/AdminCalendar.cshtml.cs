@@ -20,6 +20,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using MHFoodBank.Web.Dtos;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -36,6 +37,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         // for choosing a volunteer when editing/adding a shift
         [BindProperty]
         public List<Position> Positions { get; set; }
+        [BindProperty]
+        public int SelectedVolunteerId { get; set; }
+        [BindProperty]
+        public int SelectedPositionId { get; set; }
+        [BindProperty]
+        public RecurringShiftReadEditDto SelectedShift { get; set; }
         // for choosing a volunteer when editing/adding a shift
         [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
@@ -135,61 +142,100 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostEditPosition()
         {
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == Convert.ToInt32(Request.Form["edit-position-original"]));
+            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == Request.Form["edit-position-original"]);
             string resultStatus = await EditPosition(SelectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
         }
 
         public async Task<IActionResult> OnPostRemovePosition()
         {
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == Convert.ToInt32(Request.Form["edit-position-original"]));
-            string resultStatus = await RemovePosition(SelectedPosition);
-            return RedirectToPage();
+            var selectedPos = Request.Form["edit-position-original"];
+            var posExists = _context.Positions.Any(p => p.Name == selectedPos);
+            if (!posExists)
+            {
+                SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == selectedPos);
+                string resultStatus = await RemovePosition(SelectedPosition);
+                return RedirectToPage();
+            }
+            else
+            {
+                return RedirectToPage(new { statusMessage = "Error: Position already exists in the database." });
+            }
         }
 
         public async Task<IActionResult> OnPostAddShift()
         {
-            await AddShift();
+            var shift = await MapShiftData(SelectedShift, new Shift());
+
+            await _context.Shifts.AddAsync(shift);
+            await _context.SaveChangesAsync();
+
+            // schedule email notification for shift
+            if (shift.Volunteer != null)
+            {
+                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
+                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
+            }
             return RedirectToPage();
         }
 
 
         public async Task<IActionResult> OnPostAddRecurringShift()
         {
-            RecurringShift recurringShift = new RecurringShift();
-            MapFormDataToNewShift(recurringShift);
-            recurringShift.EndDate = Convert.ToDateTime(Request.Form["add-recshift-enddate"]);
-            recurringShift.CreateDescription();
-            recurringShift.Weekdays = GetSelectedWeekdays();
-            if (string.IsNullOrEmpty(recurringShift.Weekdays))
+            var shift = (RecurringShift)(await MapShiftData(SelectedShift, new RecurringShift()));
+
+            if (string.IsNullOrEmpty(shift.Weekdays))
             {
                 return RedirectToPage(new { statusMessage = "Error: You must select weekdays on which the shift should repeat."});
             }
-            recurringShift.UpdateRecurrenceRule();
 
-            _context.RecurringShifts.Add(recurringShift);
+            _context.RecurringShifts.Add(shift);
             await _context.SaveChangesAsync();
 
             // schedule email notification for shift
-            if (recurringShift.Volunteer != null)
+            if (shift.Volunteer != null)
             {
-                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == recurringShift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, recurringShift.Volunteer, recurringShift, _context);
+                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
+                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
             }
 
             return RedirectToPage();
         }
 
+        private async Task<Shift> MapShiftData(RecurringShiftReadEditDto dto, Shift shift)
+        {
+            bool isRecurringShift = shift.GetType() == typeof(RecurringShift);
+            VolunteerProfile volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(x => x.Id == SelectedVolunteerId);
+            Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Id == SelectedPositionId);
+
+            if(isRecurringShift)
+            {
+                _mapper.Map(dto, (RecurringShift)shift);
+                ((RecurringShift)shift).Weekdays = GetSelectedWeekdays();
+                ((RecurringShift)shift).UpdateRecurrenceRule();
+            }
+            else
+            {
+                _mapper.Map(dto, shift);
+            }
+
+            shift.Volunteer = volunteer;
+            shift.PositionWorked = pos;
+            shift.CreateDescription();
+
+            return shift;
+        }
+
         public async Task<IActionResult> OnPostEditShift()
         {
-            Shift shift = _context.Shifts.Include(p => p.Volunteer).FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-shift-id"]));
+            var shift = await _context.Shifts.FirstOrDefaultAsync(x => x.Id == SelectedShift.Id);
 
             _context.Shifts.Update(shift);
 
-            // this method will handle scheduling reminders
-            await EditNonRecurringShift(shift);
+            shift = await MapShiftData(SelectedShift, shift);
 
-            shift.CreateDescription();
+            //await EditNonRecurringShift(shift);
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage();
@@ -197,17 +243,18 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostEditRecurringShift()
         {
-            RecurringShift recurringShift = _context.RecurringShifts
+            var recurringShift = _context.RecurringShifts
                 .Include(p => p.Volunteer)
                 .Include(p => p.PositionWorked)
                 .Include(p => p.ExcludedShifts)
-                .FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-id"]));
-            _context.Shifts.Update(recurringShift);
+                .FirstOrDefault(x => x.Id == SelectedShift.Id);
 
-            // this method will handle scheduling reminders
-            recurringShift = await EditRecurringShift(recurringShift);
+            recurringShift = (RecurringShift)(await MapShiftData(SelectedShift, recurringShift));
 
-            recurringShift.CreateDescription();
+            await EditRecurringShift(recurringShift);
+
+            //// this method will handle scheduling reminders
+            //recurringShift = await EditRecurringShift(recurringShift);
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = "You have successfully edited the chosen shift." });
@@ -448,23 +495,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return RedirectToPage();
         }
 
-        private async Task AddShift()
-        {
-            Shift shift = new Shift();
-            MapFormDataToNewShift(shift);
-
-            shift.CreateDescription();
-            await _context.Shifts.AddAsync(shift);
-            await _context.SaveChangesAsync();
-
-            // schedule email notification for shift
-            if (shift.Volunteer != null)
-            {
-                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
-            }
-        }
-
         private List<Shift> GetWorkableShiftsFromAvailabilites(IList<Availability> availabilities)
         {
             // find all nonrecurring shifts that agree with the given availabilites
@@ -598,15 +628,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return selectedDays;
         }
 
-        private void MapFormDataToNewShift(Shift shift)
-        {
-            shift.StartDate = Convert.ToDateTime(Request.Form["add-shift-date"]);
-            shift.StartTime = TimeSpan.Parse(Request.Form["add-shift-starttime"]);
-            shift.EndTime = TimeSpan.Parse(Request.Form["add-shift-endtime"]);
-            shift.PositionWorked = _context.Positions.FirstOrDefault(p => p.Id == Convert.ToInt32(Request.Form["add-shift-position"]));
-            shift.Volunteer = _context.VolunteerProfiles.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["add-shift-volunteer"]));
-        }
-
         private async Task<string> EditPosition(Position selectedPosition)
         {
             if (SelectedPosition != null)
@@ -647,24 +668,21 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return $"You must select a position.";
         }
 
-        private async Task EditNonRecurringShift(Shift shift)
+        private async Task EditNonRecurringShift(Shift domainShift)
         {
-            _context.Update(shift);
             // check if shift had a volunteer
-            if (shift.Volunteer != null)
+            if (domainShift.Volunteer != null)
             {
                 // if so, cancel the notification scheduled for it
-                ReminderScheduler.CancelReminder(shift, _context);
+                ReminderScheduler.CancelReminder(domainShift, _context);
             }
 
-            shift = MapFormDataToNonRecurringShift(shift);
-
             // check if shift has volunteer after edit
-            if (shift.Volunteer != null)
+            if (domainShift.Volunteer != null)
             {
                 // if so, schedule a reminder for it
-                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
-                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift, _context);
+                AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == domainShift.Volunteer.Id);
+                ReminderScheduler.ScheduleReminder(volunteerAccount.Email, domainShift.Volunteer, domainShift, _context);
             }
         }
 
@@ -703,7 +721,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             // and add the new shift to the list of excluded shifts
             await _context.Entry(recShift).Collection(p => p.ExcludedShifts).LoadAsync();
             Shift excludedShift = new Shift();
-            excludedShift = MapFormDataToSingleShiftFromRecurringSet(excludedShift);
+            //excludedShift = MapFormDataToSingleShiftFromRecurringSet(excludedShift);
 
             excludedShift.CreateDescription();
             // handle all special cases
@@ -773,7 +791,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 ReminderScheduler.CancelReminder(recShift, _context);
             }
 
-            recShift = MapFormDataToRecurringSet(recShift);
+            //recShift = MapFormDataToRecurringSet(recShift);
 
             // check if recurring shift has volunteer after edit
             if (recShift.Volunteer != null)
@@ -784,41 +802,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
 
             return recShift;
-        }
-
-        private RecurringShift MapFormDataToRecurringSet(RecurringShift recShift)
-        {
-            recShift.StartDate = Convert.ToDateTime(Request.Form["edit-recshift-all-startdate"]);
-            recShift.StartTime = TimeSpan.Parse(Request.Form["edit-recshift-starttime"]);
-            recShift.EndTime = TimeSpan.Parse(Request.Form["edit-recshift-endtime"]);
-            recShift.Volunteer = _context.VolunteerProfiles.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-volunteer"]));
-            recShift.PositionWorked = _context.Positions.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-position"]));
-            recShift.EndDate = Convert.ToDateTime(Request.Form["edit-recshift-enddate"]);
-            recShift.Weekdays = GetSelectedWeekdays();
-
-            return recShift;
-        }
-
-        private Shift MapFormDataToSingleShiftFromRecurringSet(Shift shift)
-        {
-            shift.StartDate = Convert.ToDateTime(Request.Form["edit-recshift-single-final-startdate"]);
-            shift.StartTime = TimeSpan.Parse(Request.Form["edit-recshift-starttime"]);
-            shift.EndTime = TimeSpan.Parse(Request.Form["edit-recshift-endtime"]);
-            shift.Volunteer = _context.VolunteerProfiles.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-volunteer"]));
-            shift.PositionWorked = _context.Positions.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-recshift-position"]));
-
-            return shift;
-        }
-
-        private Shift MapFormDataToNonRecurringShift(Shift shift)
-        {
-            shift.StartDate = Convert.ToDateTime(Request.Form["edit-shift-date"]);
-            shift.StartTime = TimeSpan.Parse(Request.Form["edit-shift-starttime"]);
-            shift.EndTime = TimeSpan.Parse(Request.Form["edit-shift-endtime"]);
-            shift.Volunteer = _context.VolunteerProfiles.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-shift-volunteer"]));
-            shift.PositionWorked = _context.Positions.FirstOrDefault(x => x.Id == Convert.ToInt32(Request.Form["edit-shift-position"]));
-
-            return shift;
         }
     }
 }

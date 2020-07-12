@@ -19,48 +19,47 @@ namespace MHFoodBank.Web.Dtos
 
     public class RecurringShiftReadEditDto : ShiftReadEditDto
     {
-        // need to add start time and end time to work with workable shift email
         public DateTime EndDate { get; set; }
         public string Weekdays { get; set; }
-
-        public string NormalizedWeekdays
-        {
-            get
-            {
-                string normalizedWeekdayStr = "";
-
-                if (Weekdays.Contains("SU"))
-                {
-                    normalizedWeekdayStr += "sunday";
-                }
-                if (Weekdays.Contains("MO"))
-                {
-                    normalizedWeekdayStr += "monday";
-                }
-                if (Weekdays.Contains("TU"))
-                {
-                    normalizedWeekdayStr += "tuesday";
-                }
-                if (Weekdays.Contains("WE"))
-                {
-                    normalizedWeekdayStr += "wednesday";
-                }
-                if (Weekdays.Contains("TH"))
-                {
-                    normalizedWeekdayStr += "thursday";
-                }
-                if (Weekdays.Contains("FR"))
-                {
-                    normalizedWeekdayStr += "friday";
-                }
-                if (Weekdays.Contains("SA"))
-                {
-                    normalizedWeekdayStr += "saturday";
-                }
-
-                return normalizedWeekdayStr;
-            }
-        }
         public string RecurrenceRule { get; set; }
+
+        //public string NormalizedWeekdays
+        //{
+        //    get
+        //    {
+        //        string normalizedWeekdayStr = "";
+
+        //        if (Weekdays.Contains("SU"))
+        //        {
+        //            normalizedWeekdayStr += "sunday";
+        //        }
+        //        if (Weekdays.Contains("MO"))
+        //        {
+        //            normalizedWeekdayStr += "monday";
+        //        }
+        //        if (Weekdays.Contains("TU"))
+        //        {
+        //            normalizedWeekdayStr += "tuesday";
+        //        }
+        //        if (Weekdays.Contains("WE"))
+        //        {
+        //            normalizedWeekdayStr += "wednesday";
+        //        }
+        //        if (Weekdays.Contains("TH"))
+        //        {
+        //            normalizedWeekdayStr += "thursday";
+        //        }
+        //        if (Weekdays.Contains("FR"))
+        //        {
+        //            normalizedWeekdayStr += "friday";
+        //        }
+        //        if (Weekdays.Contains("SA"))
+        //        {
+        //            normalizedWeekdayStr += "saturday";
+        //        }
+
+        //        return normalizedWeekdayStr;
+        //    }
+        //}
     }
 }

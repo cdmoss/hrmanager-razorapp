@@ -34,13 +34,13 @@
                     var arrDate = new Date(shiftinfo.event.start);
                     var arrEndDate = new Date(shiftinfo.event.end);
 
-                    if (shiftinfo.event.extendedProps.vol !== '-1') {
+                    if (shiftinfo.event.extendedProps.vol !== 'Open') {
                         $('#shift-modal-assigned').modal();
                         document.getElementById("assigned-shift-id").value = shiftinfo.event.id;
                         document.getElementById("assigned-shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
                         document.getElementById("assigned-shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
                         document.getElementById("assigned-shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
-                        document.getElementById("assigned-shift-position").selectedIndex = shiftinfo.event.extendedProps.selectedIndex - 1;
+                        document.getElementById("assigned-shift-position").value = shiftinfo.event.extendedProps.posWorked;
                     }
                     else {
                         $('#shift-modal-open').modal();
@@ -48,7 +48,7 @@
                         document.getElementById("open-shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
                         document.getElementById("open-shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
                         document.getElementById("open-shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
-                        document.getElementById("open-shift-position").selectedIndex = shiftinfo.event.extendedProps.posWorked - 1;
+                        document.getElementById("open-shift-position").value = shiftinfo.event.extendedProps.posWorked;
                     }
                 },
                 navLinks: true, // can click day/week names to navigate views
@@ -120,7 +120,7 @@
                                         </text>
                                     }
                                     posWorked: '@(s.PositionWorked.Id)',
-                                    vol: '-1'
+                                    vol: 'Open'
                                 },
                             </text>
                             }

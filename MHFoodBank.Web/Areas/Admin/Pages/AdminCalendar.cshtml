@@ -11,6 +11,7 @@
 <script src="~/js/admincalendar_events_recurring.js"></script>
 <script src="~/js/admincalendar_ui.js"></script>
 <script src="~/js/admincalendar_events_main.js"></script>
+<script src="~/js/admincalendar_events_single.js"></script>
 
 <script>
     $('.shift-form').validate();
@@ -116,7 +117,7 @@
                                         </text>
                                     }
                                     posWorked: '@(s.PositionWorked.Id)',
-                                    vol: '-1',
+                                    vol: 'Open',
                                     wasPartOfRecurring: '@s.ParentRecurringShift'
                                 },
                             </text>
@@ -237,7 +238,7 @@
                 </div>
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date</label>
-                    <input type="date" class="form-control" id="add-shift-date" name="add-shift-date">
+                    <input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">
                     <br />
                     <div>
                         <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
@@ -247,7 +248,7 @@
                     <div id="add-recshift-container" style="display: none">
 
                         <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date</label>
-                        <input type="date" class="form-control" id="add-recshift-enddate" name="add-recshift-enddate">
+                        <input type="date" class="form-control" id="add-recshift-enddate" asp-for="@Model.SelectedShift.EndDate">
 
                         <hr />
 
@@ -283,10 +284,10 @@
                         <hr />
                     </div>
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input type="text" class="time form-control" id="add-shift-starttime" name="add-shift-starttime" required>
+                    <input type="text" class="time form-control" id="add-shift-starttime" asp-for="@Model.SelectedShift.StartTime" required>
                     <br />
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input type="text" class="time form-control" id="add-shift-endtime" name="add-shift-endtime" required>
+                    <input type="text" class="time form-control" id="add-shift-endtime" asp-for="@Model.SelectedShift.EndTime" required>
                     <hr />
                     <div>
                         <input id="open-shift-add" type="checkbox" onclick="setShiftAsOpenAdd()" />
@@ -298,7 +299,7 @@
                         <select class="form-control"
                                 id="add-shift-volunteer"
                                 asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
-                                name="add-shift-volunteer"
+                                asp-for="@Model.SelectedVolunteerId"
                                 required>
                         </select>
                     </div>
@@ -307,7 +308,7 @@
                     <select class="form-control"
                             asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
                             id="add-shift-position"
-                            name="add-shift-position"
+                            asp-for="@Model.SelectedPositionId"
                             required>
                     </select>
                 </div>
@@ -331,26 +332,26 @@
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
                 </div>
                 <div id="modalBody" class="modal-body">
-                    <input type="hidden" id="edit-shift-id" name="edit-shift-id">
+                    <input type="hidden" id="edit-shift-id" asp-for="@Model.SelectedShift.Id">
                     <label style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-                    <input type="date" class="form-control" id="edit-shift-date" name="edit-shift-date" required>
+                    <input asp-for="@Model.SelectedShift.StartDate" type="date" class="form-control" id="edit-shift-date" required>
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input type="text" class="time form-control" id="edit-shift-starttime" name="edit-shift-starttime" required>
+                    <input asp-for="@Model.SelectedShift.StartTime" type="text" class="time form-control" id="edit-shift-starttime" required>
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input type="text" class="time form-control" id="edit-shift-endtime" name="edit-shift-endtime" value="" required>
+                    <input asp-for="@Model.SelectedShift.EndTime" type="text" class="time form-control" id="edit-shift-endtime" value="" required>
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
                     <select class="form-control"
                             asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
                             id="edit-shift-position"
-                            name="edit-shift-position"
+                            asp-for="@Model.SelectedPositionId"
                             required>
                     </select>
                     <hr />
@@ -364,7 +365,7 @@
                         <select class="form-control"
                                 id="edit-shift-volunteer"
                                 asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
-                                name="edit-shift-volunteer"
+                                asp-for="@Model.SelectedVolunteerId"
                                 required>
                         </select>
                     </div>
@@ -390,11 +391,11 @@
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" id="edit-recshift-id" name="edit-recshift-id">
+                    <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
                     <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-                    <input type="date" class="form-control" id="edit-recshift-single-final-startdate" name="edit-recshift-single-final-startdate" required>
-                    <input type="hidden" id="edit-recshift-single-initial-startdate" name="edit-recshift-single-initial-startdate" required>
-                    <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" name="edit-recshift-all-startdate" required>
+                    <input type="date" class="form-control" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
+                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.SelectedShift.StartDate" required>
+                    <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.SelectedShift.StartDate" required>
 
                     <hr />
 
@@ -410,7 +411,7 @@
                     <div id="edit-recshift-container" style="display: none">
 
                         <label style="margin-top: 3px; padding-right: 10px;">End Recurring Set Date</label>
-                        <input type="date" class="form-control" id="edit-recshift-enddate" name="edit-recshift-enddate" required>
+                        <input type="date" class="form-control" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>
 
                         <hr />
 
@@ -455,19 +456,19 @@
                     </div>
 
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input type="text" class="time form-control" id="edit-recshift-starttime" name="edit-recshift-starttime" required>
+                    <input type="text" class="time form-control" id="edit-recshift-starttime" asp-for="@Model.SelectedShift.StartTime" required>
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input type="text" class="time form-control" id="edit-recshift-endtime" name="edit-recshift-endtime" required>
+                    <input type="text" class="time form-control" id="edit-recshift-endtime" asp-for="@Model.SelectedShift.EndTime" required>
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
                     <select class="form-control"
                             asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
                             id="edit-recshift-position"
-                            name="edit-recshift-position"
+                            asp-for="@Model.SelectedPositionId"
                             required>
                     </select>
                     <hr />
@@ -481,7 +482,7 @@
                         <select class="form-control"
                                 id="edit-recshift-volunteer"
                                 asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
-                                name="edit-recshift-volunteer"
+                                asp-for="@Model.SelectedVolunteerId"
                                 required>
                         </select>
                     </div>

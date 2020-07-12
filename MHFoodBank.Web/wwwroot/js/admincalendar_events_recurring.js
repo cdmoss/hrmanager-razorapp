@@ -1,13 +1,24 @@
 ﻿// creates a object filled with strings for all shift properties from selected shift's date info
 
-function populateRecurringShiftModal(shiftInfo) {
+function populateRecurringShiftModal(selectedShift) {
 
-    let recurringShiftStrings = getStringsFromRecurringShiftInfo(shiftInfo)
+    // determine if shift is open
+    let shiftIsOpen = selectedShift.extendedProps.vol === "Open";
 
-    let weekdayBools = getWeekdayCheckboxValues(shiftInfo);
+    let recurringShiftStrings = getStringsFromRecurringselectedShift(selectedShift)
+
+    let weekdayBools = getWeekdayCheckboxValues(selectedShift);
+
+    if (shiftIsOpen) {
+        document.getElementById("open-shift-edit-rec").checked = true;
+        setRecurringShiftAsOpen();
+    }
+    else {
+        document.getElementById("edit-recshift-volunteer").value = selectedShift.extendedProps.vol;
+    }
 
     // embeds id of selected shift into modal form
-    document.getElementById("edit-recshift-id").value = shiftInfo.id;
+    document.getElementById("edit-recshift-id").value = selectedShift.id;
 
     // populates both selected shift and recurring shift start date field
     document.getElementById("edit-recshift-single-initial-startdate").value = recurringShiftStrings.selectedInitialStartDate;
@@ -18,7 +29,7 @@ function populateRecurringShiftModal(shiftInfo) {
     document.getElementById("edit-recshift-enddate").value = recurringShiftStrings.recurringEndDate
     document.getElementById("edit-recshift-starttime").value = recurringShiftStrings.startTime
     document.getElementById("edit-recshift-endtime").value = recurringShiftStrings.endTime
-    document.getElementById("edit-recshift-position").selectedIndex = (shiftInfo.extendedProps.posWorked - 1);
+    document.getElementById("edit-recshift-position").value = (selectedShift.extendedProps.posWorked);
     
     // loads selected weekdays for chosen shift into checkboxes
     document.getElementById('edit-recshift-weekday-monday').checked = weekdayBools.monday;
@@ -60,25 +71,25 @@ function getWeekdayCheckboxValues(selectedShift) {
     }
 }
 
-function getStringsFromRecurringShiftInfo(shiftInfo) {
+function getStringsFromRecurringselectedShift(selectedShift) {
     // check if the shift has excluded dates as this will determine where to get dtstart and until
-    const recurringShiftHasExcludedShifts = typeof shiftInfo._def.recurringDef.typeData._rrule !== "undefined";
+    const recurringShiftHasExcludedShifts = typeof selectedShift._def.recurringDef.typeData._rrule !== "undefined";
 
     // both initial and final start dates are needed to properly resolve changes to start time
-    let selectedShiftInitialStartDate = new Date(shiftInfo.start);
-    let selectedShiftFinalStartDate = new Date(shiftInfo.start);
-    let selectedShiftEndDate = new Date(shiftInfo.end);
+    let selectedShiftInitialStartDate = new Date(selectedShift.start);
+    let selectedShiftFinalStartDate = new Date(selectedShift.start);
+    let selectedShiftEndDate = new Date(selectedShift.end);
 
     let recurringShiftStartDate;
     let recurringShiftEndDate;
 
     if (recurringShiftHasExcludedShifts) {
-        recurringShiftStartDate = new Date(shiftInfo._def.recurringDef.typeData.options.dtstart);
-        recurringShiftEndDate = new Date(shiftInfo._def.recurringDef.typeData.options.until);
+        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.options.dtstart);
+        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.options.until);
     }
     else {
-        recurringShiftStartDate = new Date(shiftInfo._def.recurringDef.typeData.origOptions.dtstart);
-        recurringShiftEndDate = new Date(shiftInfo._def.recurringDef.typeData.origOptions.until);
+        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.dtstart);
+        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.until);
     }
 
     let selectedInitialStartDateStr = selectedShiftInitialStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getDate());
