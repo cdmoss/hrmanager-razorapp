@@ -24,7 +24,7 @@
         document.getElementById("open-shift-edit").checked = false;
         document.getElementById("edit-shift-volunteer").value = volunteerFullNameWithId;
     }
-
+    
     if (selectedShiftWasPartOfRecurringSet) {
         $('#edit-shift-delete-prompt').prop('style', 'display: block');
         $('#edit-shift-delete-noprompt').prop('style', 'display: none');

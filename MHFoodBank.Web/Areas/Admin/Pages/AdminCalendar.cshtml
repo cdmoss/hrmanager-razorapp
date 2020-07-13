@@ -62,18 +62,18 @@
             eventSources: [
                 {
                     events: [
-                        @foreach (ShiftReadEditDto s in Model.Shifts.Where(s => s.Volunteer != null))
+                        @foreach (var s in Model.Shifts.Where(s => s.Volunteer != null))
                         {
                             <text>
                                 {
                                     id: '@s.Id',
                                     title: '@s.Description',
-                                    @if (s is RecurringShiftReadEditDto recShift)
+                                    @if (s.RecurrenceRule != null)
                                     {
                                         <text>
                                     // rrule converts the end date into utc here, so a one day offset is applied, see line 90 in RecurringShift.cs
-                                            rrule: '@recShift.RecurrenceRule',
-                                            duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                            rrule: '@s.RecurrenceRule',
+                                            duration: '@((s.EndTime - s.StartTime).ToString())',
                                         </text>
                                     }
                                     else
@@ -96,17 +96,17 @@
                 },
                 {
                     events: [
-                        @foreach (ShiftReadEditDto s in Model.Shifts.Where(s => s.Volunteer == null))
+                        @foreach (var s in Model.Shifts.Where(s => s.Volunteer == null))
                             {
                             <text>
                                 {
                                     id: '@s.Id',
                                     title: '@s.Description',
-                                    @if (s is RecurringShiftReadEditDto recShift)
+                                    @if (s.RecurrenceRule != null)
                                     {
                                         <text>
-                                            rrule: '@recShift.RecurrenceRule',
-                                            duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                            rrule: '@s.RecurrenceRule',
+                                            duration: '@((s.EndTime - s.StartTime).ToString())',
                                         </text>
                                     }
                                     else
@@ -497,33 +497,9 @@
     </div>
 </form>
 
-<!--modal for choosing between deleting a individual shift from a recurring set or deleting the entire set-->
-<form class="shift-form" method="post">
-    <input type="hidden" id="delete-recshift-single-confirm-id" name="delete-recshift-single-confirm-id" />
-    <div id="delete-recshift-single-confirm" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="modalTitle" class="modal-title">Attention</h4>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
-                </div>
-                <div id="modalBody" class="modal-body">
-                    <p>This shift is part of a recurring set of shifts.</p>
-                    <p>Would you like to delete this shift only or delete the entire set it belongs to?</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
-                    <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
-
 <!--modal for choosing between deleting a individual recshift completely or returning it to original-->
 <form class="shift-form" method="post">
-    <input type="hidden" id="edit-recshift-single-confirm-id" name="edit-recshift-single-confirm-id" />
+    <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
     <div id="edit-recshift-single-confirm" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">

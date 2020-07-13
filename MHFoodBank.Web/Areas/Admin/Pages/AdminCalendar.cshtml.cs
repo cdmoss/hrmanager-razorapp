@@ -47,7 +47,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public DateTime RecurrenceSetStartDate { get; set; }
         [BindProperty]
-        public RecurringShiftReadEditDto SelectedShift { get; set; }
+        public ShiftReadEditDto SelectedShift { get; set; }
         // for choosing a volunteer when editing/adding a shift
         [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
@@ -89,8 +89,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         #endregion
 
         // populates the calendar with shifts currently in the db
+        // Testing to see if we can just use recurring shift read edit dtos
         public List<ShiftReadEditDto> Shifts { get; set; }
-        public List<RecurringShiftReadEditDto> RecurringShifts { get; set; }
         #endregion
 
         private readonly IMapper _mapper;
@@ -103,33 +103,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnGet(string statusMessage = null)
         {
-            // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
-            var volunteerDomainModels = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null).ToListAsync();
-            var shiftDomainModels = _context.Shifts
-                .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
-                .Include(p => p.PositionWorked)
-                .Where(s => s.Hidden == false && !(s is RecurringShift)).ToList();
-            var recurringShiftDomainModels = await _context.RecurringShifts
-                .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
-                .Include(p => p.PositionWorked)
-                .Where(s => s.Hidden == false).ToListAsync();
-
-            Shifts = _mapper.Map<List<ShiftReadEditDto>>(shiftDomainModels);
-            RecurringShifts = _mapper.Map<List<RecurringShiftReadEditDto>>(recurringShiftDomainModels);
-
-            foreach (var recurringShift in RecurringShifts)
-            {
-                Shifts.Add(recurringShift);
-            }
-
-            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
-
-            // get positions
-            Positions = _context.Positions.ToList();
-            DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
-
-            // update status message
-            StatusMessage = statusMessage;
+            await PrepareModel(statusMessage);
         }
 
         public async Task<IActionResult> OnPostAddPosition()
@@ -230,7 +204,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return RedirectToPage();
         }
 
-        private async Task<Shift> MapShiftData(RecurringShiftReadEditDto dto, Shift shift)
+        private async Task<Shift> MapShiftData(ShiftReadEditDto dto, Shift shift)
         {
             VolunteerProfile volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(x => x.Id == SelectedVolunteerId);
             Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Id == SelectedPositionId);
@@ -585,23 +559,38 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task PrepareModel(string statusMessage)
         {
+            // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
             var volunteerDomainModels = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null).ToListAsync();
             var shiftDomainModels = _context.Shifts
                 .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
                 .Include(p => p.PositionWorked)
                 .Where(s => s.Hidden == false).ToList();
-            var recurringShiftDomainModels = await _context.RecurringShifts
-                .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
-                .Include(p => p.PositionWorked)
-                .Where(s => s.Hidden == false).ToListAsync();
 
-            Shifts = _mapper.Map<List<ShiftReadEditDto>>(shiftDomainModels);
-            RecurringShifts = _mapper.Map<List<RecurringShiftReadEditDto>>(recurringShiftDomainModels);
+            List<RecurringShift> recurringShifts = new List<RecurringShift>();
+            List<Shift> shifts = new List<Shift>();
+
+            foreach (Shift x in shiftDomainModels)
+            {
+                if (x is RecurringShift recurringShift)
+                {
+                    recurringShifts.Add(recurringShift);
+                }
+                else
+                {
+                    shifts.Add(x);
+                }
+            }
+
+            Shifts = _mapper.Map<List<ShiftReadEditDto>>(shifts);
+            Shifts = Shifts.Concat(_mapper.Map<List<ShiftReadEditDto>>(recurringShifts)).ToList();
+
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
 
+            // get positions
             Positions = _context.Positions.ToList();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
 
+            // update status message
             StatusMessage = statusMessage;
         }
 

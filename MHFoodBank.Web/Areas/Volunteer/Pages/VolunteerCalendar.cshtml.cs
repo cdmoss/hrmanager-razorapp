@@ -16,7 +16,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     [BindProperties]
     public class VolunteerCalendarModel : VolunteerPageModel
     {
-        public List<Shift> UserShifts { get; set; }
+        public List<Shift> AssignedShifts { get; set; }
         public List<Shift> OpenShifts { get; set; }
         public List<Position> Positions { get; set; }
         public bool AddedShift { get; set; } = false;
@@ -66,10 +66,10 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             var user = await _userManager.GetUserAsync(User);
             await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(user.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
-            UserShifts = _context.Shifts.Where(s => s.Hidden == false && s.Volunteer.Id == user.VolunteerProfile.Id).ToList();
+            AssignedShifts = _context.Shifts.Where(s => s.Hidden == false && s.Volunteer.Id == user.VolunteerProfile.Id).ToList();
             OpenShifts = _context.Shifts.Where(s => s.Hidden == false && s.Volunteer == null).ToList();
             Positions = _context.Positions.ToList();
-            foreach (Shift shift in UserShifts)
+            foreach (Shift shift in AssignedShifts)
             {
                 await _context.Entry(shift).Reference(p => p.PositionWorked).LoadAsync();
             }
