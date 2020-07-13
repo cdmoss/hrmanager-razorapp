@@ -22,7 +22,7 @@
                 <h4> Pending or not approved</h4>            
             }
             <div class="mr-auto ml-auto form-check">
-                <input class="mt-auto mb-auto" type="checkbox" />
+                <input class="mt-auto mb-auto" type="checkbox" asp-for="@Model.DetailsModel.OfficiallyApproved" />
                 <label class="mt-auto mb-auto">Approve this volunteer?</label>
             </div>
             <button class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
@@ -55,8 +55,9 @@
                 <dl class="col-md-4 row">
                     <dt class="col-md-10">Food Safe:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" onclick="ToggleCertificateExpiries('DetailsModel_FoodSafe','DetailsModel_FoodSafeExpiry')" asp-for="@Model.DetailsModel.FoodSafe" value="true" />
-                </dl>
+                        <input type="checkbox" onclick="ToggleCertificateExpiries('DetailsModel_FoodSafe','DetailsModel_FoodSafeExpiry')" asp-for="@Model.DetailsModel.FoodSafe" value="true" />
+                    </dd>
+                        </dl>
                 <div class="col-md-2">Expires:</div>
                 <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.FoodSafeExpiry.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
                 <dl class="col-md-4 row">

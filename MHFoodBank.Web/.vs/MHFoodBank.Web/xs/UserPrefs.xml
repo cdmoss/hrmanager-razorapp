@@ -1,0 +1,40 @@
+﻿<Properties StartupConfiguration="{14C0746D-CFC5-4286-A573-3580E8EBD351}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Areas/Admin/Pages/Shared/_Layout.cshtml">
+    <Files>
+      <File FileName="Areas/Admin/Pages/Shared/_Layout.cshtml" Line="87" Column="30" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MHFoodBank.Web" expanded="True">
+            <Node name="MHFoodBank.Web" expanded="True">
+              <Node name="Areas" expanded="True">
+                <Node name="Admin" expanded="True">
+                  <Node name="Pages" expanded="True">
+                    <Node name="Shared" expanded="True" />
+                  </Node>
+                </Node>
+              </Node>
+              <Node name="wwwroot" expanded="True">
+                <Node name="fullcalendar" expanded="True">
+                  <Node name="packages" expanded="True">
+                    <Node name="rrule" expanded="True">
+                      <Node name="main.js" selected="True" />
+                    </Node>
+                  </Node>
+                </Node>
+              </Node>
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.MHFoodBank.Web PreferredExecutionTarget="/Applications/Firefox.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>

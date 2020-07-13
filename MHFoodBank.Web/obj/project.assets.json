@@ -8853,33 +8853,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dofus\\.nuget\\packages\\": {},
-    "D:\\Microsoft\\Xamarin\\NuGet\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "/Users/brendanball/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+      "projectUniqueName": "/Users/brendanball/Downloads/Work/FBWebsite-V3/MHFoodBank.Web/MHFoodBank.Web.csproj",
       "projectName": "MHFoodBank.Web",
-      "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
-      "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Web\\obj\\",
+      "projectPath": "/Users/brendanball/Downloads/Work/FBWebsite-V3/MHFoodBank.Web/MHFoodBank.Web.csproj",
+      "packagesPath": "/Users/brendanball/.nuget/packages/",
+      "outputPath": "/Users/brendanball/Downloads/Work/FBWebsite-V3/MHFoodBank.Web/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\Microsoft\\Xamarin\\NuGet\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        "/Users/brendanball/.config/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.1"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -8967,12 +8958,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[3.1.2, 3.1.2]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -8981,7 +8966,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.301/RuntimeIdentifierGraph.json"
       }
     }
   }
