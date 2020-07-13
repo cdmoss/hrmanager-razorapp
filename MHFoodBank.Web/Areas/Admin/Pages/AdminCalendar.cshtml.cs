@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Authorization;
 using MHFoodBank.Web.Dtos;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
+using MHFoodBank.Web.Services;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -566,23 +567,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.PositionWorked)
                 .Where(s => s.Hidden == false).ToList();
 
-            List<RecurringShift> recurringShifts = new List<RecurringShift>();
-            List<Shift> shifts = new List<Shift>();
-
-            foreach (Shift x in shiftDomainModels)
-            {
-                if (x is RecurringShift recurringShift)
-                {
-                    recurringShifts.Add(recurringShift);
-                }
-                else
-                {
-                    shifts.Add(x);
-                }
-            }
-
-            Shifts = _mapper.Map<List<ShiftReadEditDto>>(shifts);
-            Shifts = Shifts.Concat(_mapper.Map<List<ShiftReadEditDto>>(recurringShifts)).ToList();
+            ShiftMapper map = new ShiftMapper(_mapper);
+            Shifts = map.MapShiftsToDtos(shiftDomainModels);
 
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
 

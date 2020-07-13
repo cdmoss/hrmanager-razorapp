@@ -87,7 +87,7 @@
                                     posWorked: '@(s.PositionWorked.Id)',
                                     vol: '@s.Volunteer.Id',
                                     // this is set so that the recurring shift modal is displayed even though this is an individual shift
-                                    wasPartOfRecurring: '@s.ParentRecurringShift'
+                                    wasPartOfRecurring: '@s.ParentRecurringShiftId'
 
                                 },
                             </text>
@@ -118,7 +118,7 @@
                                     }
                                     posWorked: '@(s.PositionWorked.Id)',
                                     vol: 'Open',
-                                    wasPartOfRecurring: '@s.ParentRecurringShift'
+                                    wasPartOfRecurring: '@s.ParentRecurringShiftId'
                                 },
                             </text>
                             }
