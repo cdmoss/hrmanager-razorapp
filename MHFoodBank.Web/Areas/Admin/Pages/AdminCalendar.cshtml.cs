@@ -281,9 +281,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             Shift shift = _context.Shifts.Include(s => s.Volunteer).FirstOrDefault(x => x.Id == SelectedShift.Id);
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
-                .Include(p => p.NewShift)
-                .Include(p => p.OldShift)
-                .Where(a => a.NewShift == shift || a.OldShift == shift)
+                .Include(p => p.RequestedShift)
+                .Include(p => p.OriginalShift)
+                .Where(a => a.RequestedShift == shift || a.OriginalShift == shift)
                 .ToListAsync();
 
             if (shift != null)
@@ -317,9 +317,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == SelectedShift.Id);
 
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
-                .Include(p => p.NewShift)
-                .Include(p => p.OldShift)
-                .Where(a => a.NewShift == shift || a.OldShift == shift)
+                .Include(p => p.RequestedShift)
+                .Include(p => p.OriginalShift)
+                .Where(a => a.RequestedShift == shift || a.OriginalShift == shift)
                 .ToListAsync();
 
             if (shift != null)
@@ -357,9 +357,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             RecurringShift recurringShift = _context.RecurringShifts.Include(y => y.Volunteer).Include(v => v.ExcludedShifts).FirstOrDefault(x => x.Id == SelectedShift.Id);
             
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
-                .Include(p => p.NewShift)
-                .Include(p => p.OldShift)
-                .Where(a => a.NewShift == recurringShift || a.OldShift == recurringShift)
+                .Include(p => p.RequestedShift)
+                .Include(p => p.OriginalShift)
+                .Where(a => a.RequestedShift == recurringShift || a.OriginalShift == recurringShift)
                 .ToListAsync();
             
             if (alertsWithChosenShift.Any())
@@ -384,9 +384,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await _context.Entry(shift.ParentRecurringShift).Reference(p => p.Volunteer).LoadAsync();
             await _context.Entry(shift.ParentRecurringShift).Reference(p => p.PositionWorked).LoadAsync();
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
-                .Include(p => p.NewShift)
-                .Include(p => p.OldShift)
-                .Where(a => a.NewShift == shift || a.OldShift == shift)
+                .Include(p => p.RequestedShift)
+                .Include(p => p.OriginalShift)
+                .Where(a => a.RequestedShift == shift || a.OriginalShift == shift)
                 .ToListAsync();
 
             if (shift != null)

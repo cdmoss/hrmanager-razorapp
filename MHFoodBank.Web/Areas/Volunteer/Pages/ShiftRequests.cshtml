@@ -32,11 +32,11 @@
                 @foreach (ShiftRequestAlert alert in Model.Alerts)
                 {
             <tr>
-                <td>@alert.OldShift.StartDate.ToString("yyyy-MM-dd"), @alert.OldShift.StartTime.ToString(@"hh\:mm") to @alert.OldShift.EndTime.ToString(@"hh\:mm")</td>
+                <td>@alert.OriginalShift.StartDate.ToString("yyyy-MM-dd"), @alert.OriginalShift.StartTime.ToString(@"hh\:mm") to @alert.OriginalShift.EndTime.ToString(@"hh\:mm")</td>
                 <!--Request To Change Shift-->
-                @if (alert.NewShift != null)
+                @if (alert.RequestedShift != null)
                 {
-                    <td>Change to @alert.NewShift.StartDate.ToString("yyyy-MM-dd"), @alert.NewShift.StartTime.ToString(@"hh\:mm") to @alert.NewShift.EndTime.ToString(@"hh\:mm")</td>
+                    <td>Change to @alert.RequestedShift.StartDate.ToString("yyyy-MM-dd"), @alert.RequestedShift.StartTime.ToString(@"hh\:mm") to @alert.RequestedShift.EndTime.ToString(@"hh\:mm")</td>
                 }
                 else
                 {

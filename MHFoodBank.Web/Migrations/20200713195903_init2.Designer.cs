@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200710181420_current")]
-    partial class current
+    [Migration("20200713195903_init2")]
+    partial class init2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -600,21 +600,21 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("DismissedByVolunteer")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<int?>("NewShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OldShiftId")
+                    b.Property<int?>("OriginalShiftId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int?>("RequestedShiftId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasIndex("NewShiftId");
+                    b.HasIndex("OriginalShiftId");
 
-                    b.HasIndex("OldShiftId");
+                    b.HasIndex("RequestedShiftId");
 
                     b.HasDiscriminator().HasValue("ShiftRequestAlert");
                 });
@@ -769,13 +769,13 @@ namespace MHFoodBank.Web.Migrations
 
             modelBuilder.Entity("MHFoodBank.Web.Data.Models.ShiftRequestAlert", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "RequestedShift")
-                        .WithMany()
-                        .HasForeignKey("NewShiftId");
-
                     b.HasOne("MHFoodBank.Web.Data.Models.Shift", "OriginalShift")
                         .WithMany()
-                        .HasForeignKey("OldShiftId");
+                        .HasForeignKey("OriginalShiftId");
+
+                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "RequestedShift")
+                        .WithMany()
+                        .HasForeignKey("RequestedShiftId");
                 });
 #pragma warning restore 612, 618
         }

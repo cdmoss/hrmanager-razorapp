@@ -24,7 +24,7 @@
                 right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
             },
             eventClick: function (shiftinfo, jsEvent, view) {
-                if (shiftinfo.event.id !== '@Model.OldShift.Id') {
+                if (shiftinfo.event.id !== '@Model.OriginalShift.Id') {
                     $('#calendarModalRequest').modal();
                     var arrDate = new Date(shiftinfo.event.start);
                     var arrEndDate = new Date(shiftinfo.event.end);
@@ -82,40 +82,30 @@
                             </text>
                         }
                     ],
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        meridiem: false
-                    }
                 },
                 {
                     events: [
                         {
-                            id: '@Model.OldShift.Id',
-                            title: '@Model.OldShift.Description',
+                            id: '@Model.OriginalShift.Id',
+                            title: '@Model.OriginalShift.Description',
                             @if(Model.IndividualDate != null)
                             {
                                 <text>
-                                start: '@Model.IndividualDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OldShift.StartTime.ToString(@"hh\:mm")',
+                                start: '@Model.IndividualDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OriginalShift.StartTime.ToString(@"hh\:mm")',
                                 </text>
                             }
                             else
                             {
                                 <text>
-                                start: '@Model.OldShift.StartDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OldShift.StartTime.ToString(@"hh\:mm")',
+                                start: '@Model.OriginalShift.StartDate.ToString("yyyy-MM-dd")@{string y2 = "T"; @y2}@Model.OriginalShift.StartTime.ToString(@"hh\:mm")',
                                 </text>
                             }
-                            end: '@Model.OldShift.StartDate.ToString("yyyy-MM-dd")"T"@Model.OldShift.EndTime.ToString(@"hh\:mm")',
-                            posWorked: '@(Model.OldShift.PositionWorked.Name)',
-                            vol: '@((int)Model.OldShift.Volunteer.Id)'
+                            end: '@Model.OriginalShift.StartDate.ToString("yyyy-MM-dd")"T"@Model.OriginalShift.EndTime.ToString(@"hh\:mm")',
+                            posWorked: '@(Model.OriginalShift.PositionWorked.Name)',
+                            vol: '@((int)Model.OriginalShift.Volunteer.Id)'
                         }
                     ],
                     color: 'yellow',
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        meridiem: false
-                    }
                 },
                 {
                     events: [
@@ -146,13 +136,13 @@
                         }
                     ],
                     color: '#06A893',
-                    eventTimeFormat: {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                        meridiem: false
-                    }
                 }
-            ]
+            ],
+            eventTimeFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                meridiem: false
+            }
         });
         calendar.render();
         $('#calendar').addClass("h-75");
@@ -189,25 +179,25 @@
     <div class="row">
         <div class="col-md-3">
             <h4 class="mb-4">Old Shift</h4>
+            <input type="hidden" value="@Model.IndividualDate" asp-for="@Model.IndividualDate"/>
             <dl>
-                <input type="hidden" value="@Model.IndividualDate" asp-for="@Model.IndividualDate"/>
                 <dt>Shift Date</dt>
                 <dd readonly>@Model.IndividualDate.ToString("yyyy-MM-dd")
                 <dd />
             </dl>
             <dl>
                 <dt>Start Time</dt>
-                <dd type="text" class="">@Model.OldShift.StartTime.ToString(@"hh\:mm")
+                <dd type="text" class="">@Model.OriginalShift.StartTime.ToString(@"hh\:mm")
                 <dd />
             </dl>
             <dl>
                 <dt>End Time</dt>
-                <dd type="text" class="">@Model.OldShift.EndTime.ToString(@"hh\:mm")
+                <dd type="text" class="">@Model.OriginalShift.EndTime.ToString(@"hh\:mm")
                 <dd />
             </dl>
             <dl>
                 <dt>Position</dt>
-                <dd type="text" class="">@Model.OldShift.PositionWorked.Name
+                <dd type="text" class="">@Model.OriginalShift.PositionWorked.Name
                 <dd />
             </dl>
             <br />
@@ -220,7 +210,9 @@
         </div>
         <div class="col-md-9" id="calendar"></div>
     </div>
-    <input type="hidden" value="@Model.OldShift.Id" asp-for="OldShiftId" />
+
+    <input type="hidden" value="@Model.OriginalShift.Id" asp-for="@Model.OldShiftId" />
+
     <div id="calendarModalRequest" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -244,8 +236,9 @@
                     <input type="text" class="time form-control" id="dateTimeEnd" name="dateTimeEnd" value="" readonly>
 
                     <hr />
-                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
-                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="POS" name="cmbPositions" required>
+                    <label asp-for="@Model.RequestedShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
+                            asp-for="@Model.SelectedPositionId" id="POS" required>
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -277,8 +270,8 @@
                     <input type="text" class="time form-control" id="viewDateTimeEnd" name="viewDateTimeEnd" value="" readonly>
 
                     <hr />
-                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
-                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="POS" disabled>
+                    <label asp-for="@Model.RequestedShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.RequestedShift.PositionWorked" id="POS" disabled>
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -309,8 +302,8 @@
                     <input type="text" class="time form-control" id="openDateTimeEnd" name="openDateTimeEnd" value="" readonly>
 
                     <hr />
-                    <label asp-for="@Model.NewShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
-                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.NewShift.PositionWorked" id="openPOS" disabled>
+                    <label asp-for="@Model.RequestedShift.PositionWorked" style="margin-top: 3px; padding-right: 10px;" for="cmbPositions">Position Worked</label>
+                    <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" asp-for="@Model.RequestedShift.PositionWorked" id="openPOS" disabled>
                     </select>
                 </div>
                 <div class="modal-footer">

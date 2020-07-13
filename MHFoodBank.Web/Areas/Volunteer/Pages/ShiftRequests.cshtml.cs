@@ -31,15 +31,15 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             ShiftRequestAlert selectedRequestAlert = await _context.ShiftAlerts.FirstOrDefaultAsync(a => a.Id == id);
 
-            await _context.Entry(selectedRequestAlert).Reference(p => p.OldShift).LoadAsync();
-            await _context.Entry(selectedRequestAlert).Reference(p => p.NewShift).LoadAsync();
+            await _context.Entry(selectedRequestAlert).Reference(p => p.OriginalShift).LoadAsync();
+            await _context.Entry(selectedRequestAlert).Reference(p => p.RequestedShift).LoadAsync();
 
             if (selectedRequestAlert.DismissedByAdmin)
             {
                 _context.Remove(selectedRequestAlert);
                 await _context.SaveChangesAsync();
-                _context.Remove(selectedRequestAlert.OldShift);
-                _context.Remove(selectedRequestAlert.NewShift);
+                _context.Remove(selectedRequestAlert.OriginalShift);
+                _context.Remove(selectedRequestAlert.RequestedShift);
             }
             else
             {
@@ -63,8 +63,8 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(currentUser.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
             Alerts = await _context.ShiftAlerts
-                .Include(p => p.OldShift)
-                .Include(p => p.NewShift)
+                .Include(p => p.OriginalShift)
+                .Include(p => p.RequestedShift)
                 .Where(sa => sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
 
             LoggedInUser = currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;
