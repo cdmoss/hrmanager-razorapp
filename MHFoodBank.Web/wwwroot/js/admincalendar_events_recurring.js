@@ -84,8 +84,8 @@ function getStringsFromRecurringselectedShift(selectedShift) {
     let recurringShiftEndDate;
 
     if (recurringShiftHasExcludedShifts) {
-        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.options.dtstart);
-        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.options.until);
+        recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.dtstart);
+        recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData._rrule[0].origOptions.until);
     }
     else {
         recurringShiftStartDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.dtstart);

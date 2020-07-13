@@ -59,10 +59,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public Position SearchedPosition { get; set; }
         [BindProperty]
-
         // position that was selected in the edit/delete position window
         public Position SelectedPosition { get; set; }
-
+        [BindProperty]
+        public string NewPositionName { get; set; }
         // give user feedback after action
         public string StatusMessage { get; set; }
 
@@ -134,39 +134,53 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddPosition()
         {
-            // get entered name, create position and add to db
-            string positionName = Request.Form["add-position-name"];
-            Position position = new Position { Name = positionName };
+            // get entered name and check if a position with that name exists
+
+            bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
+            bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
+
+            if (positionAlreadyExists)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
+            }
+            else if (noPositionNameEntered)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
+            }
+
+            Position position = new Position { Name = NewPositionName };
             await _context.Positions.AddAsync(position);
             await _context.SaveChangesAsync();
 
-            // update status message
-            StatusMessage = $"You successfully added the {position.Name} to the list of positions.";
-
-            return RedirectToPage();
+            return RedirectToPage(new { statusMessage = $"You successfully added {position.Name} to the list of positions." });
         }
 
         public async Task<IActionResult> OnPostEditPosition()
         {
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == Request.Form["edit-position-original"]);
+            bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
+            bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
+
+            if (positionAlreadyExists)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
+            }
+            else if (noPositionNameEntered)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
+            }
+
+            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == SelectedPositionId);
+
             string resultStatus = await EditPosition(SelectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
         }
 
         public async Task<IActionResult> OnPostRemovePosition()
         {
-            var selectedPos = Request.Form["edit-position-original"];
-            var posExists = _context.Positions.Any(p => p.Name == selectedPos);
-            if (!posExists)
-            {
-                SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == selectedPos);
-                string resultStatus = await RemovePosition(SelectedPosition);
-                return RedirectToPage();
-            }
-            else
-            {
-                return RedirectToPage(new { statusMessage = "Error: Position already exists in the database." });
-            }
+            var selectedPos = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SelectedPositionId);
+            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == selectedPos.Name);
+            string resultStatus = await RemovePosition(SelectedPosition);
+            return RedirectToPage(new { statusMessage = resultStatus });
         }
 
         public async Task<IActionResult> OnPostAddShift()
@@ -200,6 +214,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
 
             _context.RecurringShifts.Add(shift);
+
+            // the first call establishes the new shift in the db with an id so that the reminder will be created properly
+            await _context.SaveChangesAsync();
 
             // schedule email notification for shift
             if (shift.Volunteer != null)
@@ -253,6 +270,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             shift = await MapShiftData(SelectedShift, shift);
 
+            await _context.SaveChangesAsync();
+
             // check if shift has volunteer after edit
             if (shift.Volunteer != null)
             {
@@ -278,10 +297,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             recurringShift = await EditRecurringShift(recurringShift);
 
-            //recurringShift = (RecurringShift)(await MapShiftData(SelectedShift, recurringShift));
-
-            //// this method will handle scheduling reminders
-            //recurringShift = await EditRecurringShift(recurringShift);
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = "You have successfully edited the chosen shift." });
@@ -289,8 +304,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostDeleteShift()
         {
-            Shift shift = _context.Shifts.FirstOrDefault(x => x.Id == SelectedShift.Id);
-            await _context.Entry(shift).Reference(p => p.Volunteer).LoadAsync();
+            Shift shift = _context.Shifts.Include(s => s.Volunteer).FirstOrDefault(x => x.Id == SelectedShift.Id);
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.NewShift)
                 .Include(p => p.OldShift)
@@ -637,17 +651,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 string originalName = SelectedPosition.Name;
 
                 _context.Update(SelectedPosition);
-                string newName = Request.Form["edit-position-name"];
-                if (newName != "")
-                {
-                    SelectedPosition.Name = newName;
-                    await _context.SaveChangesAsync();
-                    return $"You successfully updated {originalName} to {SelectedPosition.Name}.";
-                }
-                else
-                {
-                    return $"Error: you must enter a name for the new position.";
-                }
+
+                SelectedPosition.Name = NewPositionName;
+                await _context.SaveChangesAsync();
+                return $"You successfully updated {originalName} to {SelectedPosition.Name}.";
             }
             return $"Error: You must select a position.";
         }
@@ -786,9 +793,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 _context.Remove(recShift);
             }
-            //await _context.SaveChangesAsync();
-
-            // cancelling the old reminder
+            
+            await _context.SaveChangesAsync();
 
             // check if recurring shift has a volunteer after being edited
             if (excludedShift.Volunteer != null)
@@ -811,6 +817,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
 
             recShift = (RecurringShift)(await MapShiftData(SelectedShift, recShift));
+            // start date must be reassigned to the start date for the whole set
+            recShift.StartDate = RecurrenceSetStartDate;
+
+            await _context.SaveChangesAsync();
 
             // check if recurring shift has volunteer after edit
             if (recShift.Volunteer != null)
