@@ -37,6 +37,7 @@ namespace MHFoodBank.Web.Dtos
         public int Id { get; set; }
         public ShiftReadEditDto OriginalShift { get; set; }
         public ShiftReadEditDto RequestedShift { get; set; }
+        public RequestStatus Status { get; set; }
         public string Reason { get; set; }
     }
 

@@ -51,7 +51,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _context.Alerts.Update(selectedAlert);
             selectedAlert.HasBeenRead = true;
             await _context.SaveChangesAsync();
-            return RedirectToPage("ResolveShiftRequest", new { id = selectedAlert.Id });
+            return RedirectToPage("ResolveShiftRequest", new { alertId = selectedAlert.Id });
         }
 
         public async Task<IActionResult> OnPostDeleteAlert(int id)
@@ -62,14 +62,14 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 ShiftRequestAlert shiftAlert = (ShiftRequestAlert)selectedAlert;
 
-                await _context.Entry(shiftAlert).Reference(p => p.OldShift).LoadAsync();
-                await _context.Entry(shiftAlert).Reference(p => p.NewShift).LoadAsync();
+                await _context.Entry(shiftAlert).Reference(p => p.OriginalShift).LoadAsync();
+                await _context.Entry(shiftAlert).Reference(p => p.RequestedShift).LoadAsync();
 
                 if (shiftAlert.DismissedByVolunteer)
                 {
                     _context.Alerts.Remove(shiftAlert);
-                    _context.Remove(shiftAlert.OldShift);
-                    _context.Remove(shiftAlert.NewShift);
+                    _context.Remove(shiftAlert.OriginalShift);
+                    _context.Remove(shiftAlert.RequestedShift);
                 }
                 else
                 {

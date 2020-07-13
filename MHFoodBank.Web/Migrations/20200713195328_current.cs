@@ -407,8 +407,8 @@ namespace MHFoodBank.Web.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     HasBeenRead = table.Column<bool>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
-                    OldShiftId = table.Column<int>(nullable: true),
-                    NewShiftId = table.Column<int>(nullable: true),
+                    OriginalShiftId = table.Column<int>(nullable: true),
+                    RequestedShiftId = table.Column<int>(nullable: true),
                     Reason = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: true),
                     DismissedByAdmin = table.Column<bool>(nullable: true),
@@ -425,14 +425,14 @@ namespace MHFoodBank.Web.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Alerts_Shifts_NewShiftId",
-                        column: x => x.NewShiftId,
+                        name: "FK_Alerts_Shifts_OriginalShiftId",
+                        column: x => x.OriginalShiftId,
                         principalTable: "Shifts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Alerts_Shifts_OldShiftId",
-                        column: x => x.OldShiftId,
+                        name: "FK_Alerts_Shifts_RequestedShiftId",
+                        column: x => x.RequestedShiftId,
                         principalTable: "Shifts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -444,14 +444,14 @@ namespace MHFoodBank.Web.Migrations
                 column: "VolunteerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Alerts_NewShiftId",
+                name: "IX_Alerts_OriginalShiftId",
                 table: "Alerts",
-                column: "NewShiftId");
+                column: "OriginalShiftId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Alerts_OldShiftId",
+                name: "IX_Alerts_RequestedShiftId",
                 table: "Alerts",
-                column: "OldShiftId");
+                column: "RequestedShiftId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

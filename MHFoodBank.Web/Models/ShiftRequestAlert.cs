@@ -16,8 +16,8 @@ namespace MHFoodBank.Web.Data.Models
         }
 
         // necessary when oldshift is a recurring shift
-        public Shift OldShift { get; set; }
-        public Shift NewShift { get; set; }
+        public Shift OriginalShift { get; set; }
+        public Shift RequestedShift { get; set; }
         public string Reason { get; set; }
         public RequestStatus Status { get; set; }
         // the alert will persist in the database until both of the below properties == true

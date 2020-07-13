@@ -18,12 +18,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     {
         public List<Shift> TakenShifts { get; set; }
         public List<Shift> OpenShifts { get; set; }
-        public Shift OldShift { get; set; }
+        public Shift OriginalShift { get; set; }
         public DateTime IndividualDate { get; set; }
-        public Shift NewShift { get; set; }
+        public Shift RequestedShift { get; set; }
         public string Reason { get; set; }
         public List<Position> Positions { get; set; }
-        public int OldShiftId { get; set; }
+        public int OriginalShiftId { get; set; }
 
         public RequestChangeModel(FoodBankContext context, UserManager<AppUser> userManager) : base(userManager, context)
         {
@@ -38,7 +38,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         public async Task<IActionResult> OnPostChange()
         {
             // this can be optimized, fillmodel doesnt have to retrieve all properties for tis method
-            VolunteerProfile currentVolunteer = await PrepareModel(OldShiftId);
+            VolunteerProfile currentVolunteer = await PrepareModel(OriginalShiftId);
 
             // get selected shift
             Shift shiftToBeSwitched = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == Convert.ToInt32(Request.Form["ShiftID"]));
@@ -52,7 +52,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 Status = ShiftRequestAlert.RequestStatus.Pending
             };
 
-            if (OldShift is RecurringShift oldRecurringShift)
+            if (OriginalShift is RecurringShift oldRecurringShift)
             {
                 // if selected shift is recurring shift, create a new shift with a date that matches the selected shift, hide it so it won't
                 // display until the request is accepted
@@ -69,12 +69,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 selectedShiftFromRecurringSet.CreateDescription();
 
                 // add created shift to the alert
-                requestAlert.OldShift = selectedShiftFromRecurringSet;
+                requestAlert.OriginalShift = selectedShiftFromRecurringSet;
             }
             else
             {
                 // simply add the selected shift to the alert
-                requestAlert.OldShift = OldShift;
+                requestAlert.OriginalShift = OriginalShift;
             }
 
             if (shiftToBeSwitched is RecurringShift newRecurringShift)
@@ -94,12 +94,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 selectedShiftFromRecurringSet.CreateDescription();
 
                 // add created shift to the alert
-                requestAlert.NewShift = selectedShiftFromRecurringSet;
+                requestAlert.RequestedShift = selectedShiftFromRecurringSet;
             }
             else
             {
                 // simply add the selected shift to the alert
-                requestAlert.NewShift = shiftToBeSwitched;
+                requestAlert.RequestedShift = shiftToBeSwitched;
             }
 
             _context.ShiftAlerts.Add(requestAlert);
@@ -111,12 +111,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         public async Task<IActionResult> OnPostRemove()
         {
             // this can be optimized, fillmodel doesnt have to retrieve all properties for tis method
-            VolunteerProfile currentVolunteer = await PrepareModel(OldShiftId);
+            VolunteerProfile currentVolunteer = await PrepareModel(OriginalShiftId);
 
             ShiftRequestAlert requestAlert = new ShiftRequestAlert()
             {
                 Date = DateTime.Now,
-                OldShift = OldShift,
+                OriginalShift = OriginalShift,
                 Reason = Reason,
                 Volunteer = currentVolunteer,
                 Status = ShiftRequestAlert.RequestStatus.Pending
@@ -139,13 +139,13 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             if (oldShiftDate != null)
             {
-                OldShift = await _context.RecurringShifts.FirstOrDefaultAsync(s => s.Id == oldShiftId);
+                OriginalShift = await _context.RecurringShifts.FirstOrDefaultAsync(s => s.Id == oldShiftId);
                 IndividualDate = Convert.ToDateTime(oldShiftDate);
             }
-            OldShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == oldShiftId);
+            OriginalShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == oldShiftId);
 
 
-            await _context.Entry(OldShift).Reference(p => p.PositionWorked).LoadAsync();
+            await _context.Entry(OriginalShift).Reference(p => p.PositionWorked).LoadAsync();
 
 
             LoggedInUser = currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;

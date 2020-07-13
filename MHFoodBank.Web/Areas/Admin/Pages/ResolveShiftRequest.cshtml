@@ -34,7 +34,7 @@
                 document.getElementById("dateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
                 document.getElementById("POS").selectedIndex = shiftinfo.event.extendedProps.posWorked;
             },
-            defaultDate: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")',
+            defaultDate: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")',
             navLinks: true, // can click day/week names to navigate views
             selectMirror: true,
             allDaySlot: false,
@@ -47,17 +47,17 @@
                 {
                     // displays existing shifts
                     events: [
-                        @foreach (Shift s in Model.AssignedShifts)
+                        @foreach (var s in Model.AssignedShifts)
                             {
                             <text>
                                 {
                                     id: '@s.Id',
                                     title: '@s.Description',
-                                    @if (s is RecurringShift recShift)
+                                    @if (s.RecurrenceRule != null)
                                 {
                                     <text>
-                                        rrule: '@recShift.RecurrenceRule',
-                                        duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                        rrule: '@s.RecurrenceRule',
+                                        duration: '@((s.EndTime - s.StartTime).ToString())',
                                     </text>
                                 }
                                 else
@@ -69,11 +69,11 @@
                                 }
                                     posWorked: '@(s.PositionWorked.Id)',
                                     // shift is worked by someone
-                                    @if (Model.ShiftRequest.NewShift != null)
+                                    @if (Model.ShiftRequest.RequestedShift != null)
                                     {
-                                        @if (Model.ShiftRequest.NewShift.Volunteer != null) { }
+                                        @if (Model.ShiftRequest.RequestedShift.Volunteer != null) { }
                                         {
-                                            <text>vol: '@((int)Model.ShiftRequest.NewShift.Volunteer.Id)'</text>
+                                            <text>vol: '@((int)Model.ShiftRequest.RequestedShift.Volunteer.Id)'</text>
                                         }
                                     }
                                 },
@@ -89,17 +89,17 @@
                 {
                     // displays existing shifts
                     events: [
-                        @foreach (Shift s in Model.OpenShifts)
+                        @foreach (var s in Model.OpenShifts)
                             {
                             <text>
                                 {
                                     id: '@s.Id',
                                     title: '@s.Description',
-                                    @if (s is RecurringShift recShift)
+                                    @if (s.RecurrenceRule != null)
                                     {
                                     <text>
-                                        rrule: '@recShift.RecurrenceRule',
-                                        duration: '@((recShift.EndTime - recShift.StartTime).ToString())',
+                                        rrule: '@s.RecurrenceRule',
+                                        duration: '@((s.EndTime - s.StartTime).ToString())',
                                     </text>
                                     }
                                     else
@@ -124,22 +124,22 @@
                     color: '#06A893'
                 },
                 // displays the requested shift if it's a switch request
-                @if (Model.ShiftRequest.NewShift != null)
+                @if (Model.ShiftRequest.RequestedShift != null)
                 {
                 <text>
                 {
                     events: [
                         {
-                            id: '@Model.ShiftRequest.NewShift.Id',
-                            title: '@Model.ShiftRequest.NewShift.Description',
-                            start: '@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")@{string y3 = "T"; @y3}@Model.ShiftRequest.NewShift.StartTime',
-                            end: '@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")@y3@Model.ShiftRequest.NewShift.EndTime',
-                            posWorked: '@(Model.ShiftRequest.NewShift.PositionWorked.Name)',
+                            id: '@Model.ShiftRequest.RequestedShift.Id',
+                            title: '@Model.ShiftRequest.RequestedShift.Description',
+                            start: '@Model.ShiftRequest.RequestedShift.StartDate.ToString("yyyy-MM-dd")@{string y3 = "T"; @y3}@Model.ShiftRequest.RequestedShift.StartTime',
+                            end: '@Model.ShiftRequest.RequestedShift.StartDate.ToString("yyyy-MM-dd")@y3@Model.ShiftRequest.RequestedShift.EndTime',
+                            posWorked: '@(Model.ShiftRequest.RequestedShift.PositionWorked.Name)',
 
                             // requested shift is worked by someone
-                            @if (Model.ShiftRequest.NewShift.Volunteer != null)
+                            @if (Model.ShiftRequest.RequestedShift.Volunteer != null)
                             {
-                                <text>vol: '@((int)Model.ShiftRequest.NewShift.Volunteer.Id)'</text>
+                                <text>vol: '@((int)Model.ShiftRequest.RequestedShift.Volunteer.Id)'</text>
                             }
                                 // requested is open
                             else
@@ -161,12 +161,12 @@
                     // displays the original shift
                     events: [
                         {
-                            id: '@Model.ShiftRequest.OldShift.Id',
-                            title: '@Model.ShiftRequest.OldShift.Description',
-                            start: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")@{string y4 = "T"; @y4}@Model.ShiftRequest.OldShift.StartTime',
-                            end: '@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")@y4@Model.ShiftRequest.OldShift.EndTime',
-                            posWorked: '@(Model.ShiftRequest.OldShift.PositionWorked.Name)',
-                            vol: '@((int)Model.ShiftRequest.OldShift.Volunteer.Id)'
+                            id: '@Model.ShiftRequest.OriginalShift.Id',
+                            title: '@Model.ShiftRequest.OriginalShift.Description',
+                            start: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")@{string y4 = "T"; @y4}@Model.ShiftRequest.OriginalShift.StartTime',
+                            end: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")@y4@Model.ShiftRequest.OriginalShift.EndTime',
+                            posWorked: '@(Model.ShiftRequest.OriginalShift.PositionWorked.Name)',
+                            vol: '@((int)Model.ShiftRequest.OriginalShift.Volunteer.Id)'
                         }
                 ],
                     color: 'red',
@@ -206,38 +206,38 @@
                     <dl>
                         <dt>Volunteer</dt>
                         <dd>
-                            @Model.ShiftRequest.OldShift.Volunteer.FirstName @Model.ShiftRequest.OldShift.Volunteer.LastName
+                            @Model.ShiftRequest.OriginalShift.Volunteer.FirstName @Model.ShiftRequest.OriginalShift.Volunteer.LastName
                         </dd>
                     </dl>
                     <dl>
                         <dt>Shift Date</dt>
-                        <dd type="date" class="" readonly>@Model.ShiftRequest.OldShift.StartDate.ToString("yyyy-MM-dd")
+                        <dd type="date" class="" readonly>@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")
                         <dd />
                     </dl>
                     <dl>
                         <dt>Start Time</dt>
-                        <dd type="text" class="">@Model.ShiftRequest.OldShift.StartTime.ToString(@"hh\:mm")
+                        <dd type="text" class="">@Model.ShiftRequest.OriginalShift.StartTime.ToString(@"hh\:mm")
                         <dd />
                     </dl>
                     <dl>
                         <dt>End Time</dt>
-                        <dd type="text" class="">@Model.ShiftRequest.OldShift.EndTime.ToString(@"hh\:mm")
+                        <dd type="text" class="">@Model.ShiftRequest.OriginalShift.EndTime.ToString(@"hh\:mm")
                         <dd />
                     </dl>
                     <dl>
                         <dt>Position</dt>
-                        <dd type="text" class="">@Model.ShiftRequest.OldShift.PositionWorked.Name
+                        <dd type="text" class="">@Model.ShiftRequest.OriginalShift.PositionWorked.Name
                         <dd />
                     </dl>
                     <br />
-                    @if (Model.ShiftRequest.NewShift != null)
+                    @if (Model.ShiftRequest.RequestedShift != null)
                     {
                         <h4>Requested Shift</h4>
                         <dl>
-                            @if (Model.ShiftRequest.NewShift.Volunteer != null)
+                            @if (Model.ShiftRequest.RequestedShift.Volunteer != null)
                             {
                                 <dt>Volunteer</dt>
-                                <dd readonly>@Model.ShiftRequest.NewShift.Volunteer.FirstName @Model.ShiftRequest.NewShift.Volunteer.LastName</dd>
+                                <dd readonly>@Model.ShiftRequest.RequestedShift.Volunteer.FirstName @Model.ShiftRequest.RequestedShift.Volunteer.LastName</dd>
                             }
                             else
                             {
@@ -246,22 +246,22 @@
                         </dl>
                         <dl>
                             <dt>Shift Date</dt>
-                            <dd type="date" class="" readonly>@Model.ShiftRequest.NewShift.StartDate.ToString("yyyy-MM-dd")
+                            <dd type="date" class="" readonly>@Model.ShiftRequest.RequestedShift.StartDate.ToString("yyyy-MM-dd")
                             <dd />
                         </dl>
                         <dl>
                             <dt>Start Time</dt>
-                            <dd type="text" class="">@Model.ShiftRequest.NewShift.StartTime.ToString(@"hh\:mm")
+                            <dd type="text" class="">@Model.ShiftRequest.RequestedShift.StartTime.ToString(@"hh\:mm")
                             <dd />
                         </dl>
                         <dl>
                             <dt>End Time</dt>
-                            <dd type="text" class="">@Model.ShiftRequest.NewShift.EndTime.ToString(@"hh\:mm")
+                            <dd type="text" class="">@Model.ShiftRequest.RequestedShift.EndTime.ToString(@"hh\:mm")
                             <dd />
                         </dl>
                         <dl>
                             <dt>Position</dt>
-                            <dd type="text" class="">@Model.ShiftRequest.NewShift.PositionWorked.Name
+                            <dd type="text" class="">@Model.ShiftRequest.RequestedShift.PositionWorked.Name
                             <dd />
                         </dl>
                     }

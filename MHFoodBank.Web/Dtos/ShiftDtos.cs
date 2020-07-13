@@ -18,5 +18,6 @@ namespace MHFoodBank.Web.Dtos
         public DateTime EndDate { get; set; }
         public string Weekdays { get; set; }
         public string RecurrenceRule { get; set; }
+        public bool Hidden { get; set; }
     }
 }
