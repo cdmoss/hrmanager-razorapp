@@ -65,7 +65,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var requestAlert = await LoadAlertForResolution(alertId);
             OpenShifts = await LoadOpenShifts(requestAlert);
             AssignedShifts = await LoadAssignedShifts(requestAlert);
-
             _context.Update(requestAlert);
             bool isRemovalRequest = requestAlert.RequestedShift == null;
 

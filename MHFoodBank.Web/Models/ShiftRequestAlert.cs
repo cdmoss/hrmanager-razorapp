@@ -15,7 +15,7 @@ namespace MHFoodBank.Web.Data.Models
             Declined
         }
 
-        // necessary when oldshift is a recurring shift
+        // necessary when OriginalShift is a recurring shift
         public Shift OriginalShift { get; set; }
         public Shift RequestedShift { get; set; }
         public string Reason { get; set; }

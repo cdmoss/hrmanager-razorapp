@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Hangfire;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
 using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Web.Dtos;
+using MHFoodBank.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,18 +19,26 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     [BindProperties]
     public class VolunteerCalendarModel : VolunteerPageModel
     {
-        public List<Shift> AssignedShifts { get; set; }
-        public List<Shift> OpenShifts { get; set; }
+        private readonly IMapper _mapper;
+        public List<ShiftReadEditDto> AssignedShifts { get; set; }
+        public List<ShiftReadEditDto> OpenShifts { get; set; }
+        [BindProperty]
         public List<Position> Positions { get; set; }
         public bool AddedShift { get; set; } = false;
         public string StatusMessage { get; set; }
+        [BindProperty]
+        public int SelectedPositionId { get; set; }
+        [BindProperty]
+        public DateTime ClickedShiftDate { get; set; }
+        [BindProperty]
+        public ShiftReadEditDto SelectedShift { get; set; }
 
-        public VolunteerCalendarModel(FoodBankContext context, UserManager<AppUser> userManager) : base(userManager, context)
+        public VolunteerCalendarModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper) : base(userManager, context)
         {
-
+            _mapper = mapper;
         }
 
-        public async Task OnGetAsync(string statusMessage = null)
+        public async Task OnGet(string statusMessage = null)
         {
             StatusMessage = statusMessage;
             await PrepareModelAndGetCurrentVolunteer();
@@ -37,8 +48,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         {
             var volunteer = await PrepareModelAndGetCurrentVolunteer();
 
-            int selectedShiftId = Convert.ToInt32(Request.Form["open-shift-id"]);
-            Shift selectedShift = _context.Shifts.FirstOrDefault(s => s.Id == selectedShiftId);
+            Shift selectedShift = _context.Shifts.FirstOrDefault(s => s.Id == SelectedShift.Id);
 
             await AssignShiftToVolunteer(selectedShift, volunteer);
 
@@ -47,36 +57,37 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
         public async Task<IActionResult> OnPostRequestChange()
         {
-            int originalShiftId = Convert.ToInt32(Request.Form["assigned-shift-id"]);
             string shiftDate = null;
 
-            Shift selectedShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == originalShiftId);
+            Shift selectedShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == SelectedShift.Id);
 
             // if the original shift is part of a recurring set, 
             // the RequestChange page needs to know the date of the selected shift
             if (selectedShift is RecurringShift recurringShift)
             {
-                shiftDate = Convert.ToDateTime(Request.Form["assigned-shift-date"]).ToString("yyyy-MM-dd");
+                shiftDate = ClickedShiftDate.ToString("yyyy-MM-dd");
             }
 
-            return RedirectToPage("RequestChange", new { oldShiftId = originalShiftId, originalShiftDate = shiftDate});
+            return RedirectToPage("RequestChange", new { oldShiftId = SelectedShift.Id, originalShiftDate = shiftDate});
         }
         private async Task<VolunteerProfile> PrepareModelAndGetCurrentVolunteer()
         {
             var user = await _userManager.GetUserAsync(User);
             await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
+
             await _context.Entry(user.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
-            AssignedShifts = _context.Shifts.Where(s => s.Hidden == false && s.Volunteer.Id == user.VolunteerProfile.Id).ToList();
-            OpenShifts = _context.Shifts.Where(s => s.Hidden == false && s.Volunteer == null).ToList();
+            var assignedShiftDomainModels = _context.Shifts.Include(x => x.PositionWorked)
+                .Where(s => s.Hidden == false && s.Volunteer.Id == user.VolunteerProfile.Id).ToList();
+
+            var openShiftDomainModels = _context.Shifts.Include(y => y.PositionWorked)
+                .Where(s => s.Hidden == false && s.Volunteer == null).ToList();
+
+            ShiftMapper mapper = new ShiftMapper(_mapper);
+
+            AssignedShifts = mapper.MapShiftsToDtos(assignedShiftDomainModels);
+            OpenShifts = mapper.MapShiftsToDtos(openShiftDomainModels);
+
             Positions = _context.Positions.ToList();
-            foreach (Shift shift in AssignedShifts)
-            {
-                await _context.Entry(shift).Reference(p => p.PositionWorked).LoadAsync();
-            }
-            foreach (Shift shift in OpenShifts)
-            {
-                await _context.Entry(shift).Reference(p => p.PositionWorked).LoadAsync();
-            }
             LoggedInUser = user.VolunteerProfile.FirstName + " " + user.VolunteerProfile.LastName;
 
             return user.VolunteerProfile;
@@ -93,7 +104,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 await _context.Entry(recShift).Collection(p => p.ExcludedShifts).LoadAsync();
                 Shift excludedShift = new Shift()
                 {
-                    StartDate = Convert.ToDateTime(Request.Form["open-shift-date"]),
+                    StartDate = ClickedShiftDate,
                     StartTime = selectedShift.StartTime,
                     EndTime = selectedShift.EndTime,
                     Hidden = false,
