@@ -8,6 +8,11 @@ namespace MHFoodBank.Web.Data.Models
     [Serializable]
     public class ApplicationAlert : Alert
     {
+        public ApplicationAlert()
+        {
+            AlertType = "application";
+        }
+
         protected override string GetDescription()
         {
             return $"Recieved a new application from {Volunteer.FirstName} {Volunteer.LastName}";

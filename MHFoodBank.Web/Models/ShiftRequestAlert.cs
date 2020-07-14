@@ -25,6 +25,11 @@ namespace MHFoodBank.Web.Data.Models
         public bool DismissedByVolunteer { get; set; }
         public string AddressedBy { get; set; }
 
+        public ShiftRequestAlert()
+        {
+            AlertType = "shift";
+        }
+
         protected override string GetDescription()
         {
             // include information about the change they want to make?

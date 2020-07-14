@@ -14,6 +14,8 @@ namespace MHFoodBank.Web.Profiles
         public AlertsProfile()
         {
             CreateMap<ShiftRequestReadDto, ShiftRequestAlert>().ReverseMap();
+            CreateMap<ShiftRequestAlert, AdminAlertListDto>().ReverseMap();
+            CreateMap<ApplicationAlert, AdminAlertListDto>().ReverseMap();
         }
     }
 }

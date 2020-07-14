@@ -99,5 +99,6 @@ namespace MHFoodBank.Web.Data.Models
 
         [NotMapped]
         public string FullNameWithID { get { return Id + " " + FirstName + " " + LastName; } }
+        public bool Deleted { get; set; }
     }
 }

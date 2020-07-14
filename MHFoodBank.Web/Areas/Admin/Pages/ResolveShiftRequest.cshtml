@@ -44,41 +44,37 @@
             firstDay: 0,
             eventLimit: true, // allow "more" link when too many events
             eventSources: [
+                @if (Model.AssignedShifts != null)
                 {
-                    // displays existing shifts
+                <text>
+                {
+                    // displays existing shifts that are assigned
                     events: [
                         @foreach (var s in Model.AssignedShifts)
+                        {
+                        <text>
                             {
-                            <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                {
-                                    <text>
-                                        rrule: '@s.RecurrenceRule',
-                                        duration: '@((s.EndTime - s.StartTime).ToString())',
-                                    </text>
-                                }
-                                else
-                                {
-                                    <text>
-                                        start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
-                                        end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                    </text>
-                                }
-                                    posWorked: '@(s.PositionWorked.Id)',
-                                    // shift is worked by someone
-                                    @if (Model.ShiftRequest.RequestedShift != null)
-                                    {
-                                        @if (Model.ShiftRequest.RequestedShift.Volunteer != null) { }
-                                        {
-                                            <text>vol: '@((int)Model.ShiftRequest.RequestedShift.Volunteer.Id)'</text>
-                                        }
-                                    }
-                                },
-                            </text>
+                                id: '@s.Id',
+                                title: '@s.Description',
+                                @if (s.RecurrenceRule != null)
+                            {
+                                <text>
+                                    rrule: '@s.RecurrenceRule',
+                                    duration: '@((s.EndTime - s.StartTime).ToString())',
+                                </text>
                             }
+                            else
+                            {
+                                <text>
+                                    start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                    end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                </text>
+                            }
+                            posWorked: '@(s.PositionWorked.Id)', 
+                            vol: '@s.Volunteer.Id'
+                            },
+                        </text>
+                        }
                     ],
                     eventTimeFormat: {
                         hour: '2-digit',
@@ -86,35 +82,39 @@
                         meridiem: false
                     }
                 },
+                </text>
+                }
+                @if (Model.OpenShifts != null)
                 {
-                    // displays existing shifts
+                <text>
+                {
+                    // displays existing shifts that are open
                     events: [
                         @foreach (var s in Model.OpenShifts)
-                            {
+                        {
                             <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                    {
-                                    <text>
-                                        rrule: '@s.RecurrenceRule',
-                                        duration: '@((s.EndTime - s.StartTime).ToString())',
-                                    </text>
-                                    }
-                                    else
-                                    {
-                                        <text>
-                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
-                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
-                                    }
-                                    posWorked: '@(s.PositionWorked.Id)',
-                                    // shift is worked by someone
-                                    vol: 'Open'
-                                },
-                            </text>
+                            {
+                            id: '@s.Id',
+                            title: '@s.Description',
+                            @if (s.RecurrenceRule != null)
+                            {
+                                <text>
+                                rrule: '@s.RecurrenceRule',
+                                duration: '@((s.EndTime - s.StartTime).ToString())',
+                                </text>
                             }
+                            else
+                            {
+                                <text>
+                                    start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                    end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                </text>
+                            }
+                            posWorked: '@(s.PositionWorked.Id)',
+                            vol: 'Open'
+                            },
+                            </text>
+                        }
                     ],
                     eventTimeFormat: {
                         hour: '2-digit',
@@ -123,6 +123,8 @@
                     },
                     color: '#06A893'
                 },
+                </text>
+                }
                 // displays the requested shift if it's a switch request
                 @if (Model.ShiftRequest.RequestedShift != null)
                 {
@@ -134,14 +136,14 @@
                             title: '@Model.ShiftRequest.RequestedShift.Description',
                             start: '@Model.ShiftRequest.RequestedShift.StartDate.ToString("yyyy-MM-dd")@{string y3 = "T"; @y3}@Model.ShiftRequest.RequestedShift.StartTime',
                             end: '@Model.ShiftRequest.RequestedShift.StartDate.ToString("yyyy-MM-dd")@y3@Model.ShiftRequest.RequestedShift.EndTime',
-                            posWorked: '@(Model.ShiftRequest.RequestedShift.PositionWorked.Name)',
+                            posWorked: '@(Model.ShiftRequest.RequestedShift.PositionWorked.Id)',
 
                             // requested shift is worked by someone
                             @if (Model.ShiftRequest.RequestedShift.Volunteer != null)
                             {
                                 <text>vol: '@((int)Model.ShiftRequest.RequestedShift.Volunteer.Id)'</text>
                             }
-                                // requested is open
+                            // requested is open
                             else
                             {
                                 <text>vol: 'Open'</text>
@@ -165,7 +167,7 @@
                             title: '@Model.ShiftRequest.OriginalShift.Description',
                             start: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")@{string y4 = "T"; @y4}@Model.ShiftRequest.OriginalShift.StartTime',
                             end: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")@y4@Model.ShiftRequest.OriginalShift.EndTime',
-                            posWorked: '@(Model.ShiftRequest.OriginalShift.PositionWorked.Name)',
+                            posWorked: '@(Model.ShiftRequest.OriginalShift.PositionWorked.Id)',
                             vol: '@((int)Model.ShiftRequest.OriginalShift.Volunteer.Id)'
                         }
                 ],

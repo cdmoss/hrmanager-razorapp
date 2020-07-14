@@ -3,7 +3,7 @@
     // determine if shift is open
     let shiftIsOpen = selectedShift.extendedProps.vol === "Open";
 
-    let selectedShiftWasPartOfRecurringSet = selectedShift.extendedProps.wasPartOfRecurring.length !== 0;
+    let selectedShiftWasPartOfRecurringSet = selectedShift.extendedProps.wasPartOfRecurring.length === 0;
 
     selectedShiftInitialStartDate = new Date(selectedShift.start);
     selectedShiftEndDate = new Date(selectedShift.end);

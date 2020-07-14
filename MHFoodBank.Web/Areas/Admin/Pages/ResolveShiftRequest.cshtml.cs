@@ -54,10 +54,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 OpenShifts = await LoadOpenShifts(requestAlert);
                 AssignedShifts = await LoadAssignedShifts(requestAlert);
+
+                // if shift request is for a switch and the requested shift is part of a recurring set, 
+                // this method will ensure that only one instance of that shift will be displayed
+                ResolveRecurringShiftDisplay();
             }
-            // if shift request is for a switch and the requested shift is part of a recurring set, 
-            // this method will ensure that only one instance of that shift will be displayed
-            ResolveRecurringShiftDisplay();
         }
 
         public async Task<IActionResult> OnPostAccept(int alertId)
@@ -195,7 +196,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private void ScheduleRemindersAfterSwitch(Shift OriginalShift, Shift RequestedShift, ShiftRequestAlert requestAlert)
         {
             // cancel old reminders; this must be done first, if reminders are scheduled first, 
-            // savechanges will be called and parentrecurring shifts will be for ShiftRequest.OriginalShift and ShiftRequest.RequestedShift will be null
+            // savechanges will be called and parentrecurring shifts for ShiftRequest.OriginalShift and ShiftRequest.RequestedShift will be null
             if (requestAlert.OriginalShift.Volunteer != null)
             {
                 if (requestAlert.OriginalShift.ParentRecurringShift != null)
@@ -292,30 +293,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task<ShiftRequestAlert> LoadAlertForResolution(int alertId)
         {
-            ShiftRequestAlert selectedAlert = await _context.ShiftAlerts.FirstOrDefaultAsync(p => p.Id == alertId);
+            var shiftRequest = await _context.ShiftAlerts
+                .Include(p => p.OriginalShift).ThenInclude(p => p.PositionWorked)
+                .Include(p => p.OriginalShift).ThenInclude(p => p.Volunteer).ThenInclude(p => p.User)
+                .Include(p => p.OriginalShift).ThenInclude(p => p.ParentRecurringShift)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.PositionWorked)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.Volunteer)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.ParentRecurringShift)
+                .FirstOrDefaultAsync(p => p.Id == alertId);
 
-            // load oldshift properties
-            await _context.Entry(selectedAlert).Reference(p => p.OriginalShift).LoadAsync();
-            await _context.Entry(selectedAlert.OriginalShift).Reference(p => p.PositionWorked).LoadAsync();
-            await _context.Entry(selectedAlert.OriginalShift).Reference(p => p.Volunteer).LoadAsync();
-            await _context.Entry(selectedAlert.OriginalShift.Volunteer).Reference(p => p.User).LoadAsync();
-            await _context.Entry(selectedAlert.OriginalShift).Reference(p => p.ParentRecurringShift).LoadAsync();
-
-            // load newshift properties if its not null
-            if (selectedAlert.RequestedShift != null)
-            {
-                await _context.Entry(selectedAlert).Reference(p => p.RequestedShift).LoadAsync();
-                await _context.Entry(selectedAlert.RequestedShift).Reference(p => p.PositionWorked).LoadAsync();
-                await _context.Entry(selectedAlert.RequestedShift).Reference(p => p.Volunteer).LoadAsync();
-                await _context.Entry(selectedAlert.RequestedShift).Reference(p => p.ParentRecurringShift).LoadAsync();
-
-                if (selectedAlert.RequestedShift.Volunteer != null)
-                {
-                    await _context.Entry(selectedAlert.RequestedShift.Volunteer).Reference(p => p.User).LoadAsync();
-                }
-            }
-
-            return selectedAlert;
+            return shiftRequest;
         }
 
         private async Task<ShiftRequestAlert> LoadAlertForDisplay(int alertId)
@@ -324,14 +311,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.Volunteer)
                 .Include(p => p.OriginalShift).ThenInclude(p => p.PositionWorked)
                 .Include(p => p.OriginalShift).ThenInclude(p => p.Volunteer)
-                .Include(p => p.RequestedShift)
+                .Include(p => p.OriginalShift).ThenInclude(p => p.ParentRecurringShift)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.ParentRecurringShift)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.Volunteer)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.PositionWorked)
                 .FirstOrDefaultAsync(p => p.Id == alertId);
-
-            if (domainShiftRequest.RequestedShift != null)
-            {
-                await _context.Entry(domainShiftRequest.RequestedShift).Reference(p => p.PositionWorked).LoadAsync();
-                await _context.Entry(domainShiftRequest.RequestedShift).Reference(p => p.Volunteer).LoadAsync();
-            }
 
             return domainShiftRequest;
         }
@@ -344,76 +328,58 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             if (isSwitchRequest)
             {
-                requestedShiftIsPartOfRecurringSet = ShiftRequest.RequestedShift.ParentRecurringShiftId > 0; ;
+                requestedShiftIsPartOfRecurringSet = ShiftRequest.RequestedShift.ParentRecurringShiftId > 0;
             }
 
             if (originalShiftIsPartOfRecurringSet)
             {
-                ShiftRequest.RequestedShift.Hidden = false;
-
-                DateTime selectedShiftDate = ShiftRequest.OriginalShift.StartDate;
-                TimeSpan selectedShiftTime = ShiftRequest.RequestedShift.StartTime;
-
-                DateTime combinedDateTime = new DateTime(
-                    selectedShiftDate.Year,
-                    selectedShiftDate.Month,
-                    selectedShiftDate.Day,
-                    selectedShiftTime.Hours,
-                    selectedShiftTime.Minutes,
-                    selectedShiftTime.Seconds);
-
-                string excludedDateString = $"\\nEXDATE:{combinedDateTime.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
-
-                // check both lists of shifts for the recurring shift that is the selected shift's parent
-                bool recurringShiftIsOpen = OpenShifts.Any(s => s.ParentRecurringShiftId == ShiftRequest.OriginalShift.ParentRecurringShiftId);
-
-                // once the recurring shift is found, exclude the selected shift from its set
-                if (recurringShiftIsOpen)
-                {
-                    OpenShifts
-                        .FirstOrDefault(s => s.ParentRecurringShiftId == ShiftRequest.OriginalShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
-                }
-                else
-                {
-                    AssignedShifts
-                        .FirstOrDefault(s => s.ParentRecurringShiftId == ShiftRequest.OriginalShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
-                }
-
-                _context.Entry(ShiftRequest.OriginalShift.ParentRecurringShiftId).State = EntityState.Detached;
+                ExcludeShiftFromRecurringSet(ShiftRequest.OriginalShift, OpenShifts, AssignedShifts);
             }
 
             if (isSwitchRequest)
             {
                 if (requestedShiftIsPartOfRecurringSet)
                 {
-                    ShiftRequest.RequestedShift.Hidden = false;
-
-                    DateTime selectedShiftDate = ShiftRequest.RequestedShift.StartDate;
-                    TimeSpan selectedShiftTime = ShiftRequest.RequestedShift.StartTime;
-
-                    DateTime combinedDateTime = new DateTime(
-                        selectedShiftDate.Year,
-                        selectedShiftDate.Month,
-                        selectedShiftDate.Day,
-                        selectedShiftTime.Hours,
-                        selectedShiftTime.Minutes,
-                        selectedShiftTime.Seconds);
-
-                    string excludedDateString = $"\\nEXDATE:{combinedDateTime.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
-
-                    // check both lists of shifts for the recurring shift that is the selected shift's parent
-                    bool recurringShiftIsOpen = OpenShifts.Any(s => s.ParentRecurringShiftId == ShiftRequest.RequestedShift.ParentRecurringShiftId);
-
-                    // once the recurring shift is found, exclude the selected shift from its set
-                    if (recurringShiftIsOpen)
-                    {
-                        OpenShifts.FirstOrDefault(s => s.ParentRecurringShiftId == ShiftRequest.RequestedShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
-                    }
-                    else
-                    {
-                        AssignedShifts.FirstOrDefault(s => s.ParentRecurringShiftId == ShiftRequest.RequestedShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
-                    }
+                    ExcludeShiftFromRecurringSet(ShiftRequest.RequestedShift, OpenShifts, AssignedShifts);
                 }
+            }
+        }
+
+        // this method will inspect given 2 lists of shifts for a recurring set of which
+        // the given excluded shift is a part of, 
+        // once it finds the recurring shift it will then 
+        // exclude the given shift from the found set
+        public static void ExcludeShiftFromRecurringSet(
+            ShiftReadEditDto excludedShift,
+            List<ShiftReadEditDto> openShifts,
+            List<ShiftReadEditDto> assignedShifts)
+        {
+            DateTime selectedShiftDate = excludedShift.StartDate;
+            TimeSpan selectedShiftTime = excludedShift.StartTime;
+
+            DateTime combinedDateTime = new DateTime(
+                selectedShiftDate.Year,
+                selectedShiftDate.Month,
+                selectedShiftDate.Day,
+                selectedShiftTime.Hours,
+                selectedShiftTime.Minutes,
+                selectedShiftTime.Seconds);
+
+            string excludedDateString = $"\\nEXDATE:{combinedDateTime.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
+
+            // check both lists of shifts for the recurring shift that is the selected shift's parent
+            bool recurringShiftIsOpen = openShifts.Any(s => s.Id == excludedShift.ParentRecurringShiftId);
+
+            // once the recurring shift is found, exclude the selected shift from its set
+            if (recurringShiftIsOpen)
+            {
+                openShifts
+                    .FirstOrDefault(s => s.Id == excludedShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
+            }
+            else
+            {
+                assignedShifts
+                    .FirstOrDefault(s => s.Id == excludedShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
             }
         }
     }

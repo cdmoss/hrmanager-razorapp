@@ -18,6 +18,7 @@ namespace MHFoodBank.Web.Data.Models
         public string Description { get; set; }
         public bool Hidden { get; set; }
 
+
         public void CreateDescription()
         {
             if (Volunteer != null)

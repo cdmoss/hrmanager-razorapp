@@ -83,7 +83,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                 user.VolunteerProfile.WorkExperiences = WorkExperiences;
                 user.VolunteerProfile.References = References;
                 user.VolunteerProfile.Availabilities = GetAvailabilitiesFromFormData(formData);
-                user.VolunteerProfile.Alerts = new List<Alert>() {new ApplicationAlert{Date = DateTime.Now, Volunteer = user.VolunteerProfile, HasBeenRead = false}};
+                user.VolunteerProfile.Alerts = new List<Alert>() {new ApplicationAlert{Date = DateTime.Now, Volunteer = user.VolunteerProfile, Read = false}};
                 user.VolunteerProfile.Positions = AssignPreferredPositions(user.VolunteerProfile);
 
                 IdentityResult accountCreationResult = await TryCreateAccount(user);

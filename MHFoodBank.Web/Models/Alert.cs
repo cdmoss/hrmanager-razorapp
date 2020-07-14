@@ -11,7 +11,9 @@ namespace MHFoodBank.Web.Data.Models
         public int Id { get; set; }
         public VolunteerProfile Volunteer { get; set; }
         public DateTime Date { get; set; }
-        public bool HasBeenRead { get; set; }
+        public bool Read { get; set; }
+        public bool Deleted { get; set; }
+        public string AlertType { get; set; }
 
         protected virtual string GetDescription()
         {

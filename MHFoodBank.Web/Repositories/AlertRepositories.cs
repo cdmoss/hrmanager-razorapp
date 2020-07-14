@@ -11,7 +11,7 @@ namespace MHFoodBank.Api.Repositories
     public interface IAlertRepo
     {
         Task<List<AdminAlertListDto>> GetAllAlerts();
-        Task<List<UserShiftRequestListDto>> GetAllShiftRequests();
+        Task<List<VolunteerShiftRequestListDto>> GetAllShiftRequests();
         Task<ShiftRequestReadDto> GetShiftRequestById(int id);
     }
 }

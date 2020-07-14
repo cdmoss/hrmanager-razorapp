@@ -36,10 +36,10 @@
                     <th>From</th>
                     <th>Actions</th>
                 </tr>
-                @foreach (Alert alert in @Model.ApplicationAlerts)
+                @foreach (var alert in @Model.ApplicationAlerts)
                 {
                     <tr>
-                        @if (!alert.HasBeenRead)
+                        @if (!alert.Read)
                         {
                             <td><strong>@alert.Date</strong></td>
                             <td><strong>@alert.Volunteer.FirstName @alert.Volunteer.LastName</strong></td>
@@ -79,10 +79,10 @@
                     <th>From</th>
                     <th>Actions</th>
                 </tr>
-                @foreach (Alert alert in @Model.PendingRequests)
+                @foreach (var alert in @Model.PendingRequests)
                 {
                     <tr>
-                        @if (!alert.HasBeenRead)
+                        @if (!alert.Read)
                         {
                             <td><strong>@alert.Date</strong></td>
                             <td><strong>@alert.Volunteer.FirstName @alert.Volunteer.LastName</strong></td>
@@ -119,13 +119,13 @@
                     <th>From</th>
                     <th>Actions</th>
                 </tr>
-                @foreach (Alert alert in @Model.ArchivedRequests)
+                @foreach (var alert in @Model.ArchivedRequests)
                 {
                     <tr>
                         <td>@alert.Date</td>
-                        @if (alert is ShiftRequestAlert shiftRequestAlert)
+                        @if (alert.AlertType == "shift")
                         {
-                            <td><span>@shiftRequestAlert.AddressedBy</span></td>
+                            <td><span>@alert.AddressedBy</span></td>
                         }
                         else
                         {

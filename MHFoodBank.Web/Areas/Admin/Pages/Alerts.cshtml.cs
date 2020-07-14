@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
 using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Web.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -16,15 +18,17 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
     [Authorize(Roles = "Staff, Admin")]
     public class AlertsModel : AdminPageModel
     {
-        public List<ShiftRequestAlert> PendingRequests { get; set; }
-        public List<ShiftRequestAlert> ArchivedRequests { get; set; }
-        public List<ApplicationAlert> ApplicationAlerts { get; set; }
+        private readonly IMapper _mapper;
+
+        public List<AdminAlertListDto> PendingRequests { get; set; }
+        public List<AdminAlertListDto> ArchivedRequests { get; set; }
+        public List<AdminAlertListDto> ApplicationAlerts { get; set; }
         public string SearchedName { get; set; }
         public string StatusMessage { get; set; }
 
-        public AlertsModel(FoodBankContext context, string currentPage = "Alerts") : base(context, currentPage)
+        public AlertsModel(FoodBankContext context,IMapper mapper, string currentPage = "Alerts") : base(context, currentPage)
         {
-
+            _mapper = mapper;
         }
 
         public async Task OnGet(string statusMessage = null)
@@ -35,53 +39,48 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostViewApplicant(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
+            var selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
             //TODO: This is throwing a null error
             await _context.Entry(selectedAlert).Reference(a => a.Volunteer).LoadAsync();
             _context.Alerts.Update(selectedAlert);
-            selectedAlert.HasBeenRead = true;
+            selectedAlert.Read = true;
             await _context.SaveChangesAsync();
             return RedirectToPage("VolunteerDetails", new { id = selectedAlert.Volunteer.Id });
         }
 
         public async Task<IActionResult> OnPostViewRequest(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
+            var selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
             await _context.Entry(selectedAlert).Reference(a => a.Volunteer).LoadAsync();
             _context.Alerts.Update(selectedAlert);
-            selectedAlert.HasBeenRead = true;
+            selectedAlert.Read = true;
             await _context.SaveChangesAsync();
             return RedirectToPage("ResolveShiftRequest", new { alertId = selectedAlert.Id });
         }
 
         public async Task<IActionResult> OnPostDeleteAlert(int id)
         {
-            Alert selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
-
-            if (selectedAlert is ShiftRequestAlert)
+            var selectedAlert = await _context.Alerts.FirstOrDefaultAsync(a => a.Id == id);
+            _context.Update(selectedAlert);
+            if (selectedAlert is ShiftRequestAlert shiftAlert)
             {
-                ShiftRequestAlert shiftAlert = (ShiftRequestAlert)selectedAlert;
-
                 await _context.Entry(shiftAlert).Reference(p => p.OriginalShift).LoadAsync();
                 await _context.Entry(shiftAlert).Reference(p => p.RequestedShift).LoadAsync();
 
                 if (shiftAlert.DismissedByVolunteer)
                 {
-                    _context.Alerts.Remove(shiftAlert);
-                    _context.Remove(shiftAlert.OriginalShift);
-                    _context.Remove(shiftAlert.RequestedShift);
+                    shiftAlert.Deleted = true;
                 }
                 else
                 {
-                    _context.Alerts.Update(selectedAlert);
-                    ((ShiftRequestAlert)selectedAlert).DismissedByAdmin = true;
-                    await _context.SaveChangesAsync();
+                    shiftAlert.DismissedByAdmin = true;
                 }
             }
             else
             {
-                _context.Alerts.Remove(selectedAlert);
+                selectedAlert.Deleted = true;
             }
+
             await _context.SaveChangesAsync();
 
             return RedirectToPage();
@@ -89,17 +88,24 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task PrepareModel()
         {
-            List<ShiftRequestAlert> shiftRequests = await _context.ShiftAlerts
+            var shiftRequests = await _context.ShiftAlerts
                 .Include(p => p.Volunteer)
-                .Where(a => a.DismissedByAdmin == false)
+                .Where(a => !a.DismissedByAdmin && !a.Deleted )
                 .ToListAsync();
 
-            PendingRequests = shiftRequests.Where(sr => sr.Status == ShiftRequestAlert.RequestStatus.Pending).ToList();
-            ArchivedRequests = shiftRequests.Where(sr => sr.Status != ShiftRequestAlert.RequestStatus.Pending).ToList();
+            PendingRequests = _mapper.Map<List<AdminAlertListDto>>(shiftRequests
+                    .Where(sr => sr.Status == ShiftRequestAlert.RequestStatus.Pending)).ToList();
 
-            ApplicationAlerts = await _context.ApplicationAlerts
+            ArchivedRequests = _mapper.Map<List<AdminAlertListDto>>(shiftRequests
+                    .Where(sr => sr.Status != ShiftRequestAlert.RequestStatus.Pending)).ToList();
+
+
+            var applicationAlerts = await _context.ApplicationAlerts
                 .Include(p => p.Volunteer)
+                .Where(a => !a.Deleted)
                 .ToListAsync();
+
+            ApplicationAlerts = _mapper.Map<List<AdminAlertListDto>>(ApplicationAlerts).ToList();
 
             PendingRequests = PendingRequests.OrderByDescending(a => a.Date).ToList();
             ArchivedRequests = ArchivedRequests.OrderByDescending(a => a.Date).ToList();

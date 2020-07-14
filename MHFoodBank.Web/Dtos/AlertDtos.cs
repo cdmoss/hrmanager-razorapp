@@ -8,22 +8,15 @@ namespace MHFoodBank.Web.Dtos
     public class AdminAlertListDto
     {
         public int Id { get; set; }
+        public VolunteerMinimalDto Volunteer { get; set; }
         public string UserFullName { get; set; }
         public DateTime Date { get; set; }
-        public bool HasBeenRead { get; set; }
+        public bool Read { get; set; }
         public string AlertType { get; set; }
-    }
-
-    public class AdminArchivedAlertListDto
-    {
-        public int Id { get; set; }
-        public string UserFullName { get; set; }
         public string AddressedBy { get; set; }
-        public DateTime Date { get; set; }
-        public string AlertType { get; set; }
     }
 
-    public class UserShiftRequestListDto
+    public class VolunteerShiftRequestListDto
     {
         public int Id { get; set; }
         public DateTime DateRequested { get; set; }
@@ -35,6 +28,7 @@ namespace MHFoodBank.Web.Dtos
     public class ShiftRequestReadDto
     {
         public int Id { get; set; }
+        public VolunteerMinimalDto Volunteer { get; set; }
         public ShiftReadEditDto OriginalShift { get; set; }
         public ShiftReadEditDto RequestedShift { get; set; }
         public RequestStatus Status { get; set; }
