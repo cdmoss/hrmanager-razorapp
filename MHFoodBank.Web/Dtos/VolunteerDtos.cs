@@ -22,6 +22,7 @@ namespace MHFoodBank.Web.Dtos
         [Required]
         [EmailAddress]
         [Display(Name = "Email (Required)")]
+        [Compare("ConfirmEmail", ErrorMessage = "The email and confirmation email do not match.")]
         public string Email { get; set; }
         [Required]
         [EmailAddress]
@@ -83,29 +84,24 @@ namespace MHFoodBank.Web.Dtos
         [Display(Name = "Food safe")]
         public bool FoodSafe { get; set; }
         [DataType(DataType.Date)]
-        public DateTime FoodSafeExpiry { get; set; }
-
+        public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "First aid")]
         public bool FirstAid { get; set; }
         [DataType(DataType.Date)]
-        public DateTime FirstAidExpiry { get; set; }
+        public DateTime? FirstAidExpiry { get; set; }
         [Display(Name = "CPR")]
         public bool Cpr { get; set; }
         [DataType(DataType.Date)]
-        public DateTime CprExpiry { get; set; }
+        public DateTime? CprExpiry { get; set; }
         [Display(Name = "Other Certificates")]
         public string OtherCertificates { get; set; }
-        [Required]
-        [Display(Name = "Education and training (Required)")]
+        [Display(Name = "Education and training")]
         public string EducationTraining { get; set; }
-        [Required]
-        [Display(Name = "Skills, interests and hobbies (If none then write none)")]
+        [Display(Name = "Skills, interests and hobbies")]
         public string SkillsInterestsHobbies { get; set; }
-        [Required]
-        [Display(Name = "Previous volunteer experience (If none then write none)")]
+        [Display(Name = "Previous volunteer experience")]
         public string VolunteerExperience { get; set; }
-        [Required]
-        [Display(Name = "Other boards you've appeared on (If none then write none)")]
+        [Display(Name = "Other boards you've appeared on")]
         public string OtherBoards { get; set; }
         public bool VolunteerConfidentiality { get; set; }
         public bool VolunteerEthics { get; set; }
@@ -125,52 +121,55 @@ namespace MHFoodBank.Web.Dtos
         public int Id { get; set; }
         [Required]
         [EmailAddress]
-        [Display(Name = "Please enter a valid email address")]
+        [Display(Name = "email")]
         public string Email { get; set; }
         [Required]
-        [Display(Name = "Please enter a first name")]
+        [Display(Name = "first name")]
         public string FirstName { get; set; }
         [Required]
-        [Display(Name = "Please enter a last name")]
+        [Display(Name = "last name")]
         public string LastName { get; set; }
         [Required]
-        [Display(Name = "Please enter an address")]
+        [Display(Name = "address")]
         public string Address { get; set; }
         [Required]
-        [Display(Name = "Please enter a city")]
+        [Display(Name = "city")]
         public string City { get; set; }
         [Required]
-        [Display(Name = "Please enter a postal code")]
+        [Display(Name = "postal code")]
         public string PostalCode { get; set; }
         [Required]
         [Phone]
-        [Display(Name = "Please enter a phone number")]
+        [Display(Name = "phone number")]
         public string MainPhone { get; set; }
         [Phone]
         public string AlternatePhone1 { get; set; }
         [Phone]
         public string AlternatePhone2 { get; set; }
         [Required]
-        [Display(Name = "Please enter a birth date")]
+        [Display(Name = "birth date")]
         public DateTime Birthdate { get; set; }
         [Required]
-        [Display(Name = "Please enter an emergency full name")]
+        [Display(Name = "emergency full name")]
         public string EmergencyFullName { get; set; }
         [Required]
         [Phone]
-        [Display(Name = "Please enter an emergency phone number")]
+        [Display(Name = "emergency phone number")]
         public string EmergencyPhone1 { get; set; }
         [Phone]
         public string EmergencyPhone2 { get; set; }
         [Required]
-        [Display(Name = "Please enter your relationship with this emergency contact")]
+        [Display(Name = "relationship with this emergency contact")]
         public string EmergencyRelationship { get; set; }
         public bool FoodSafe { get; set; }
-        public DateTime FoodSafeExpiry { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? FoodSafeExpiry { get; set; }
         public bool FirstAid { get; set; }
-        public DateTime FirstAidExpiry { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? FirstAidExpiry { get; set; }
         public bool Cpr { get; set; }
-        public DateTime CprExpiry { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? CprExpiry { get; set; }
         public string OtherCertificates { get; set; }
         public string EducationTraining { get; set; }
         public string SkillsInterestsHobbies { get; set; }

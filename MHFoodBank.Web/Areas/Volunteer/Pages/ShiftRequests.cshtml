@@ -29,7 +29,7 @@
                     <th>Request</th>
                     <th>Status</th>
                 </tr>
-                @foreach (ShiftRequestAlert alert in Model.Alerts)
+                @foreach (var alert in Model.Alerts)
                 {
             <tr>
                 <td>@alert.OriginalShift.StartDate.ToString("yyyy-MM-dd"), @alert.OriginalShift.StartTime.ToString(@"hh\:mm") to @alert.OriginalShift.EndTime.ToString(@"hh\:mm")</td>

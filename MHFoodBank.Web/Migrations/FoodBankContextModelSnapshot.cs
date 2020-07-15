@@ -171,19 +171,15 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Occupation")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Relationship")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int?>("VolunteerId")
@@ -295,7 +291,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("Cpr")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("CprExpiry")
+                    b.Property<DateTime?>("CprExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("CriminalRecordCheck")
@@ -308,7 +304,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EducationTraining")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmergencyFullName")
@@ -329,7 +324,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("FirstAid")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("FirstAidExpiry")
+                    b.Property<DateTime?>("FirstAidExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("FirstName")
@@ -339,7 +334,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("FoodSafe")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("FoodSafeExpiry")
+                    b.Property<DateTime?>("FoodSafeExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastName")
@@ -354,7 +349,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("OtherBoards")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("OtherCertificates")
@@ -365,7 +359,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SkillsInterestsHobbies")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("UserID")
@@ -378,7 +371,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("VolunteerExperience")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
@@ -396,29 +388,24 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ContactPerson")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("CurrentJob")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EmployerAddress")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmployerName")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmployerPhone")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("PositionWorked")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("StartDate")

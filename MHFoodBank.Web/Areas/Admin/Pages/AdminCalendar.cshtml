@@ -152,12 +152,12 @@
 
         @if (@Model.SearchedPosition == null)
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
             </select>
         }
         else
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
             </select>
         }
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>

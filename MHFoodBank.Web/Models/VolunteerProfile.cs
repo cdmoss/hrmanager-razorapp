@@ -57,29 +57,24 @@ namespace MHFoodBank.Web.Data.Models
         [Display(Name = "Food safe")]
         public bool FoodSafe { get; set; }
         [DataType(DataType.Date)]
-        public DateTime FoodSafeExpiry { get; set; }
-
+        public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "First aid")]
         public bool FirstAid { get; set; }
         [DataType(DataType.Date)]
-        public DateTime FirstAidExpiry { get; set; }
+        public DateTime? FirstAidExpiry { get; set; }
         [Display(Name = "CPR")]
         public bool Cpr { get; set; }
         [DataType(DataType.Date)]
-        public DateTime CprExpiry { get; set; }
+        public DateTime? CprExpiry { get; set; }
         [Display(Name = "Other Certificates")] 
         public string OtherCertificates { get; set; }
-        [Required]
-        [Display(Name = "Education and training (Required)")]
+        [Display(Name = "Education and training")]
         public string EducationTraining { get; set; }
-        [Required]
-        [Display(Name = "Skills, interests and hobbies (If none then write none)")]
+        [Display(Name = "Skills, interests and hobbies")]
         public string SkillsInterestsHobbies { get; set; }
-        [Required]
-        [Display(Name = "Previous volunteer experience (If none then write none)")]
+        [Display(Name = "Previous volunteer experience")]
         public string VolunteerExperience { get; set; }
-        [Required]
-        [Display(Name = "Other boards you've appeared on (If none then write none)")]
+        [Display(Name = "Other boards you've appeared on")]
         public string OtherBoards { get; set; }
         public bool VolunteerConfidentiality { get; set; }
         public bool VolunteerEthics { get; set; }

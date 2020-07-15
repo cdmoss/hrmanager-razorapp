@@ -159,27 +159,46 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-            var assignedDomainShifts = _context.Shifts
-                .Include(p => p.Volunteer)
-                .Include(p => p.PositionWorked)
-                .Where(s => 
-                    s.Hidden == false && 
-                    s.Volunteer != null &&
-                    s.Volunteer.Id != currentUser.VolunteerProfile.Id &&
-                    s.StartDate >= currentDate).ToList();
+            var allShifts = await _context.Shifts.Include(x => x.PositionWorked).Include(x => x.Volunteer).Where(x => x.Hidden == false).ToListAsync();
+            var assignedShiftDomainModels = new List<Shift>();
+            var openShiftDomainModels = new List<Shift>();
+            bool shiftShouldBeDisplayed;
 
-            var openDomainShifts = _context.Shifts
-                .Include(p => p.Volunteer)
-                .Include(p => p.PositionWorked)
-                .Where(s => 
-                    s.Hidden == false && 
-                    s.Volunteer == null &&
-                    s.StartDate >= currentDate).ToList();
+            CurrentDateFilter filter = new CurrentDateFilter();
+
+            // this foreach iterates through all the shifts and determines whether or not they should be displayed
+            // and what color they should be displayed with (open vs assigned)
+            foreach (var s in allShifts)
+            {
+
+                // CheckIfShiftDateIsAfterToday will handle recurring shifts in a special way:
+                // it will check through all the shifts in it's recurrence set, if it finds one of the 
+                // shifts to be scheduled past todays date, it will exclude all the shifts from that set
+                // which are scheduled before todays date and display the rest
+                shiftShouldBeDisplayed = filter.CheckIfShiftDateIsAfterToday(s);
+
+                if (shiftShouldBeDisplayed)
+                {
+                    bool shiftIsOpen = s.Volunteer == null;
+                    if (shiftIsOpen)
+                    {
+                        openShiftDomainModels.Add(s);
+                    }
+                    else
+                    {
+                        bool showOthersShifts = s.Volunteer.Id != currentUser.VolunteerProfile.Id;
+                        if (showOthersShifts)
+                        {
+                            assignedShiftDomainModels.Add(s);
+                        }
+                    }
+                }
+            }
 
             var mapper = new ShiftMapper(_mapper);
 
-            AssignedShifts = mapper.MapShiftsToDtos(assignedDomainShifts);
-            OpenShifts = mapper.MapShiftsToDtos(openDomainShifts);
+            AssignedShifts = mapper.MapShiftsToDtos(assignedShiftDomainModels);
+            OpenShifts = mapper.MapShiftsToDtos(openShiftDomainModels);
 
             await _context.Entry(currentUser.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
 

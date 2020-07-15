@@ -53,7 +53,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             await AssignShiftToVolunteer(selectedShift, volunteer);
 
-            return RedirectToPage(new { statusMessage = "You have signed up for the selected shift!"});
+            return RedirectToPage(new { statusMessage = "You have signed up for the selected shift!" });
         }
 
         public async Task<IActionResult> OnPostRequestChange()
@@ -69,7 +69,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 shiftDate = ClickedShiftDate.ToString("yyyy-MM-dd");
             }
 
-            return RedirectToPage("RequestChange", new { originalShiftId = SelectedShift.Id, originalShiftDate = shiftDate});
+            return RedirectToPage("RequestChange", new { originalShiftId = SelectedShift.Id, originalShiftDate = shiftDate });
         }
         private async Task<VolunteerProfile> PrepareModelAndGetCurrentVolunteer()
         {
@@ -80,22 +80,22 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-            var allShifts = await _context.Shifts.Include(x => x.PositionWorked).ToListAsync();
+            var allShifts = await _context.Shifts.Include(x => x.PositionWorked).Include(y => y.Volunteer).Where(x => x.Hidden == false).ToListAsync();
             var assignedShiftDomainModels = new List<Shift>();
             var openShiftDomainModels = new List<Shift>();
             bool shiftShouldBeDisplayed;
 
+            CurrentDateFilter filter = new CurrentDateFilter();
 
             // this foreach iterates through all the shifts and determines whether or not they should be displayed
             // and what color they should be displayed with (open vs assigned)
             foreach (var s in allShifts)
             {
-
                 // CheckIfShiftDateIsAfterToday will handle recurring shifts in a special way:
                 // it will check through all the shifts in it's recurrence set, if it finds one of the 
                 // shifts to be scheduled past todays date, it will exclude all the shifts from that set
                 // which are scheduled before todays date and display the rest
-                shiftShouldBeDisplayed = s.Hidden == false && CheckIfShiftDateIsAfterToday(s);
+                shiftShouldBeDisplayed = filter.CheckIfShiftDateIsAfterToday(s);
 
                 if (shiftShouldBeDisplayed)
                 {
@@ -124,50 +124,6 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             LoggedInUser = user.VolunteerProfile.FirstName + " " + user.VolunteerProfile.LastName;
 
             return user.VolunteerProfile;
-        }
-
-        private bool CheckIfShiftDateIsAfterToday(Shift shift)
-        {
-            var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-            if (shift is RecurringShift recurringShift)
-            {
-                string excludedDatesString = "";
-
-                for (int i = 0; i < recurringShift.ConstituentShifts.Count(); i++)
-                {
-                    if (recurringShift.ConstituentShifts[i].StartDate >= currentDate)
-                    {
-                        for (int j = 0; j < i; j++)
-                        {
-                            DateTime selectedShiftDate = recurringShift.ConstituentShifts[j].StartDate;
-                            TimeSpan selectedShiftTime = recurringShift.StartTime;
-
-                            DateTime combinedDateTime = new DateTime(
-                                selectedShiftDate.Year,
-                                selectedShiftDate.Month,
-                                selectedShiftDate.Day,
-                                selectedShiftTime.Hours,
-                                selectedShiftTime.Minutes,
-                                selectedShiftTime.Seconds);
-
-                            excludedDatesString += $"\\nEXDATE:{combinedDateTime.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
-                        }
-
-                        recurringShift.RecurrenceRule += excludedDatesString;
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                if (shift.StartDate >= currentDate)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         // this method requires the entire AppUser entity because it contains the user's email, and a 
@@ -209,7 +165,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 selectedShift.Volunteer = volunteer;
                 selectedShift.CreateDescription();
                 // schedule email notification for shift
-            //    ReminderScheduler.ScheduleReminder(CurrentUser.Email, CurrentUser.VolunteerProfile, selectedShift, _context);
+                //    ReminderScheduler.ScheduleReminder(CurrentUser.Email, CurrentUser.VolunteerProfile, selectedShift, _context);
             }
             await _context.SaveChangesAsync();
         }

@@ -1,5 +1,6 @@
 ﻿@page
 @using MHFoodBank.Web.Data.Models
+@using MHFoodBank.Web.Dtos 
 @inject Microsoft.AspNetCore.Identity.UserManager<MHFoodBank.Web.Data.AppUser> userManager
 @model MHFoodBank.Web.Areas.Admin.Pages.MainModel
 @{ Layout = "Shared/_Layout";
@@ -11,7 +12,7 @@
             grid-template-columns: 2fr 2fr 1fr 5fr;
             grid-template-rows: auto;
             grid-template-areas: "search-name search-position search-button .";
-            gap: .5rem;
+/*            gap: .5rem;*/
         }
 
         @@media (min-width: 1800px) {
@@ -34,7 +35,7 @@
                 grid-template-columns: 2fr 2fr 1fr;
                 grid-template-rows: auto;
                 grid-template-areas: "search-name search-position search-button";
-                gap: .5rem;
+/*                gap: .5rem;*/
             }
         }
 
@@ -64,12 +65,12 @@
 
         @if (@Model.SearchedPosition == null)
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
             </select>
         }
         else
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" id="cmbPositions" name="searchedposition" required>
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
             </select>
         }
         <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
@@ -88,7 +89,7 @@
                     }
                 </tr>
             </thead>
-        @foreach (VolunteerProfile volunteer in @Model.Volunteers)
+        @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
         {
             <tr>
                 <td>@volunteer.FirstName</td>
@@ -114,7 +115,7 @@
 
 <form method="post">
     <div id="delete-volunteer-prompt" class="modal fade">
-        <input type="hidden" name="volunteer-id-modal" id="volunteer-id-modal" value="" />
+        <input type="hidden" asp-for="@Model.Volunteer.Id" id="volunteer-id-modal" value="" />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

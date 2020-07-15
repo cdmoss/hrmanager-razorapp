@@ -64,8 +64,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public async Task<IActionResult> OnPostAccept(int alertId)
         {
             var requestAlert = await LoadAlertForResolution(alertId);
-            OpenShifts = await LoadOpenShifts(requestAlert);
-            AssignedShifts = await LoadAssignedShifts(requestAlert);
+            OpenShifts = await LoadOpenShifts(requestAlert); //*
+            AssignedShifts = await LoadAssignedShifts(requestAlert); //*
             _context.Update(requestAlert);
             bool isRemovalRequest = requestAlert.RequestedShift == null;
 
@@ -157,25 +157,17 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             if (oldRecurringShift != null)
             {
-                // load recurring set's excluded shifts so the newshift can be added to it
-                await _context.Entry(updatedOriginalShift.ParentRecurringShift).Collection(p => p.ExcludedShifts).LoadAsync();
-
-                // exclude the new shift from the recurring set and remove the old version 
-                updatedOriginalShift.ParentRecurringShift.ExcludedShifts.Add(updatedOriginalShift);
-                updatedOriginalShift.ParentRecurringShift.ExcludedShifts.Remove(requestAlert.OriginalShift);
-                updatedOriginalShift.ParentRecurringShift.UpdateRecurrenceRule();
+                await UpdateExcludedShiftInRecurringSet(updatedOriginalShift, requestAlert.OriginalShift);
             }
 
             if (newRecurringShift != null)
             {
-                // load recurring set's excluded shifts so the newshift can be added to it
-                await _context.Entry(updatedRequestedShift.ParentRecurringShift).Collection(p => p.ExcludedShifts).LoadAsync();
-
-                // exclude the new shift from the recurring set
-                updatedRequestedShift.ParentRecurringShift.ExcludedShifts.Add(updatedRequestedShift);
-                updatedRequestedShift.ParentRecurringShift.ExcludedShifts.Remove(requestAlert.RequestedShift);
-                updatedRequestedShift.ParentRecurringShift.UpdateRecurrenceRule();
+                await UpdateExcludedShiftInRecurringSet(updatedRequestedShift, requestAlert.RequestedShift);
             }
+            // The reminders for the original shifts in this request must be cancelled before save changes is
+            // called because in order for the reminder to be cancelled properly the original shifts parent
+            // recurring shift must not be null
+            CancelOldReminders(requestAlert);
 
             await _context.AddAsync(updatedOriginalShift);
             await _context.AddAsync(updatedRequestedShift);
@@ -188,14 +180,25 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             await _context.SaveChangesAsync();
 
-            // schedule reminders, this must be done while the old shifts still have parentrecurringshifts
-            ScheduleRemindersAfterSwitch(updatedOriginalShift, updatedRequestedShift, requestAlert);
+            // The reminders for the updated shifts must be scheduled after save changes is called
+            // so the reminders have proper shift Ids
+            ScheduleNewReminders(updatedOriginalShift, updatedRequestedShift);
+        }
 
+        private async Task UpdateExcludedShiftInRecurringSet(Shift newShift, Shift oldShift)
+        {
+            // load recurring set's excluded shifts so the newshift can be added to it
+            await _context.Entry(newShift.ParentRecurringShift).Collection(p => p.ExcludedShifts).LoadAsync();
+
+            // exclude the new shift from the recurring set
+            newShift.ParentRecurringShift.ExcludedShifts.Add(newShift);
+            newShift.ParentRecurringShift.ExcludedShifts.Remove(oldShift);
+            newShift.ParentRecurringShift.UpdateRecurrenceRule();
         }
         
-        private void ScheduleRemindersAfterSwitch(Shift OriginalShift, Shift RequestedShift, ShiftRequestAlert requestAlert)
+        private void CancelOldReminders(ShiftRequestAlert requestAlert)
         {
-            // cancel old reminders; this must be done first, if reminders are scheduled first, 
+            // cancel old reminders; this must be done first. If reminders are scheduled first,
             // savechanges will be called and parentrecurring shifts for ShiftRequest.OriginalShift and ShiftRequest.RequestedShift will be null
             if (requestAlert.OriginalShift.Volunteer != null)
             {
@@ -220,7 +223,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     _reminderManager.CancelReminder(requestAlert.RequestedShift);
                 }
             }
+        }
 
+        private void ScheduleNewReminders(Shift OriginalShift, Shift RequestedShift)
+        {
             // schedule new reminders
             if (OriginalShift.Volunteer != null)
             {
@@ -298,7 +304,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.OriginalShift).ThenInclude(p => p.Volunteer).ThenInclude(p => p.User)
                 .Include(p => p.OriginalShift).ThenInclude(p => p.ParentRecurringShift)
                 .Include(p => p.RequestedShift).ThenInclude(p => p.PositionWorked)
-                .Include(p => p.RequestedShift).ThenInclude(p => p.Volunteer)
+                .Include(p => p.RequestedShift).ThenInclude(p => p.Volunteer).ThenInclude(p => p.User)
                 .Include(p => p.RequestedShift).ThenInclude(p => p.ParentRecurringShift)
                 .FirstOrDefaultAsync(p => p.Id == alertId);
 

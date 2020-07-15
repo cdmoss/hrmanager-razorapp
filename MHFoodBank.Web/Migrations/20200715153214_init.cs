@@ -408,6 +408,7 @@ namespace MHFoodBank.Web.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     Read = table.Column<bool>(nullable: false),
                     Deleted = table.Column<bool>(nullable: false),
+                    AlertType = table.Column<string>(nullable: true),
                     Discriminator = table.Column<string>(nullable: false),
                     OriginalShiftId = table.Column<int>(nullable: true),
                     RequestedShiftId = table.Column<int>(nullable: true),

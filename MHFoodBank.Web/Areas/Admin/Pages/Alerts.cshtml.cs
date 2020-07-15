@@ -105,7 +105,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Where(a => !a.Deleted)
                 .ToListAsync();
 
-            ApplicationAlerts = _mapper.Map<List<AdminAlertListDto>>(ApplicationAlerts).ToList();
+            ApplicationAlerts = _mapper.Map<List<AdminAlertListDto>>(applicationAlerts).ToList();
 
             PendingRequests = PendingRequests.OrderByDescending(a => a.Date).ToList();
             ArchivedRequests = ArchivedRequests.OrderByDescending(a => a.Date).ToList();

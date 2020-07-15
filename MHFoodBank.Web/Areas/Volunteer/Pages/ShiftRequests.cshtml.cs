@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
 using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Web.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -14,11 +16,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 {
     public class ShiftRequestsModel : VolunteerPageModel
     {
-        public List<ShiftRequestAlert> Alerts { get; set; }
-        public ShiftRequestsModel(FoodBankContext context, UserManager<AppUser> userManager) : base(userManager,
+        private readonly IMapper _mapper;
+        public List<ShiftRequestReadDto> Alerts { get; set; }
+        public ShiftRequestsModel(FoodBankContext context, IMapper mapper, UserManager<AppUser> userManager) : base(userManager,
             context)
         {
-
+            _mapper = mapper;
         }
 
         public async Task OnGet()
@@ -62,10 +65,12 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             AppUser currentUser = await _userManager.GetUserAsync(User);
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(currentUser.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
-            Alerts = await _context.ShiftAlerts
+            var alertDomainModels = await _context.ShiftAlerts
                 .Include(p => p.OriginalShift)
                 .Include(p => p.RequestedShift)
                 .Where(sa => sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
+
+            Alerts = _mapper.Map<List<ShiftRequestReadDto>>(alertDomainModels);
 
             LoggedInUser = currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;
         }

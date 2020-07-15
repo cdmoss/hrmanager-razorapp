@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
+using MHFoodBank.Web.Dtos;
+using AutoMapper;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -20,23 +22,25 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
+        private readonly IMapper _mapper;
 
         public ChangePasswordModel(
             FoodBankContext context,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ILogger<ChangePasswordModel> logger, string currentPage = "Change Volunteer Password") : base(context, currentPage)
+            ILogger<ChangePasswordModel> logger, IMapper mapper, string currentPage = "Change Volunteer Password") : base(context, currentPage)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _mapper = mapper;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         [BindProperty] 
-        public AppUser Volunteer { get; set; }
+        public VolunteerMinimalDto Volunteer { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -62,15 +66,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
-            await _context.Entry(Volunteer).Reference(p => p.VolunteerProfile).LoadAsync();
+            var domainVolunteer = await _context.Users.Include(x => x.VolunteerProfile).FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
+
+            Volunteer = _mapper.Map<VolunteerMinimalDto>(domainVolunteer.VolunteerProfile);
 
             if (Volunteer == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var hasPassword = await _userManager.HasPasswordAsync(Volunteer);
+            var hasPassword = await _userManager.HasPasswordAsync(domainVolunteer);
             if (!hasPassword)
             {
                 return RedirectToPage("./SetPassword");
@@ -81,20 +86,20 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAsync(int id)
         {
-            Volunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
-           await _context.Entry(Volunteer).Reference(p => p.VolunteerProfile).LoadAsync();
+            var domainVolunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
+            await _context.Entry(domainVolunteer).Reference(p => p.VolunteerProfile).LoadAsync();
 
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            if (Volunteer == null)
+            if (domainVolunteer == null)
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(Volunteer, Input.OldPassword, Input.NewPassword);
+            var changePasswordResult = await _userManager.ChangePasswordAsync(domainVolunteer, Input.OldPassword, Input.NewPassword);
             if (!changePasswordResult.Succeeded)
             {
                 foreach (var error in changePasswordResult.Errors)
@@ -107,7 +112,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _logger.LogInformation("User changed their password successfully.");
             StatusMessage = "Your password has been changed.";
 
-            return RedirectToPage("VolunteerDetails", new { id = Volunteer.VolunteerProfile.Id, statusMessage = "You have successfully changed this volunteer's password." });
+            return RedirectToPage("VolunteerDetails", new { id = domainVolunteer.VolunteerProfile.Id, statusMessage = "You have successfully changed this volunteer's password." });
         }
     }
 }

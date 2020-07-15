@@ -31,6 +31,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
         public List<Position> Positions { get; set; }
         [BindProperty]
         public string StatusMessage { get; set; }
+        public string ReturnUrl { get; set; }
 
         private readonly IMapper _mapper;
 
@@ -39,10 +40,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             _mapper = mapper;
         }
 
-        public void OnGet(int id, string statusMessage = null)
+        public IActionResult OnGet(int id, string statusMessage = null, string returnUrl = null)
         {
+            ReturnUrl = returnUrl;
             StatusMessage = statusMessage;
             PrepareModel(id);
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostChangeStatusAsync(int check, int id)
@@ -54,18 +58,19 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             return RedirectToPage(new { id = id });
         }
 
-        public async Task<IActionResult> OnPostSaveChangesAsync(int id)
+        public async Task<IActionResult> OnPostSaveChangesAsync(int id, string returnUrl = null)
         {
+            returnUrl = returnUrl ?? Url.Content("~/");
+
             var errors = ModelState.Values.Select(v => v.Errors);
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                await UpdateUserProfile(id);
-                var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
-
-                return RedirectToPage(new { statusMessage = $"You successfully saved the changes to {volunteer.FirstName} {volunteer.LastName}'s profile." });
+                return OnGet(id);
             }
+            await UpdateUserProfile(id);
+            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
 
-            return Page();
+            return RedirectToPage(new { statusMessage = "Successfully updated the volunteer profile." });
         }
 
         private async Task UpdateStatus(int statusChangeType)
