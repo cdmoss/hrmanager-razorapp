@@ -1,9 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-CREATE DATABASE IF NOT EXISTS `foodbankdb` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `foodbankdb`;
-
-CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(95) NOT NULL,
     `ProductVersion` varchar(32) NOT NULL,
     CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)

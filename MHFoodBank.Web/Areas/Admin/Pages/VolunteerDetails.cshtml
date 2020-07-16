@@ -5,12 +5,11 @@
     ViewData["Title"] = "VolunteerDetails";
     Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
 }
-
 <form method="post">
     <input type="hidden" asp-for="@Model.DetailsModel.FirstName" value="@Model.DetailsModel.FirstName" />
     <input type="hidden" asp-for="@Model.DetailsModel.LastName" value="@Model.DetailsModel.LastName" />
     <div class="ml-5 mr-5">
-            <partial name="_AdminStatusMessage" for="StatusMessage" />
+        <partial name="_AdminStatusMessage" for="StatusMessage" />
         <div class="row">
             <h4 class="mr-2"><strong>Volunteer Approval Status: </strong></h4>
             @if (@Model.DetailsModel.OfficiallyApproved)
@@ -19,14 +18,18 @@
             }
             else
             {
-                <h4> Pending or not approved</h4>            
+                <h4>Not approved</h4>
             }
             <div class="mr-auto ml-auto form-check">
                 <input class="mt-auto mb-auto" type="checkbox" asp-for="@Model.DetailsModel.OfficiallyApproved" />
                 <label class="mt-auto mb-auto">Approve this volunteer?</label>
             </div>
-            <button class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
-            <a align="right" class="btn-primary btn-sm btn ml-2" asp-page="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</a>
+            <div>
+                <button class="w-100 h-100 btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
+            </div>
+            <a align="right" class="ml-2" asp-page="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">
+                <input class="w-100 h-100 btn-primary btn-sm btn" value="Change Password"/>
+            </a>
         </div>
         <hr class="mt-4 mb-4" />
         <div class="row col-md-12">
@@ -55,27 +58,27 @@
                 <dl class="col-md-4 row">
                     <dt class="col-md-10">Food Safe:</dt>
                     <dd class="col-md-2">
-                        <input type="checkbox" onclick="ToggleCertificateExpiries('DetailsModel_FoodSafe','DetailsModel_FoodSafeExpiry')" asp-for="@Model.DetailsModel.FoodSafe" value="true" />
+                        <input type="checkbox" id="foodsafe-check" onclick="ToggleCertificateExpiries('foodsafe-check','foodsafe-date')" asp-for="@Model.DetailsModel.FoodSafe" value="true" />
                     </dd>
-                        </dl>
+                </dl>
                 <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.FoodSafeExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
+                <input class="form-control col-md-4" id="foodsafe-date" type="date" value="@Model.DetailsModel.FoodSafeExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
                 <dl class="col-md-4 row">
                     <dt class="col-md-10">CPR:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" onclick="ToggleCertificateExpiries('DetailsModel_Cpr','DetailsModel_CprExpiry')" asp-for="@Model.DetailsModel.Cpr" value="true" />
+                        <input type="checkbox" id="cpr-check" onclick="ToggleCertificateExpiries('cpr-check','cpr-date')" asp-for="@Model.DetailsModel.Cpr" value="true" />
                     </dd>
                 </dl>
                 <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.CprExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.CprExpiry" />
+                <input class="form-control col-md-4" id="cpr-date" type="date" value="@Model.DetailsModel.CprExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.CprExpiry" />
                 <dl class="col-md-4 row">
                     <dt class="col-md-10">First Aid:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" onclick="ToggleCertificateExpiries('DetailsModel_FirstAid','DetailsModel_FirstAidExpiry')" asp-for="@Model.DetailsModel.FirstAid" />
+                        <input type="checkbox" id="firstaid-check" onclick="ToggleCertificateExpiries('firstaid-check','firstaid-date')" asp-for="@Model.DetailsModel.FirstAid" />
                     </dd>
                 </dl>
                 <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" type="date" value="@Model.DetailsModel.FirstAidExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidExpiry" />
+                <input class="form-control col-md-4" id="firstaid-date" type="date" value="@Model.DetailsModel.FirstAidExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidExpiry" />
                 <dl class="col-md-12 row">
                     <dt class="col-md-4">Other Certificates:</dt>
                     <dd class="col-md-8">
@@ -103,25 +106,25 @@
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Criminal Record Check:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" asp-for="@Model.DetailsModel.CriminalRecordCheck" value="true" />
+                        <input type="checkbox" asp-for="@Model.DetailsModel.CriminalRecordCheck" value="true" />
                     </dd>
                 </dl>
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Driving Abstract:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" asp-for="@Model.DetailsModel.DrivingAbstract" value="true" />
+                        <input type="checkbox" asp-for="@Model.DetailsModel.DrivingAbstract" value="true" />
                     </dd>
                 </dl>
-.                <dl class="row col-md-8">
+                .                <dl class="row col-md-8">
                     <dt class="col-md-10">Confirmation of Professional Designation:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" asp-for="@Model.DetailsModel.ConfirmationOfProfessionalDesignation" value="true" />
+                        <input type="checkbox" asp-for="@Model.DetailsModel.ConfirmationOfProfessionalDesignation" value="true" />
                     </dd>
                 </dl>
                 <dl class="row col-md-8">
                     <dt class="col-md-10">Child Welfare Check:</dt>
                     <dd class="col-md-2">
-                            <input type="checkbox" asp-for="@Model.DetailsModel.ChildWelfareCheck" value="true" />
+                        <input type="checkbox" asp-for="@Model.DetailsModel.ChildWelfareCheck" value="true" />
                     </dd>
                 </dl>
             </div>
@@ -148,9 +151,7 @@
             </dl>
         </div>
         <hr class="mt-2 mb-4" />
-        <div>
-            <dl class="col-md-12 row"><dt class="col-md-4">Availability:</dt></dl>
-        </div>
+        <h5 class="ml-2">Availability</h5>
         <table class="availability table">
 
             <tr>
@@ -220,8 +221,8 @@
                 {
                     <div class="form-check">
                         @if (Model.DetailsModel.Positions.Any(p =>
-                           p.Position == position &&
-                           p.Association != PositionVolunteer.AssociationType.Assigned))
+                         p.Position == position &&
+                         p.Association != PositionVolunteer.AssociationType.Assigned))
                         {
                             <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
                         }
@@ -241,8 +242,8 @@
                 {
                     <div class="form-check">
                         @if (@Model.DetailsModel.Positions.Any(p =>
-                           p.Position == position &&
-                           p.Association != PositionVolunteer.AssociationType.Preferred))
+                         p.Position == position &&
+                         p.Association != PositionVolunteer.AssociationType.Preferred))
                         {
                             <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
                         }
@@ -257,14 +258,14 @@
         </dl>
 
         <hr class="mt-2 mb-4" />
+        <h5 class="ml-2">Work Experiences</h5>
+        <br />
         <div class="row col-md-12">
             @for (int i = 1; i <= @Model.DetailsModel.WorkExperiences.Count; i++)
             {
                 <input type="hidden" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].Id" />
                 <br>
                 <dl class="row col-md-4">
-                    <dt class="col-md-4">Work Experience @i</dt>
-                    <dd class="col-md-8">&nbsp;</dd>
                     <dt class="col-md-4">Employer Name:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" /></dd>
                     <dt class="col-md-4">Employer Phone:</dt>
@@ -290,14 +291,14 @@
             }
         </div>
         <hr class="mb-4 mt-2" />
+        <h5 class="ml-2">References</h5>
+        <br />
         <div class="row col-md-12">
             @for (int i = 1; i <= @Model.DetailsModel.References.Count; i++)
             {
                 <input type="hidden" asp-for="@Model.DetailsModel.References[i - 1].Id" />
                 <br>
                 <dl class="row col-md-4">
-                    <dt class="col-md-4">Reference @i</dt>
-                    <dd class="col-md-8">&nbsp;</dd>
                     <dt class="col-md-4">Name:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Name" value="@Model.DetailsModel.References[i - 1].Name" /></dd>
                     <dt class="col-md-4">Phone:</dt>
@@ -311,8 +312,8 @@
         </div>
     </div>
 </form>
-
-<script>
+<script src="~/js/checkboxes.js"></script>
+@*<script>
     ToggleCertificateExpiries('DetailsModel_FoodSafe', 'DetailsModel_FoodSafeExpiry');
     ToggleCertificateExpiries('DetailsModel_Cpr', 'DetailsModel_CprExpiry');
     ToggleCertificateExpiries('DetailsModel_FirstAid', 'DetailsModel_FirstAidExpiry');
@@ -369,4 +370,4 @@
             workExperienceEndDate.style.display = 'block';
         }
     }
-</script>
+</script>*@

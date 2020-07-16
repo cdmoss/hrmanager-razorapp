@@ -37,7 +37,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
                 City = currentUser.VolunteerProfile.City,
                 PostalCode = currentUser.VolunteerProfile.PostalCode,
                 Email = currentUser.Email,
-                BirthDate = currentUser.VolunteerProfile.Birthdate.ToString("yy-MM-dd"),
                 MainPhone = currentUser.VolunteerProfile.MainPhone,
                 AlternatePhone1 = currentUser.VolunteerProfile.AlternatePhone1,
                 AlternatePhone2 = currentUser.VolunteerProfile.AlternatePhone2,
@@ -59,7 +58,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             currentUser.VolunteerProfile.Address = PersonalInfo.Address;
             currentUser.VolunteerProfile.City = PersonalInfo.City;
             currentUser.VolunteerProfile.PostalCode = PersonalInfo.PostalCode;
-            currentUser.VolunteerProfile.Birthdate = Convert.ToDateTime(PersonalInfo.BirthDate);
             currentUser.Email = PersonalInfo.Email;
             currentUser.VolunteerProfile.MainPhone = PersonalInfo.MainPhone;
             currentUser.VolunteerProfile.AlternatePhone1 = PersonalInfo.AlternatePhone1;
@@ -118,7 +116,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             public string Address { get; set; }
             public string City { get; set; }
             public string PostalCode { get; set; }
-            public string BirthDate { get; set; }
             public string Email { get; set; }
             public string MainPhone { get; set; }
             public string AlternatePhone1 { get; set; }

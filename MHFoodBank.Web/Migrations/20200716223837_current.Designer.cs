@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200715153214_init")]
-    partial class init
+    [Migration("20200716223837_current")]
+    partial class current
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -173,19 +173,15 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Occupation")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Phone")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("Relationship")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int?>("VolunteerId")
@@ -297,7 +293,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("Cpr")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("CprExpiry")
+                    b.Property<DateTime?>("CprExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<bool>("CriminalRecordCheck")
@@ -310,7 +306,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EducationTraining")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmergencyFullName")
@@ -331,7 +326,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("FirstAid")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("FirstAidExpiry")
+                    b.Property<DateTime?>("FirstAidExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("FirstName")
@@ -341,7 +336,7 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("FoodSafe")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime>("FoodSafeExpiry")
+                    b.Property<DateTime?>("FoodSafeExpiry")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("LastName")
@@ -356,7 +351,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("OtherBoards")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("OtherCertificates")
@@ -367,7 +361,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SkillsInterestsHobbies")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<int>("UserID")
@@ -380,7 +373,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("VolunteerExperience")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");
@@ -398,29 +390,24 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ContactPerson")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<bool>("CurrentJob")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("EmployerAddress")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmployerName")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("EmployerPhone")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("PositionWorked")
-                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<DateTime>("StartDate")
@@ -461,6 +448,32 @@ namespace MHFoodBank.Web.Migrations
                     b.HasIndex("VolunteerProfileId");
 
                     b.ToTable("ClockedTime");
+                });
+
+            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NewShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OriginalShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentSetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewShiftId");
+
+                    b.HasIndex("OriginalShiftId");
+
+                    b.HasIndex("ParentSetId");
+
+                    b.ToTable("ShiftLinks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
@@ -723,6 +736,21 @@ namespace MHFoodBank.Web.Migrations
                     b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "VolunteerProfile")
                         .WithMany()
                         .HasForeignKey("VolunteerProfileId");
+                });
+
+            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+                {
+                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "NewShift")
+                        .WithMany()
+                        .HasForeignKey("NewShiftId");
+
+                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "OriginalShift")
+                        .WithMany()
+                        .HasForeignKey("OriginalShiftId");
+
+                    b.HasOne("MHFoodBank.Web.Data.Models.RecurringShift", "ParentSet")
+                        .WithMany()
+                        .HasForeignKey("ParentSetId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

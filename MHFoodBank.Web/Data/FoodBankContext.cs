@@ -21,6 +21,7 @@ namespace MHFoodBank.Web.Data
         public DbSet<WorkExperience> WorkExperiences { get; set; }
         public DbSet<Shift> Shifts { get; set; }
         public DbSet<RecurringShift> RecurringShifts { get; set; }
+        public DbSet<RecurringChildLink> ShiftLinks { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Alert> Alerts { get; set; }
         public DbSet<ShiftRequestAlert> ShiftAlerts { get; set; }

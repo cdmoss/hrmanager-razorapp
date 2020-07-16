@@ -27,12 +27,15 @@ namespace MHFoodBank.Web.Data
             _context = context;
         }
 
+        // in the instance that a single shift from a recurring set needs to have its reminder scheduled
+        // (e.g. when a shift is having its original properties restored),
+        // the datetime of the selected shift will be passed in
         public void ScheduleReminder(string email, VolunteerProfile volunteer, Shift shift, DateTime? shiftDate = null)
         {
             if (shift is RecurringShift recurringShift)
             {
-                //if (shiftDate == null)
-                //{
+                if (shiftDate == null)
+                {
                     foreach (var constituentShift in recurringShift.ConstituentShifts)
                     {
                         var idForRecurring = BackgroundJob.Schedule(() =>
@@ -46,21 +49,21 @@ namespace MHFoodBank.Web.Data
 
                         _context.Add(new Reminder() { ShiftId = recurringShift.Id, ShiftDate = constituentShift.StartDate, HangfireJobId = idForRecurring });
                     }
-                //}
-                //else
-                //{
-                //    var id = BackgroundJob.Schedule(() =>
-                //    SendEmail(
-                //        email,
-                //        volunteer.FirstName,
-                //        volunteer.LastName,
-                //        shift.StartTime.ToString(),
-                //        shift.EndTime.ToString(),
-                //        shift.PositionWorked.Name),
-                //    ((DateTime)shiftDate).AddHours(-12));
+                }
+                else
+                {
+                    var id = BackgroundJob.Schedule(() =>
+                    SendEmail(
+                        email,
+                        volunteer.FirstName,
+                        volunteer.LastName,
+                        shift.StartTime.ToString(),
+                        shift.EndTime.ToString(),
+                        shift.PositionWorked.Name),
+                    ((DateTime)shiftDate).AddHours(-12));
 
-                //    _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
-                //}
+                    _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartDate, HangfireJobId = id });
+                }
             }
             else
             {

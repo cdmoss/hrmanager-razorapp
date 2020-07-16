@@ -65,7 +65,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             var errors = ModelState.Values.Select(v => v.Errors);
             if (!ModelState.IsValid)
             {
-                return OnGet(id);
+                return OnGet(id: id, statusMessage: "Error: One or more of the fields was not filled in properly.");
             }
             await UpdateUserProfile(id);
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);

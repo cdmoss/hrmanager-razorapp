@@ -7,8 +7,8 @@
 }
 
     <div class="mt-5">
-        <div class="text-center">
-            <img style="height: 200px; width: 200px; margin-top: 2%; margin-bottom: -4%;" src="~/MHFB.png" alt="MHFB Logo" />
+        <div style="height: 20vh" class="text-center">
+            <img class="h-100" src="~/MHFB.png" alt="MHFB Logo" />
         </div>
         <h1 class="text-center">@ViewData["Title"]</h1>
         <div class="row justify-content-center">
@@ -139,7 +139,7 @@
 
                     <div class="row mb-2">
                         <div class="col-md-4 form-check">
-                            <input onclick="check()" asp-for="Volunteer.FirstAid" />
+                            <input id="firstaid-check" onclick="ToggleCertificateExpiries('firstaid-check', 'firstaid-date')" asp-for="Volunteer.FirstAid" />
                             <label asp-for="Volunteer.FirstAid" class="form-check-label"></label>
                             <span asp-validation-for="Volunteer.FirstAid" class="text-danger"></span>
                         </div>
@@ -147,29 +147,29 @@
                         <div class="col-md-2"></div>
 
                         <p class="col-md-2">Expiry:</p>
-                        <input id="date" class="col-md-4 form-control" asp-for="Volunteer.FirstAidExpiry" disabled />
+                        <input id="firstaid-date" class="col-md-4 form-control" asp-for="Volunteer.FirstAidExpiry" disabled />
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-md-4 form-check">
-                            <input onclick="check2()" asp-for="Volunteer.FoodSafe" />
+                            <input id="foodsafe-check" onclick="ToggleCertificateExpiries('foodsafe-check', 'foodsafe-date')" asp-for="Volunteer.FoodSafe" />
                             <label asp-for="Volunteer.FoodSafe" class="form-check-label"></label>
                             <span asp-validation-for="Volunteer.FoodSafe" class="text-danger"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <p class="col-md-2">Expiry:</p>
-                        <input id="date2" class="col-md-4 form-control" asp-for="Volunteer.FoodSafeExpiry" disabled />
+                        <input id="foodsafe-date" class="col-md-4 form-control" asp-for="Volunteer.FoodSafeExpiry" disabled />
                     </div>
 
                     <div class="row mb-2">
                         <div class="col-md-4 form-check">
-                            <input onclick="check3()" asp-for="Volunteer.Cpr" />
+                            <input id="cpr-check" onclick="ToggleCertificateExpiries('cpr-check', 'cpr-date')" asp-for="Volunteer.Cpr" />
                             <label asp-for="Volunteer.Cpr" class="form-check-label"></label>
                             <span asp-validation-for="Volunteer.Cpr" class="text-danger"></span>
                         </div>
                         <div class="col-md-2"></div>
                         <p class="col-md-2">Expiry:</p>
-                        <input id="date3" class="col-md-4 form-control" asp-for="Volunteer.CprExpiry" disabled />
+                        <input id="cpr-date" class="col-md-4 form-control" asp-for="Volunteer.CprExpiry" disabled />
                     </div>
 
                     <div class="form-group mt-4">
@@ -320,12 +320,12 @@
                                     <input asp-for="@Model.WorkExperiences[@i].EmployerAddress" class="form-control">
                                     <span asp-validation-for="@Model.WorkExperiences[@i].EmployerAddress" class="text-danger"></span>
                                 </div>
-                                <div id="work-exp-@i" class="col-md-6 form-group">
-                                    <label asp-for="@Model.WorkExperiences[@i].EndDate"></label>
-                                    <input asp-for="@Model.WorkExperiences[@i].EndDate" class="form-control">
+                                <div class="col-md-6 form-group">
+                                    <label id="workexp-current-label-@i" asp-for="@Model.WorkExperiences[@i].EndDate"></label>
+                                    <input id="workexp-current-enddate-@i" asp-for="@Model.WorkExperiences[@i].EndDate" class="form-control">
                                 </div>
                                 <div class="form-check col-md-12" style="text-align: right;">
-                                    <input id="work-exp-current-@i" onclick="makeWorkExperienceCurrent(@i)" asp-for="@Model.WorkExperiences[@i].CurrentJob" />
+                                    <input id="workexp-current-check-@i" onclick="makeWorkExperienceCurrent(@i)" asp-for="@Model.WorkExperiences[@i].CurrentJob" />
                                     <label>Current Job</label>
                                 </div>
                             </div>
@@ -372,59 +372,4 @@
         </div>
     </div>
 
-<script>
-
-    function makeWorkExperienceCurrent(workExpId) {
-
-        // get the ids of the selected work experience elements
-        var workExperienceCheckId = "work-exp-current-" + workExpId;
-        var workExperienceEndDateId = "work-exp-" + workExpId;
-
-        // get the elements using the ids
-        var workExperienceCheck = document.getElementById(workExperienceCheckId);
-        var workExperienceEndDate = document.getElementById(workExperienceEndDateId);
-
-        // get all checkboxes that weren't selected
-        var checkboxes = $('[id^="work-exp-current"]');
-
-        // hide/show end date and other checkboxes based on checked value
-        if (workExperienceCheck.checked === true) {
-            workExperienceEndDate.style.display = 'none';
-            workExperienceEndDate.value = "2050-01-01";
-        }
-        else {
-            workExperienceEndDate.style.display = 'block';
-        }
-    }
-
-    function check() {
-        if ($("#Volunteer_FirstAid").prop("checked") == true) {
-            $('#date').prop('disabled', false);
-        }
-        else if ($("#Volunteer_FirstAid").prop("checked") == false) {
-            $('#date').prop('disabled', true);
-            $('#date').prop('value', '');
-        }
-    }
-
-    function check2() {
-        if ($("#Volunteer_FoodSafe").prop("checked") == true) {
-            $('#date2').prop('disabled', false);
-        }
-        else if ($("#Volunteer_FoodSafe").prop("checked") == false) {
-            $('#date2').prop('disabled', true);
-            $('#date2').prop('value', '');
-        }
-    }
-
-    function check3() {
-        if ($("#Volunteer_Cpr").prop("checked") == true) {
-            $('#date3').prop('disabled', false);
-        }
-        else if ($("#Volunteer_Cpr").prop("checked") == false) {
-            $('#date3').prop('disabled', true);
-            $('#date3').prop('value', '');
-        }
-    }
-
-</script>
+    <script src="~/js/checkboxes.js"></script>

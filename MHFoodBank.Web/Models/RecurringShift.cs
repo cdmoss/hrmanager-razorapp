@@ -22,31 +22,31 @@ namespace MHFoodBank.Web.Data.Models
 
                 if (Weekdays.Contains("SU"))
                 {
-                    normalizedWeekdayStr += "sunday";
+                    normalizedWeekdayStr += "Sunday, ";
                 }
                 if (Weekdays.Contains("MO"))
                 {
-                    normalizedWeekdayStr += "monday";
+                    normalizedWeekdayStr += "Monday, ";
                 }
                 if (Weekdays.Contains("TU"))
                 {
-                    normalizedWeekdayStr += "tuesday";
+                    normalizedWeekdayStr += "Tuesday, ";
                 }
                 if (Weekdays.Contains("WE"))
                 {
-                    normalizedWeekdayStr += "wednesday";
+                    normalizedWeekdayStr += "Wednesday, ";
                 }
                 if (Weekdays.Contains("TH"))
                 {
-                    normalizedWeekdayStr += "thursday";
+                    normalizedWeekdayStr += "Thursday, ";
                 }
                 if (Weekdays.Contains("FR"))
                 {
-                    normalizedWeekdayStr += "friday";
+                    normalizedWeekdayStr += "Friday, ";
                 }
                 if (Weekdays.Contains("SA"))
                 {
-                    normalizedWeekdayStr += "saturday";
+                    normalizedWeekdayStr += "Saturday";
                 }
 
                 return normalizedWeekdayStr;
@@ -65,7 +65,7 @@ namespace MHFoodBank.Web.Data.Models
 
                 while (dateTracker <= EndDate)
                 {
-                    if (NormalizedWeekdays.Contains(Enum.GetName(typeof(DayOfWeek), dateTracker.DayOfWeek).ToLower()))
+                    if (NormalizedWeekdays.Contains(Enum.GetName(typeof(DayOfWeek), dateTracker.DayOfWeek)))
                     {
                         shifts.Add(new Shift()
                         {

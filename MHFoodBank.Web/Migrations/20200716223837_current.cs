@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MHFoodBank.Web.Migrations
 {
-    public partial class init : Migration
+    public partial class current : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -198,16 +198,16 @@ namespace MHFoodBank.Web.Migrations
                     EmergencyPhone2 = table.Column<string>(nullable: true),
                     EmergencyRelationship = table.Column<string>(nullable: false),
                     FoodSafe = table.Column<bool>(nullable: false),
-                    FoodSafeExpiry = table.Column<DateTime>(nullable: false),
+                    FoodSafeExpiry = table.Column<DateTime>(nullable: true),
                     FirstAid = table.Column<bool>(nullable: false),
-                    FirstAidExpiry = table.Column<DateTime>(nullable: false),
+                    FirstAidExpiry = table.Column<DateTime>(nullable: true),
                     Cpr = table.Column<bool>(nullable: false),
-                    CprExpiry = table.Column<DateTime>(nullable: false),
+                    CprExpiry = table.Column<DateTime>(nullable: true),
                     OtherCertificates = table.Column<string>(nullable: true),
-                    EducationTraining = table.Column<string>(nullable: false),
-                    SkillsInterestsHobbies = table.Column<string>(nullable: false),
-                    VolunteerExperience = table.Column<string>(nullable: false),
-                    OtherBoards = table.Column<string>(nullable: false),
+                    EducationTraining = table.Column<string>(nullable: true),
+                    SkillsInterestsHobbies = table.Column<string>(nullable: true),
+                    VolunteerExperience = table.Column<string>(nullable: true),
+                    OtherBoards = table.Column<string>(nullable: true),
                     VolunteerConfidentiality = table.Column<bool>(nullable: false),
                     VolunteerEthics = table.Column<bool>(nullable: false),
                     CriminalRecordCheck = table.Column<bool>(nullable: false),
@@ -313,10 +313,10 @@ namespace MHFoodBank.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     VolunteerId = table.Column<int>(nullable: true),
-                    Name = table.Column<string>(nullable: false),
-                    Phone = table.Column<string>(nullable: false),
-                    Relationship = table.Column<string>(nullable: false),
-                    Occupation = table.Column<string>(nullable: false)
+                    Name = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
+                    Relationship = table.Column<string>(nullable: true),
+                    Occupation = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -378,13 +378,13 @@ namespace MHFoodBank.Web.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     VolunteerId = table.Column<int>(nullable: true),
-                    EmployerName = table.Column<string>(nullable: false),
-                    EmployerAddress = table.Column<string>(nullable: false),
+                    EmployerName = table.Column<string>(nullable: true),
+                    EmployerAddress = table.Column<string>(nullable: true),
                     StartDate = table.Column<DateTime>(nullable: false),
                     EndDate = table.Column<DateTime>(nullable: false),
-                    EmployerPhone = table.Column<string>(nullable: false),
-                    ContactPerson = table.Column<string>(nullable: false),
-                    PositionWorked = table.Column<string>(nullable: false),
+                    EmployerPhone = table.Column<string>(nullable: true),
+                    ContactPerson = table.Column<string>(nullable: true),
+                    PositionWorked = table.Column<string>(nullable: true),
                     CurrentJob = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
@@ -436,6 +436,39 @@ namespace MHFoodBank.Web.Migrations
                     table.ForeignKey(
                         name: "FK_Alerts_Shifts_RequestedShiftId",
                         column: x => x.RequestedShiftId,
+                        principalTable: "Shifts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ShiftLinks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    ParentSetId = table.Column<int>(nullable: true),
+                    OriginalShiftId = table.Column<int>(nullable: true),
+                    NewShiftId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ShiftLinks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ShiftLinks_Shifts_NewShiftId",
+                        column: x => x.NewShiftId,
+                        principalTable: "Shifts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShiftLinks_Shifts_OriginalShiftId",
+                        column: x => x.OriginalShiftId,
+                        principalTable: "Shifts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ShiftLinks_Shifts_ParentSetId",
+                        column: x => x.ParentSetId,
                         principalTable: "Shifts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -524,6 +557,21 @@ namespace MHFoodBank.Web.Migrations
                 column: "VolunteerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ShiftLinks_NewShiftId",
+                table: "ShiftLinks",
+                column: "NewShiftId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShiftLinks_OriginalShiftId",
+                table: "ShiftLinks",
+                column: "OriginalShiftId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ShiftLinks_ParentSetId",
+                table: "ShiftLinks",
+                column: "ParentSetId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Shifts_ParentRecurringShiftId",
                 table: "Shifts",
                 column: "ParentRecurringShiftId");
@@ -586,13 +634,16 @@ namespace MHFoodBank.Web.Migrations
                 name: "Reminders");
 
             migrationBuilder.DropTable(
+                name: "ShiftLinks");
+
+            migrationBuilder.DropTable(
                 name: "WorkExperiences");
 
             migrationBuilder.DropTable(
-                name: "Shifts");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "Shifts");
 
             migrationBuilder.DropTable(
                 name: "Positions");

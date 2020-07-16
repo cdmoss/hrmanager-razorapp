@@ -372,7 +372,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="EditShift">Submit Change</button>
-                    <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="$('#edit-recshift-single-confirm').modal()">Delete</div>
+                    <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="handleDeletePrompt()">Delete</div>
                     <button class="btn btn-danger" id="edit-shift-delete-noprompt" asp-page-handler="DeleteShift">Delete</button>
                     <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
                 </div>
@@ -514,7 +514,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
                     <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
                 </div>
             </div>
         </div>

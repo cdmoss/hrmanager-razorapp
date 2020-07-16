@@ -31,3 +31,15 @@ function handleEventClick(shiftInfo) {
         toggleEditRecurringShiftControls();
     }
 }
+
+function handleDeletePrompt() {
+    $('#edit-shift-modal').fadeTo("fast", 0, function () {
+        $('#edit-recshift-single-confirm').modal();
+    });
+}
+
+function handleDeletePromptDismiss() {
+    $('#edit-shift-modal').fadeTo("fast", 1, function () {
+
+    });
+}

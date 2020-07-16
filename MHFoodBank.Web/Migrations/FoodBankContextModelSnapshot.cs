@@ -448,6 +448,32 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("ClockedTime");
                 });
 
+            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NewShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OriginalShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentSetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewShiftId");
+
+                    b.HasIndex("OriginalShiftId");
+
+                    b.HasIndex("ParentSetId");
+
+                    b.ToTable("ShiftLinks");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -708,6 +734,21 @@ namespace MHFoodBank.Web.Migrations
                     b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "VolunteerProfile")
                         .WithMany()
                         .HasForeignKey("VolunteerProfileId");
+                });
+
+            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+                {
+                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "NewShift")
+                        .WithMany()
+                        .HasForeignKey("NewShiftId");
+
+                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "OriginalShift")
+                        .WithMany()
+                        .HasForeignKey("OriginalShiftId");
+
+                    b.HasOne("MHFoodBank.Web.Data.Models.RecurringShift", "ParentSet")
+                        .WithMany()
+                        .HasForeignKey("ParentSetId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
