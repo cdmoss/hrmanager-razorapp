@@ -269,7 +269,7 @@
                     <dt class="col-md-4">Employer Name:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" /></dd>
                     <dt class="col-md-4">Employer Phone:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" /></dd>
+                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" /><span asp-validation-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" class="text-danger"></span></dd>
                     <dt class="col-md-4">Employer Address:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" /></dd>
                     <dt class="col-md-4">Position Worked:</dt>
@@ -302,7 +302,7 @@
                     <dt class="col-md-4">Name:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Name" value="@Model.DetailsModel.References[i - 1].Name" /></dd>
                     <dt class="col-md-4">Phone:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Phone" value="@Model.DetailsModel.References[i - 1].Phone" /></dd>
+                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Phone" value="@Model.DetailsModel.References[i - 1].Phone" /><span asp-validation-for="@Model.DetailsModel.References[i - 1].Phone" class="text-danger"></span></dd>
                     <dt class="col-md-4">Relationship:</dt>
                     <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Relationship" value="@Model.DetailsModel.References[i - 1].Relationship" /></dd>
                     <dt class="col-md-4">Occupation:</dt>

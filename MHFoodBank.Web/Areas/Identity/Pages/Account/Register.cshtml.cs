@@ -115,7 +115,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                 //  if (ConfirmationEmailSentResult == "success")
                 //  {
                 // this method returns an actionresult
-                return await TrySignInNewAccountAndRedirect(user, returnUrl);
+                return TrySignInNewAccountAndRedirect(user, returnUrl);
                 // }
             }
 
@@ -254,7 +254,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             ModelState.AddModelError(string.Empty, result);
         }
 
-        private async Task<IActionResult> TrySignInNewAccountAndRedirect(AppUser user, string returnUrl)
+        private IActionResult TrySignInNewAccountAndRedirect(AppUser user, string returnUrl)
         {
             return RedirectToPage("/Account/Login", new { newUser = true });
         }

@@ -12,9 +12,18 @@
 <script src="~/js/admincalendar_ui.js"></script>
 <script src="~/js/admincalendar_events_main.js"></script>
 <script src="~/js/admincalendar_events_single.js"></script>
+<script src="~/js/admincalendar_validate.js"></script>
 
 <script>
-    $('.shift-form').validate();
+    $('.shift-form').validate({
+
+        rules: {
+            SelectedShift_StartDate: {
+                compareDates: ['add-shift-date', 'add-recshift-enddate']
+            }
+        }
+
+    });
 
     // calendar stuff
     document.addEventListener('DOMContentLoaded', function () {
@@ -162,7 +171,7 @@
         }
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
         <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>
-        <div id="add-shift" onclick="$('#add-shift-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
+        <div id="add-shift" onclick="autoFillShiftModal()" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
         <div id="add-position" onclick="$('#add-position-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Position</div>
         <div id="remove-position" onclick="$('#edit-position-modal').modal();" class="btn btn-primary">
             <i class="fa fa-edit"></i> Positions
@@ -239,6 +248,7 @@
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date</label>
                     <input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">
+                    <span asp-validation-for="@Model.SelectedShift.StartDate" class="text-danger"></span>
                     <br />
                     <div>
                         <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
@@ -249,6 +259,7 @@
 
                         <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date</label>
                         <input type="date" class="form-control" id="add-recshift-enddate" asp-for="@Model.SelectedShift.EndDate">
+                        <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>
 
                         <hr />
 

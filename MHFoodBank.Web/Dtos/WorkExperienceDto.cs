@@ -21,7 +21,7 @@ namespace MHFoodBank.Web.Dtos
         [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
         [Display(Name = "Employer Phone")]
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         public string EmployerPhone { get; set; }
         [Display(Name = "Contact Name")]
         public string ContactPerson { get; set; }

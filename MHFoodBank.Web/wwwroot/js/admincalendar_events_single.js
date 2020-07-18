@@ -35,3 +35,12 @@
         $('#edit-shift-delete-noprompt').prop('style', 'display: block');
     }
 }
+
+function autoFillShiftModal() {
+    var currentDate = new Date();
+    document.getElementById("add-shift-date").value = currentDate.getFullYear() + "-" + appendLeadingZeroes(currentDate.getMonth() + 1) + "-" + appendLeadingZeroes(currentDate.getDate());
+    document.getElementById("add-shift-starttime").value = "8:30";
+    document.getElementById("add-shift-endtime").value = "16:30";
+
+    $('#add-shift-modal').modal();
+}

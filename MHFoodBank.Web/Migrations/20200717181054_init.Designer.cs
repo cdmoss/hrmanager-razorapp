@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200716223837_current")]
-    partial class current
+    [Migration("20200717181054_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

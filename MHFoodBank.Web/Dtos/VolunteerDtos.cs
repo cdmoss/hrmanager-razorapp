@@ -136,15 +136,16 @@ namespace MHFoodBank.Web.Dtos
         [Display(Name = "city")]
         public string City { get; set; }
         [Required]
+        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         [Display(Name = "postal code")]
         public string PostalCode { get; set; }
         [Required]
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "phone number")]
         public string MainPhone { get; set; }
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         public string AlternatePhone1 { get; set; }
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         public string AlternatePhone2 { get; set; }
         [Required]
         [Display(Name = "birth date")]
@@ -153,10 +154,10 @@ namespace MHFoodBank.Web.Dtos
         [Display(Name = "emergency full name")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "emergency phone number")]
         public string EmergencyPhone1 { get; set; }
-        [Phone]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
         public string EmergencyPhone2 { get; set; }
         [Required]
         [Display(Name = "relationship with this emergency contact")]
@@ -199,16 +200,39 @@ namespace MHFoodBank.Web.Dtos
     public class VolunteerReadEditDto
     {
         public int Id { get; set; }
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
+        [Required]
         public string Address { get; set; }
+        [Required]
         public string City { get; set; }
+        [Required]
+        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+        [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
+        [Required]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+        [Display(Name = "Main Phone Number")]
         public string MainPhone { get; set; }
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+        [Display(Name = "Alternate Phone Number")]
         public string AlternatePhone1 { get; set; }
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+        [Display(Name = "Alternate Phone Number")]
         public string AlternatePhone2 { get; set; }
+        [Required]
+        [Display(Name = "Emergency Contact Full Name")]
         public string EmergencyFullName { get; set; }
+        [Required]
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+        [Display(Name = "Emergency Contact Phone Number")]
         public string EmergencyPhone1 { get; set; }
+        [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+        [Display(Name = "Emergency Contact Phone Number")]
         public string EmergencyPhone2 { get; set; }
+        [Required]
+        [Display(Name = "Emergency Contact Relationship")]
         public string EmergencyRelationship { get; set; }
         public IList<Position> Positions { get; set; }
     }

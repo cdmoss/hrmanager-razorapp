@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
@@ -24,7 +25,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
         {
         }
 
-        public async Task OnGet(string statusMessage)
+        public async Task<IActionResult> OnGet(string statusMessage = null)
         {
             Positions = await _context.Positions.Where(p => p.Name != "All").ToListAsync();
             var currentUser = await _userManager.GetUserAsync(User);
@@ -47,10 +48,16 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
                 Positions = currentUser.VolunteerProfile.Positions.ToList()
             };
             StatusMessage = statusMessage;
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPost()
         {
+            if(!ModelState.IsValid)
+            {
+                return await OnGet(statusMessage: "Error: One or more of the fields was not filled in properly.");
+            }
             Positions = await _context.Positions.Where(p => p.Name != "All").ToListAsync();
             var currentUser = await _userManager.GetUserAsync(User);
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
@@ -113,16 +120,31 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
 
         public class PersonalInfoInputModel
         {
+            [Required]
             public string Address { get; set; }
+            [Required]
             public string City { get; set; }
+            [Required]
+            [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
             public string PostalCode { get; set; }
+            [Required]
+            [EmailAddress]
             public string Email { get; set; }
+            [Required]
+            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
             public string MainPhone { get; set; }
+            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
             public string AlternatePhone1 { get; set; }
+            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
             public string AlternatePhone2 { get; set; }
+            [Required]
             public string EmergencyName { get; set; }
+            [Required]
             public string EmergencyRelationship { get; set; }
+            [Required]
+            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
             public string EmergencyPhone1 { get; set; }
+            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
             public string EmergencyPhone2 { get; set; }
             public List<PositionVolunteer> Positions { get; set; }
         }

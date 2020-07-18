@@ -103,9 +103,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _reminderManager = reminderManager;
         }
 
-        public async Task OnGet(string statusMessage = null)
+        public async Task<IActionResult> OnGet(string statusMessage = null)
         {
             await PrepareModel(statusMessage);
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAddPosition()
@@ -197,6 +199,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddRecurringShift()
         {
+            if(SelectedShift.StartDate > SelectedShift.EndDate)
+            {
+                return await OnGet("Error: The dates selected ");
+            }
             var shift = (RecurringShift)(await MapShiftData(SelectedShift, new RecurringShift()));
 
             if (string.IsNullOrEmpty(shift.Weekdays))

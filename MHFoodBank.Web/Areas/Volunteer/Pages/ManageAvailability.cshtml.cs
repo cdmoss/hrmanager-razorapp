@@ -24,13 +24,16 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         {
         }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnGet(string statusMessage = null)
         {
+            StatusMessage = statusMessage;
             AppUser currentUser = _userManager.GetUserAsync(User).Result;
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(currentUser.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
             LoggedInUser = currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;
             GetSortedAvailability(currentUser.VolunteerProfile.Availabilities);
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostSaveTimesAsync(IFormCollection formData)
@@ -45,15 +48,24 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             await _context.SaveChangesAsync();
 
-            await _context.Availabilities.AddRangeAsync(GetAvailabilitiesFromFormData(formData, currentUser.VolunteerProfile));
+            List<Availability> newAvailabilites = GetAvailabilitiesFromFormData(formData, currentUser.VolunteerProfile);
+
+            if(newAvailabilites != null)
+            {
+                await _context.Availabilities.AddRangeAsync(newAvailabilites);
+            }
+            else
+            {
+                await _context.Availabilities.AddRangeAsync(oldAvailabilities);
+                await _context.SaveChangesAsync();
+                return await OnGet("Error: One or more of the entered times are not valid.");
+            }
 
             await _context.SaveChangesAsync();
 
             GetSortedAvailability(currentUser.VolunteerProfile.Availabilities);
 
-            StatusMessage = "You successfully changed your availability.";
-
-            return RedirectToPage();
+            return RedirectToPage(new { statusMessage = "You successfully changed your availability." });
         }
 
         private void GetSortedAvailability(IList<Availability> availabilities)
@@ -83,6 +95,13 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                         string startTimeString = formData[$"{currentDay}-1-{j}"];
                         string endTimeString = formData[$"{currentDay}-2-{j}"];
 
+
+                        if (string.IsNullOrWhiteSpace(startTimeString) ^ string.IsNullOrWhiteSpace(endTimeString))
+                        {
+                            ModelState.AddModelError("TimeError", "One or more of the entered times are not valid.");
+                            return null;
+                        }
+
                         if (string.IsNullOrWhiteSpace(startTimeString) || string.IsNullOrWhiteSpace(endTimeString))
                         {
                             continue;
@@ -90,6 +109,17 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
                         string[] startTimeParts = startTimeString.Split(':');
                         string[] endTimeParts = endTimeString.Split(':');
+
+                        int startHours = int.TryParse(startTimeParts[0], out int resultSH) ? resultSH : -1;
+                        int startMinutes = int.TryParse(startTimeParts[1], out int resultSM) ? resultSM : -1;
+                        int endHours = int.TryParse(endTimeParts[0], out int resultEH) ? resultEH : -1;
+                        int endMinutes = int.TryParse(endTimeParts[1], out int resultEM) ? resultEM : -1;
+
+                        if(startHours == -1 || startMinutes == -1 || endHours == -1 || endMinutes == -1)
+                        {
+                            ModelState.AddModelError("TimeError", "One or more of the entered times are not valid.");
+                            return null;
+                        }
 
                         TimeSpan startTime = new TimeSpan(int.Parse(startTimeParts[0]), int.Parse(startTimeParts[1]), 0);
                         TimeSpan endTime = new TimeSpan(int.Parse(endTimeParts[0]), int.Parse(endTimeParts[1]), 0);

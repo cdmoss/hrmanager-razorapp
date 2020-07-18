@@ -14,34 +14,34 @@
             <div class="row col-md-12">
                 <dl class="row col-md-6">
                     <dt class="col-md-5 mb-1">Email:</dt>
-                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.Email" asp-for="@Model.PersonalInfo.Email" /></dd>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.Email" asp-for="@Model.PersonalInfo.Email" /><span asp-validation-for="@Model.PersonalInfo.Email" class="text-danger"></span></dd>
                     <dt class="col-md-5 mb-1">Main Phone:</dt>
-                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.MainPhone" asp-for="@Model.PersonalInfo.MainPhone" /></dd>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.MainPhone" asp-for="@Model.PersonalInfo.MainPhone" /><span asp-validation-for="@Model.PersonalInfo.MainPhone" class="text-danger"></span></dd>
                     <dt class="col-md-5 mb-1">Alternate Phone 1:</dt>
-                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone1" asp-for="@Model.PersonalInfo.AlternatePhone1" /></dd>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone1" asp-for="@Model.PersonalInfo.AlternatePhone1" /><span asp-validation-for="@Model.PersonalInfo.AlternatePhone1" class="text-danger"></span></dd>
                     <dt class="col-md-5 mb-1">Alternate Phone 2:</dt>
-                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone2" asp-for="@Model.PersonalInfo.AlternatePhone2" /></dd>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.AlternatePhone2" asp-for="@Model.PersonalInfo.AlternatePhone2" /><span asp-validation-for="@Model.PersonalInfo.AlternatePhone2" class="text-danger"></span></dd>
                 </dl>
                 <dl class="row col-md-6">
                     <dt class="col-md-5 mb-1">Address:</dt>
-                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.Address" asp-for="@Model.PersonalInfo.Address" /></dd>
+                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.Address" asp-for="@Model.PersonalInfo.Address" /><span asp-validation-for="@Model.PersonalInfo.Address" class="text-danger"></span></dd>
                     <dt class="col-md-5 mb-1 ">City:</dt>
-                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.City" asp-for="@Model.PersonalInfo.City" /></dd>
+                    <dd class="col-md-7 row mb-1"><input type="text" class="form-control col-md-12" value="@Model.PersonalInfo.City" asp-for="@Model.PersonalInfo.City" /><span asp-validation-for="@Model.PersonalInfo.City" class="text-danger"></span></dd>
                     <dt class="col-md-5 mb-1 ">Postal Code:</dt>
-                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.PostalCode" asp-for="@Model.PersonalInfo.PostalCode" /></dd>
+                    <dd class="col-md-7 row mb-1"><input class="form-control col-md-12" value="@Model.PersonalInfo.PostalCode" asp-for="@Model.PersonalInfo.PostalCode" /><span asp-validation-for="@Model.PersonalInfo.PostalCode" class="text-danger"></span></dd>
                 </dl>
             </div>
             <hr class="mt-2 mb-4" />
             <div class="row col-md-12">
                 <dl class="row col-md-6 mb-4">
                     <dt class="col-md-6 mb-1">Emergency Contact Name:</dt>
-                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyName" value="@Model.PersonalInfo.EmergencyName" /></dd>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyName" value="@Model.PersonalInfo.EmergencyName" /><span asp-validation-for="@Model.PersonalInfo.EmergencyName" class="text-danger"></span></dd>
                     <dt class="col-md-6 mb-1">Relationship to Emergency Contact</dt>
-                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyRelationship" value="@Model.PersonalInfo.EmergencyRelationship" /></dd>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyRelationship" value="@Model.PersonalInfo.EmergencyRelationship" /><span asp-validation-for="@Model.PersonalInfo.EmergencyRelationship" class="text-danger"></span></dd>
                     <dt class="col-md-6 mb-1">Emergency Phone 1:</dt>
-                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone1" value="@Model.PersonalInfo.EmergencyPhone1" /></dd>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone1" value="@Model.PersonalInfo.EmergencyPhone1" /><span asp-validation-for="@Model.PersonalInfo.EmergencyPhone1" class="text-danger"></span></dd>
                     <dt class="col-md-6 mb-1">Emergency Phone 2:</dt>
-                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone2" value="@Model.PersonalInfo.EmergencyPhone2" /></dd>
+                    <dd class="col-md-6 mb-1 row"><input class="form-control col-md-12" asp-for="@Model.PersonalInfo.EmergencyPhone2" value="@Model.PersonalInfo.EmergencyPhone2" /><span asp-validation-for="@Model.PersonalInfo.EmergencyPhone2" class="text-danger"></span></dd>
                 </dl>
                 <div class="col-md-6 row">
                     <dl class="col-md-5"><dt>Preferred Positions:</dt></dl>
