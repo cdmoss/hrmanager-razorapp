@@ -1,5 +1,5 @@
 ﻿@page
-@using MHFoodBank.Web.Data.Models
+@using MHFoodBank.Common
 @using MHFoodBank.Web.Dtos
 @using System.Web
 @model MHFoodBank.Web.Areas.Admin.Pages.AdminCalendar
@@ -18,7 +18,7 @@
     $('.shift-form').validate({
 
         rules: {
-            SelectedShift_StartDate: {
+            RecurrenceSetStartDate: {
                 compareDates: ['add-shift-date', 'add-recshift-enddate']
             }
         }
@@ -248,7 +248,6 @@
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date</label>
                     <input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">
-                    <span asp-validation-for="@Model.SelectedShift.StartDate" class="text-danger"></span>
                     <br />
                     <div>
                         <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
@@ -426,7 +425,7 @@
 
                         <hr />
 
-                        <label margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
+                        <label style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
 
                         <div class="col-md-6 form-check">
                             <input id="edit-recshift-weekday-sunday" asp-for="Sunday" />

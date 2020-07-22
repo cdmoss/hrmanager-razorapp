@@ -17,7 +17,7 @@ namespace MHFoodBank.Web.Migrations
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.AppUser", b =>
+            modelBuilder.Entity("MHFoodBank.Common.AppUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -67,7 +67,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Alert", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Alert", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -101,7 +101,7 @@ namespace MHFoodBank.Web.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Alert");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Availability", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Availability", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -126,7 +126,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("Availabilities");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Position", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Position", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -140,7 +140,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("Positions");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.PositionVolunteer", b =>
+            modelBuilder.Entity("MHFoodBank.Common.PositionVolunteer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -164,7 +164,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("PositionVolunteers");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Reference", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Reference", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -192,7 +192,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("References");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Reminder", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Reminder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -212,7 +212,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("Reminders");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Shift", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Shift", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -259,7 +259,7 @@ namespace MHFoodBank.Web.Migrations
                     b.HasDiscriminator<string>("Discriminator").HasValue("Shift");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.VolunteerProfile", b =>
+            modelBuilder.Entity("MHFoodBank.Common.VolunteerProfile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -381,7 +381,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("VolunteerProfiles");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.WorkExperience", b =>
+            modelBuilder.Entity("MHFoodBank.Common.WorkExperience", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -421,7 +421,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("WorkExperiences");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Models.ClockedTime", b =>
+            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -448,7 +448,7 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("ClockedTime");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -600,16 +600,16 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.ApplicationAlert", b =>
+            modelBuilder.Entity("MHFoodBank.Common.ApplicationAlert", b =>
                 {
-                    b.HasBaseType("MHFoodBank.Web.Data.Models.Alert");
+                    b.HasBaseType("MHFoodBank.Common.Alert");
 
                     b.HasDiscriminator().HasValue("ApplicationAlert");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.ShiftRequestAlert", b =>
+            modelBuilder.Entity("MHFoodBank.Common.ShiftRequestAlert", b =>
                 {
-                    b.HasBaseType("MHFoodBank.Web.Data.Models.Alert");
+                    b.HasBaseType("MHFoodBank.Common.Alert");
 
                     b.Property<string>("AddressedBy")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -639,9 +639,9 @@ namespace MHFoodBank.Web.Migrations
                     b.HasDiscriminator().HasValue("ShiftRequestAlert");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.RecurringShift", b =>
+            modelBuilder.Entity("MHFoodBank.Common.RecurringShift", b =>
                 {
-                    b.HasBaseType("MHFoodBank.Web.Data.Models.Shift");
+                    b.HasBaseType("MHFoodBank.Common.Shift");
 
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime(6)");
@@ -655,98 +655,98 @@ namespace MHFoodBank.Web.Migrations
                     b.HasDiscriminator().HasValue("RecurringShift");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Alert", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Alert", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Alerts")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Availability", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Availability", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Availabilities")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.PositionVolunteer", b =>
+            modelBuilder.Entity("MHFoodBank.Common.PositionVolunteer", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.Position", "Position")
+                    b.HasOne("MHFoodBank.Common.Position", "Position")
                         .WithMany()
                         .HasForeignKey("PositionId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Positions")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Reference", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Reference", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("References")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.Shift", b =>
+            modelBuilder.Entity("MHFoodBank.Common.Shift", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.RecurringShift", "ParentRecurringShift")
+                    b.HasOne("MHFoodBank.Common.RecurringShift", "ParentRecurringShift")
                         .WithMany("ExcludedShifts")
                         .HasForeignKey("ParentRecurringShiftId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.Position", "PositionWorked")
+                    b.HasOne("MHFoodBank.Common.Position", "PositionWorked")
                         .WithMany()
                         .HasForeignKey("PositionWorkedId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Shifts")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.VolunteerProfile", b =>
+            modelBuilder.Entity("MHFoodBank.Common.VolunteerProfile", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.AppUser", "User")
+                    b.HasOne("MHFoodBank.Common.AppUser", "User")
                         .WithOne("VolunteerProfile")
-                        .HasForeignKey("MHFoodBank.Web.Data.Models.VolunteerProfile", "UserID")
+                        .HasForeignKey("MHFoodBank.Common.VolunteerProfile", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.WorkExperience", b =>
+            modelBuilder.Entity("MHFoodBank.Common.WorkExperience", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "Volunteer")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("WorkExperiences")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Models.ClockedTime", b =>
+            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.Position", "Position")
+                    b.HasOne("MHFoodBank.Common.Position", "Position")
                         .WithMany()
                         .HasForeignKey("PositionId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.VolunteerProfile", "VolunteerProfile")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "VolunteerProfile")
                         .WithMany()
                         .HasForeignKey("VolunteerProfileId");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Models.RecurringChildLink", b =>
+            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "NewShift")
+                    b.HasOne("MHFoodBank.Common.Shift", "NewShift")
                         .WithMany()
                         .HasForeignKey("NewShiftId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "OriginalShift")
+                    b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
                         .WithMany()
                         .HasForeignKey("OriginalShiftId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.RecurringShift", "ParentSet")
+                    b.HasOne("MHFoodBank.Common.RecurringShift", "ParentSet")
                         .WithMany()
                         .HasForeignKey("ParentSetId");
                 });
@@ -762,7 +762,7 @@ namespace MHFoodBank.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.AppUser", null)
+                    b.HasOne("MHFoodBank.Common.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -771,7 +771,7 @@ namespace MHFoodBank.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.AppUser", null)
+                    b.HasOne("MHFoodBank.Common.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -786,7 +786,7 @@ namespace MHFoodBank.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MHFoodBank.Web.Data.AppUser", null)
+                    b.HasOne("MHFoodBank.Common.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -795,20 +795,20 @@ namespace MHFoodBank.Web.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.AppUser", null)
+                    b.HasOne("MHFoodBank.Common.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MHFoodBank.Web.Data.Models.ShiftRequestAlert", b =>
+            modelBuilder.Entity("MHFoodBank.Common.ShiftRequestAlert", b =>
                 {
-                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "OriginalShift")
+                    b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
                         .WithMany()
                         .HasForeignKey("OriginalShiftId");
 
-                    b.HasOne("MHFoodBank.Web.Data.Models.Shift", "RequestedShift")
+                    b.HasOne("MHFoodBank.Common.Shift", "RequestedShift")
                         .WithMany()
                         .HasForeignKey("RequestedShiftId");
                 });

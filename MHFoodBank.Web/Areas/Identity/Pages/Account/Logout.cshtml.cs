@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Areas.Identity.Pages.Account
 {

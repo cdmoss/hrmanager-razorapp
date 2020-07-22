@@ -1,3 +1,5 @@
+@using MHFoodBank.Common 
+
 @inject SignInManager<AppUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();

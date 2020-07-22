@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
 using MHFoodBank.Web.Dtos;
 using AutoMapper;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {

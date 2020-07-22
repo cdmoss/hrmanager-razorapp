@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
 using Microsoft.AspNetCore.Identity;

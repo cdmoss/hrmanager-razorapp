@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Dtos;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Text;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
+using MHFoodBank.Web.Services;
 
 namespace MHFoodBank.Web.Dtos
 {
@@ -65,6 +66,7 @@ namespace MHFoodBank.Web.Dtos
         [Phone]
         public string AlternatePhone2 { get; set; }
         [Required]
+        [AgeOver14(ErrorMessage = "You must be over 14 years of age.")]
         [Display(Name = "Birth date (Required)")]
         [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
@@ -149,6 +151,7 @@ namespace MHFoodBank.Web.Dtos
         public string AlternatePhone2 { get; set; }
         [Required]
         [Display(Name = "birth date")]
+        [AgeOver14(ErrorMessage = "The volunteer must be over 14 years of age.")]
         public DateTime Birthdate { get; set; }
         [Required]
         [Display(Name = "emergency full name")]

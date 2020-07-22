@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MHFoodBank.Web.Dtos;
-using MHFoodBank.Web.Models;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Repositories;
 
 namespace MHFoodBank.Web.Controllers

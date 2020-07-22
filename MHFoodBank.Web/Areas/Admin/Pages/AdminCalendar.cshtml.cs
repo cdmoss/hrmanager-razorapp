@@ -9,7 +9,6 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
-using MHFoodBank.Web.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -22,7 +21,7 @@ using MHFoodBank.Web.Dtos;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
 using MHFoodBank.Web.Services;
-using MHFoodBank.Web.Models;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -201,7 +200,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             if(SelectedShift.StartDate > SelectedShift.EndDate)
             {
-                return await OnGet("Error: The dates selected ");
+                return await OnGet("Error: The start date must be before the end date.");
             }
             var shift = (RecurringShift)(await MapShiftData(SelectedShift, new RecurringShift()));
 
@@ -283,6 +282,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.PositionWorked)
                 .Include(p => p.ExcludedShifts)
                 .FirstOrDefault(x => x.Id == SelectedShift.Id);
+
+            if (RecurrenceSetStartDate > SelectedShift.EndDate)
+            {
+                return await OnGet("Error: The start date must be before the end date.");
+            }
 
             _context.Update(recurringShift);
 
@@ -473,12 +477,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, SearchedPosition);
         }
 
-        public async Task<IActionResult> OnPostSendNotifications()
-        {
-            await PrepareModel(null);
-
-            return await SendNotifications();
-        }
+        //public async Task<IActionResult> OnPostSendNotifications()
+        //{
+        //    await PrepareModel(null);
+        //
+        //    return await SendNotifications();
+        //}
 
         private async Task<Shift> MapShiftData(ShiftReadEditDto dto, Shift shift)
         {
@@ -503,49 +507,48 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return shift;
         }
 
-        private async Task<IActionResult> SendNotifications()
-        {
-            // if there are no shifts in db, redirect immediately
-            if (!_context.Shifts.Any())
-            {
-                return RedirectToPage();
-            }
-
-            // set up smtp client
-            SmtpClient client = new SmtpClient();
-            await client.ConnectAsync("smtp.gmail.com", 587);
-            await client.AuthenticateAsync("chase.mossing2@mymhc.ca", "Mar1995303");
-
-            // get all volunteers
-            List<AppUser> volunteersUserAccounts = await _context.Users.Where(u => u.VolunteerProfile != null).ToListAsync();
-
-            // for each volunteer, prepare a list of shifts that agrees with their availability
-            foreach (var volunteer in volunteersUserAccounts)
-            {
-                // if this volunteer has no availabilities, skip them
-                if (!volunteer.VolunteerProfile.Availabilities.Any())
-                {
-                    continue;
-                }
-
-                await _context.Entry(volunteer.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
-                List<Shift> workableShifts = GetWorkableShiftsFromAvailabilites(volunteer.VolunteerProfile.Availabilities);
-                bool noWorkableShifts = !workableShifts.Any();
-
-                // skip the volunteer if they can't work any shifts
-                if (noWorkableShifts)
-                {
-                    continue;
-                }
-
-                // send them an email notification if there are shifts they can work
-                MimeMessage email = CreateEmailMessage(volunteer, workableShifts);
-                await client.SendAsync(email);
-            }
-            await client.DisconnectAsync(true);
-
-            return RedirectToPage();
-        }
+        //private async Task<IActionResult> SendNotifications()
+        //{
+        //    // if there are no shifts in db, redirect immediately
+        //    if (!_context.Shifts.Any())
+        //    {
+        //        return RedirectToPage();
+        //    }
+        //
+        //    //// set up smtp client
+        //    //SmtpClient client = new SmtpClient();
+        //    //await client.ConnectAsync("smtp.gmail.com", 587);
+        //
+        //    // get all volunteers
+        //    List<AppUser> volunteersUserAccounts = await _context.Users.Where(u => u.VolunteerProfile != null).ToListAsync();
+        //
+        //    // for each volunteer, prepare a list of shifts that agrees with their availability
+        //    foreach (var volunteer in volunteersUserAccounts)
+        //    {
+        //        // if this volunteer has no availabilities, skip them
+        //        if (!volunteer.VolunteerProfile.Availabilities.Any())
+        //        {
+        //            continue;
+        //        }
+        //
+        //        await _context.Entry(volunteer.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
+        //        List<Shift> workableShifts = GetWorkableShiftsFromAvailabilites(volunteer.VolunteerProfile.Availabilities);
+        //        bool noWorkableShifts = !workableShifts.Any();
+        //
+        //        // skip the volunteer if they can't work any shifts
+        //        if (noWorkableShifts)
+        //        {
+        //            continue;
+        //        }
+        //
+        //        // send them an email notification if there are shifts they can work
+        //        MimeMessage email = CreateEmailMessage(volunteer, workableShifts);
+        //        await client.SendAsync(email);
+        //    }
+        //    await client.DisconnectAsync(true);
+        //
+        //    return RedirectToPage();
+        //}
 
         private List<Shift> GetWorkableShiftsFromAvailabilites(IList<Availability> availabilities)
         {
@@ -831,7 +834,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 _context.Remove(recShift);
             }
-            
+
+            recShift.UpdateRecurrenceRule();
+
             await _context.SaveChangesAsync();
 
             // check if recurring shift has a volunteer after being edited

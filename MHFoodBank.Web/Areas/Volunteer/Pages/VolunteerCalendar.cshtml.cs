@@ -7,7 +7,7 @@ using AutoMapper;
 using Hangfire;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Dtos;
 using MHFoodBank.Web.Services;
 using Microsoft.AspNetCore.Identity;

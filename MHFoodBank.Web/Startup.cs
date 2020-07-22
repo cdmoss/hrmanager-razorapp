@@ -24,6 +24,7 @@ using Hangfire.Common;
 using Google.Protobuf.WellKnownTypes;
 using AutoMapper;
 using MHFoodBank.Web.Repositories;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web
 {

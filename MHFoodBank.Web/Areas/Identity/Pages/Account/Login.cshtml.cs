@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Areas.Identity.Pages.Account
 {

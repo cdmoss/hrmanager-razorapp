@@ -1,7 +1,7 @@
 ﻿@page
-@using MHFoodBank.Web.Data.Models
+@using MHFoodBank.Common
 @using MHFoodBank.Web.Dtos 
-@inject Microsoft.AspNetCore.Identity.UserManager<MHFoodBank.Web.Data.AppUser> userManager
+@inject Microsoft.AspNetCore.Identity.UserManager<MHFoodBank.Common.AppUser> userManager
 @model MHFoodBank.Web.Areas.Admin.Pages.MainModel
 @{ Layout = "Shared/_Layout";
                 ViewData["Title"] = "Volunteers"; }

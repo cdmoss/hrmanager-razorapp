@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MHFoodBank.Web.Models;
 
 namespace MHFoodBank.Web.Data
 {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using static MHFoodBank.Web.Data.Models.ShiftRequestAlert;
+using static MHFoodBank.Common.ShiftRequestAlert;
 
 namespace MHFoodBank.Web.Dtos
 {

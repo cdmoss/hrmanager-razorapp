@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MHFoodBank.Web.Dtos;
-using MHFoodBank.Web.Models;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Data;
 
 namespace MHFoodBank.Web.Repositories

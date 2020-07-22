@@ -1,4 +1,5 @@
 ﻿@using MHFoodBank.Web.Data
+@using MHFoodBank.Common
 @using Microsoft.AspNetCore.Identity
 @model AdminPageModel
 @inject UserManager<AppUser> _userManager
@@ -125,7 +126,8 @@
 
     <script src="~/lib/sb-admin/js/scripts.js"></script>
     <script src="~/lib/jquery-timepicker/jquery.timepicker.js"></script>
-    <script>$(".time").timepicker({
+    <script>
+    $(".time").timepicker({
             'timeFormat': 'G:i',
             'step': 15,
             'minTime': '6:00',

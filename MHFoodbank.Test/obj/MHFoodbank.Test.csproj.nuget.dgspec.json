@@ -1,24 +1,93 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj": {}
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj",
-        "projectName": "MHFoodbank.Test",
-        "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj",
-        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodbank.Test\\obj\\",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "projectName": "MHFoodBank.Common",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[3.1.2, )"
+            },
+            "System.ComponentModel.Annotations": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj",
+        "projectName": "MHFoodbank.Test",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodbank.Test\\MHFoodbank.Test.csproj",
+        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodbank.Test\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -32,8 +101,8 @@
         "frameworks": {
           "netcoreapp3.1": {
             "projectReferences": {
-              "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
-                "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj"
+              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
+                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj"
               }
             }
           }
@@ -74,12 +143,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -88,25 +151,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
         "projectName": "MHFoodBank.Web",
-        "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
-        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Web\\obj\\",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Web\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\Microsoft\\Xamarin\\NuGet\\",
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+          "C:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -119,7 +181,11 @@
         },
         "frameworks": {
           "netcoreapp3.1": {
-            "projectReferences": {}
+            "projectReferences": {
+              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
+              }
+            }
           }
         },
         "warningProperties": {
@@ -154,6 +220,10 @@
             "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
               "target": "Package",
               "version": "[3.1.2, )"
+            },
+            "Microsoft.AspNetCore.Identity": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
               "target": "Package",
@@ -202,12 +272,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.2, 3.1.2]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -216,7 +280,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

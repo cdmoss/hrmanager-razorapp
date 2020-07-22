@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 using MailKit.Net.Smtp;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 using MimeKit;
 using System;
 using System.Collections.Generic;

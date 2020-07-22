@@ -1,5 +1,5 @@
 ﻿@page
-@using MHFoodBank.Web.Data.Models
+@using MHFoodBank.Common
 @model MHFoodBank.Web.Areas.Admin.Pages.AlertsModel
 @{
     ViewData["Title"] = "Alerts";
@@ -12,11 +12,11 @@
         <form class="row w-50 mb-3 ml-1" method="post">
             if (String.IsNullOrWhiteSpace(Model.SearchedName))
             {
-            <input class="form-control col-md-4 mr-1" placeholder="Search by name..." asp-for="Model.SearchedName" />
+            <input class="form-control col-md-4 mr-1" placeholder="Search by name..." asp-for="@Model.SearchedName" />
             }
             else
             {
-            <input class="form-control col-md-4 mr-1" value="Model.SearchedName" asp-for="Model.SearchedName" />
+            <input class="form-control col-md-4 mr-1" value="Model.SearchedName" asp-for="@Model.SearchedName" />
             }
             <div class="col-md-3" method="post">
                 <button class="btn btn-sm btn-primary w-50 h-100" asp-page-handler="Search"><i class="fas fa-search"></i></button>

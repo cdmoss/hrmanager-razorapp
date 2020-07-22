@@ -22,6 +22,7 @@
     <PackageReference Include="jQuery.Fullcalendar" Version="3.9.0" />
     <PackageReference Include="MailKit" Version="2.7.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.4" />
@@ -41,6 +42,11 @@
     <Folder Include="wwwroot\lib\jquery-validation-unobtrusive\" />
     <Folder Include="wwwroot\lib\jquery\" />
     <Folder Include="wwwroot\lib\jquery\dist\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\MHFoodBank.Common\MHFoodBank.Common.csproj" />
   </ItemGroup>
 
 </Project>

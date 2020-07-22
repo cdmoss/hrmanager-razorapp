@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MHFoodBank.Web;
 using MHFoodBank.Web.Dtos;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Api.Profiles
 {

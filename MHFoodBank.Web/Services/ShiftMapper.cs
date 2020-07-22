@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 using MHFoodBank.Web.Dtos;
 using System;
 using System.Collections.Generic;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using MHFoodBank.Web.Data.Models;
+using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Dtos
 {
