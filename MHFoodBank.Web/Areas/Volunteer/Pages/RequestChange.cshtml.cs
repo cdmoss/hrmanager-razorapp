@@ -7,12 +7,13 @@ using AutoMapper;
 using MHFoodBank.Web.Areas.Volunteer.Pages.Shared;
 using MHFoodBank.Web.Data;
 using MHFoodBank.Common;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using MHFoodBank.Web.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using MHFoodBank.Common.Services;
 
 namespace MHFoodBank.Web.Areas.Volunteer.Pages
 {

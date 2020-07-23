@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using MHFoodBank.Common;
 using Microsoft.AspNetCore.Http;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 
 namespace MHFoodBank.Web.Data
 {

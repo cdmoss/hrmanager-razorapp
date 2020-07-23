@@ -8,7 +8,7 @@ using Hangfire.Annotations;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
 using MHFoodBank.Common;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using MHFoodBank.Web.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

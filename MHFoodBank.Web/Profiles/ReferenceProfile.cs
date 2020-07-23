@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using MHFoodBank.Common;
 
 namespace MHFoodBank.Web.Profiles

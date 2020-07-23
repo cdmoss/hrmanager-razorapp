@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authorization;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using AutoMapper;
 using MHFoodBank.Common;
 

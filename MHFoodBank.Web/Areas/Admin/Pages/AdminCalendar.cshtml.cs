@@ -17,7 +17,7 @@ using MimeKit;
 using Hangfire.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
 using MHFoodBank.Web.Services;

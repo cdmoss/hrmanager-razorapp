@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using AutoMapper;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages.Shared

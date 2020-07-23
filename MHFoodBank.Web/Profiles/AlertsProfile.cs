@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MHFoodBank.Common;
-using MHFoodBank.Web.Dtos;
+using MHFoodBank.Common.Dtos;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;

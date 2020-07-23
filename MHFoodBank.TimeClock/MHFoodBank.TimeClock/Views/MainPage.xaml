@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="http://prismlibrary.com"
+             prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="MHFoodBank.TimeClock.Views.MainPage"
              Title="{Binding Title}">
 
@@ -16,9 +18,9 @@
         </Grid.RowDefinitions>
         <Image x:Name="imgLogo" Grid.Row="1" Source="MHFB.png" />
         <Label x:Name="lblWelcome" Grid.Row="2" Text="Welcome!" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Large" TextColor="Black" />
-        <Entry x:Name="txtEmail" Grid.Row="3" Placeholder="Email" VerticalOptions="Center" Margin="20, 0, 20, 0" />
-        <Entry x:Name="txtPass" Grid.Row="4" IsPassword="True" Placeholder="Password" VerticalOptions="Center" Margin="20, 0, 20, 0" />
-        <Button x:Name="btnPunch" Grid.Row="5" Text="Punch Clock" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" />
+        <Entry x:Name="txtEmail" Grid.Row="3" Placeholder="Email" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Email}" />
+        <Entry x:Name="txtPass" Grid.Row="4" IsPassword="True" Placeholder="Password" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Password}" />
+        <Button x:Name="btnPunch" Grid.Row="5" Text="Punch Clock" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding ClockCommand}" />
     </Grid>
 
 </ContentPage>
