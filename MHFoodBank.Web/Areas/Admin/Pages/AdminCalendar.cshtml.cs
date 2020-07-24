@@ -22,6 +22,7 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore.Internal;
 using MHFoodBank.Web.Services;
 using MHFoodBank.Common;
+using Microsoft.AspNetCore.Identity;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -29,6 +30,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
     public class AdminCalendar : AdminPageModel
     {
         private readonly IReminderManager _reminderManager;
+        private readonly UserManager<AppUser> _userManager;
         public enum RecurringShiftEditType
         {
             Single,
@@ -44,7 +46,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public int SelectedPositionId { get; set; }
         [BindProperty]
-        public DateTime StartDateInitial { get; set; }
+        public DateTime OriginalStartDate { get; set; }
+        // Created this property to grab the original start date for the whole recurring set.
+        // This is needed along side selectedshift.startdate in the edit rec shift modal for the changing between single shift
+        // and whole recurring set start date.
         [BindProperty]
         public DateTime RecurrenceSetStartDate { get; set; }
         [BindProperty]
@@ -96,10 +101,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private readonly IMapper _mapper;
 
-        public AdminCalendar(FoodBankContext context, IMapper mapper, IReminderManager reminderManager, string currentPage = "Scheduling") : base(context, currentPage)
+        public AdminCalendar(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper, IReminderManager reminderManager, string currentPage = "Scheduling") : base(context, currentPage)
         {
             _mapper = mapper;
             _reminderManager = reminderManager;
+            _userManager = userManager;
         }
 
         public async Task<IActionResult> OnGet(string statusMessage = null)
@@ -162,7 +168,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddShift()
         {
+            var user = await _userManager.GetUserAsync(User);
+            bool isStaff = await _userManager.IsInRoleAsync(user, "staff");
+
             var shift = await MapShiftData(SelectedShift, new Shift());
+
+            if (shift.StartDate < DateTime.Now.AddDays(-1))
+            {
+                if(isStaff)
+                    return RedirectToPage(new { statusMessage = "Error: Only administrators are able to add shifts that are before today's date." });
+            }
 
             await _context.Shifts.AddAsync(shift);
 
@@ -749,14 +764,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task<RecurringShift> EditSingleShiftFromRecurringSet(RecurringShift recShift)
         {
-            // get original date of selected shift
-            DateTime originalDate = StartDateInitial;
-
             // check if shift had a volunteer
             if (recShift.Volunteer != null)
             {
                 // if so, cancel the original notification scheduled for it
-                _reminderManager.CancelReminder(recShift, originalDate);
+                _reminderManager.CancelReminder(recShift, OriginalStartDate);
             }
 
             // make a new shift which will be excluded from the selected recurring shift, 
@@ -772,15 +784,18 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             excludedShift.ParentRecurringShift = _context.RecurringShifts
                 .FirstOrDefault(s => s.Id == SelectedShift.Id);
 
+            var newStartTime = excludedShift.StartTime;
+            var newStartDate = excludedShift.StartDate;
+
             // handle all special cases
-            if (recShift.StartTime != excludedShift.StartTime)
+            if (recShift.StartTime != newStartTime)
             {
                 // if start time has been changed, an additional shift entity with the original start time 
                 // must be created and added to the recurring shift's excluded shifts so that the shift isn't duplicated
                 var excludedShiftWithOriginalStartTime = new Shift
                 {
                     StartTime = recShift.StartTime,
-                    StartDate = recShift.StartDate,
+                    StartDate = OriginalStartDate,
                     Hidden = true
                 };
 
@@ -797,7 +812,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 _context.Add(link);
                 _context.Add(excludedShift);
             }
-            else if (originalDate != excludedShift.StartDate)
+            else if (OriginalStartDate != newStartDate)
             {
                 // if start date has been changed, an additional shift entity with the original start date
                 // must be created and added to the recurring shift's excluded shifts so that the shift isn't duplicated
@@ -805,7 +820,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 Shift excludedShiftWithOriginalStartDate = new Shift
                 {
                     StartTime = recShift.StartTime,
-                    StartDate = originalDate,
+                    StartDate = OriginalStartDate,
                     Hidden = true
                 };
 
@@ -893,7 +908,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private void DeleteSingleShiftFromRecurringSet(RecurringShift recShift)
         {
             var shift = new Shift();
-            shift.StartDate = StartDateInitial;
+            shift.StartDate = OriginalStartDate;
             shift.StartTime = recShift.StartTime;
             shift.Hidden = true;
 

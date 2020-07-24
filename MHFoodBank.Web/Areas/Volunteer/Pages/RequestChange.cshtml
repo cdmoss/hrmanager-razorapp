@@ -29,9 +29,9 @@
                 var arrDate = new Date(shiftinfo.event.start);
                 var arrEndDate = new Date(shiftinfo.event.end);
                 document.getElementById("shift-id").value = shiftinfo.event.id;
-                document.getElementById("shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
-                document.getElementById("shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
-                document.getElementById("shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                document.getElementById("shift-date").value = moment(arrDate).format('yyyy-MM-DD');
+                document.getElementById("shift-starttime").value = moment(arrDate).format('HH:mm');
+                document.getElementById("shift-endtime").value = moment(arrEndDate).format('HH:mm');
                 document.getElementById("shift-position").value = shiftinfo.event.extendedProps.posWorked;
 
                 let isOriginalShift = shiftinfo.event.id === '@Model.OriginalShift.Id';
@@ -150,13 +150,6 @@
         calendar.render();
         $('#calendar').addClass("h-75");
     });
-
-    function appendLeadingZeroes(n) {
-        if (n <= 9) {
-            return "0" + n;
-        }
-        return n;
-    }
 </script>
 
 <form method="post" class="ml-5 mr-5">

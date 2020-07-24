@@ -92,13 +92,13 @@ function getStringsFromRecurringselectedShift(selectedShift) {
         recurringShiftEndDate = new Date(selectedShift._def.recurringDef.typeData.origOptions.until);
     }
 
-    let selectedInitialStartDateStr = selectedShiftInitialStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getDate());
-    let selectedFinalStartDateStr = selectedShiftFinalStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftFinalStartDate.getDate());
-    let recurringStartDateStr = recurringShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftStartDate.getDate());
-    let selectedEndDateStr = selectedShiftEndDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftEndDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftEndDate.getDate());
-    let recurringEndDateStr = recurringShiftEndDate.getFullYear() + "-" + appendLeadingZeroes(recurringShiftEndDate.getMonth() + 1) + "-" + appendLeadingZeroes(recurringShiftEndDate.getDate());
-    let startTimeStr = appendLeadingZeroes(selectedShiftInitialStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftInitialStartDate.getMinutes());
-    let endTimeStr = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
+    let selectedInitialStartDateStr = moment(selectedShiftInitialStartDate).format('yyyy-MM-DD');
+    let selectedFinalStartDateStr = moment(selectedShiftFinalStartDate).format('yyyy-MM-DD');
+    let recurringStartDateStr = moment(recurringShiftStartDate).format('yyyy-MM-DD');
+    let selectedEndDateStr = moment(selectedShiftEndDate).format('yyyy-MM-DD');
+    let recurringEndDateStr = moment(recurringShiftEndDate).format('yyyy-MM-DD');
+    let startTimeStr = moment(selectedShiftInitialStartDate).format('HH:mm');
+    let endTimeStr = moment(selectedShiftEndDate).format('HH:mm');
 
     return {
         selectedInitialStartDate: selectedInitialStartDateStr,

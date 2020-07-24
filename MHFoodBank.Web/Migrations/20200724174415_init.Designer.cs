@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200717181054_init")]
+    [Migration("20200724174415_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,6 +18,40 @@ namespace MHFoodBank.Web.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
+
+            modelBuilder.Entity("MHFoodBank.Common.Alert", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("AlertType")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<bool>("Read")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("VolunteerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("VolunteerId");
+
+                    b.ToTable("Alerts");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Alert");
+                });
 
             modelBuilder.Entity("MHFoodBank.Common.AppUser", b =>
                 {
@@ -69,40 +103,6 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Common.Alert", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("AlertType")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("Read")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int?>("VolunteerId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("VolunteerId");
-
-                    b.ToTable("Alerts");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Alert");
-                });
-
             modelBuilder.Entity("MHFoodBank.Common.Availability", b =>
                 {
                     b.Property<int>("Id")
@@ -126,6 +126,33 @@ namespace MHFoodBank.Web.Migrations
                     b.HasIndex("VolunteerId");
 
                     b.ToTable("Availabilities");
+                });
+
+            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("VolunteerProfileId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PositionId");
+
+                    b.HasIndex("VolunteerProfileId");
+
+                    b.ToTable("ClockedTime");
                 });
 
             modelBuilder.Entity("MHFoodBank.Common.Position", b =>
@@ -164,6 +191,32 @@ namespace MHFoodBank.Web.Migrations
                     b.HasIndex("VolunteerId");
 
                     b.ToTable("PositionVolunteers");
+                });
+
+            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("NewShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("OriginalShiftId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ParentSetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NewShiftId");
+
+                    b.HasIndex("OriginalShiftId");
+
+                    b.HasIndex("ParentSetId");
+
+                    b.ToTable("ShiftLinks");
                 });
 
             modelBuilder.Entity("MHFoodBank.Common.Reference", b =>
@@ -423,59 +476,6 @@ namespace MHFoodBank.Web.Migrations
                     b.ToTable("WorkExperiences");
                 });
 
-            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("PositionId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int?>("VolunteerProfileId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PositionId");
-
-                    b.HasIndex("VolunteerProfileId");
-
-                    b.ToTable("ClockedTime");
-                });
-
-            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("NewShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("OriginalShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ParentSetId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NewShiftId");
-
-                    b.HasIndex("OriginalShiftId");
-
-                    b.HasIndex("ParentSetId");
-
-                    b.ToTable("ShiftLinks");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -673,6 +673,17 @@ namespace MHFoodBank.Web.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
+                {
+                    b.HasOne("MHFoodBank.Common.Position", "Position")
+                        .WithMany()
+                        .HasForeignKey("PositionId");
+
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "VolunteerProfile")
+                        .WithMany()
+                        .HasForeignKey("VolunteerProfileId");
+                });
+
             modelBuilder.Entity("MHFoodBank.Common.PositionVolunteer", b =>
                 {
                     b.HasOne("MHFoodBank.Common.Position", "Position")
@@ -683,6 +694,21 @@ namespace MHFoodBank.Web.Migrations
                         .WithMany("Positions")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
+                {
+                    b.HasOne("MHFoodBank.Common.Shift", "NewShift")
+                        .WithMany()
+                        .HasForeignKey("NewShiftId");
+
+                    b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
+                        .WithMany()
+                        .HasForeignKey("OriginalShiftId");
+
+                    b.HasOne("MHFoodBank.Common.RecurringShift", "ParentSet")
+                        .WithMany()
+                        .HasForeignKey("ParentSetId");
                 });
 
             modelBuilder.Entity("MHFoodBank.Common.Reference", b =>
@@ -725,32 +751,6 @@ namespace MHFoodBank.Web.Migrations
                         .WithMany("WorkExperiences")
                         .HasForeignKey("VolunteerId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("MHFoodBank.Common.ClockedTime", b =>
-                {
-                    b.HasOne("MHFoodBank.Common.Position", "Position")
-                        .WithMany()
-                        .HasForeignKey("PositionId");
-
-                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "VolunteerProfile")
-                        .WithMany()
-                        .HasForeignKey("VolunteerProfileId");
-                });
-
-            modelBuilder.Entity("MHFoodBank.Common.RecurringChildLink", b =>
-                {
-                    b.HasOne("MHFoodBank.Common.Shift", "NewShift")
-                        .WithMany()
-                        .HasForeignKey("NewShiftId");
-
-                    b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
-                        .WithMany()
-                        .HasForeignKey("OriginalShiftId");
-
-                    b.HasOne("MHFoodBank.Common.RecurringShift", "ParentSet")
-                        .WithMany()
-                        .HasForeignKey("ParentSetId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>

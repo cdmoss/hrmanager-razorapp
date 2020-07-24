@@ -8,9 +8,9 @@
     selectedShiftInitialStartDate = new Date(selectedShift.start);
     selectedShiftEndDate = new Date(selectedShift.end);
     document.getElementById("edit-shift-id").value = selectedShift.id;
-    document.getElementById("edit-shift-date").value = selectedShiftInitialStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftInitialStartDate.getDate());
-    document.getElementById("edit-shift-starttime").value = appendLeadingZeroes(selectedShiftInitialStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftInitialStartDate.getMinutes());
-    document.getElementById("edit-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
+    document.getElementById("edit-shift-date").value = moment(selectedShiftInitialStartDate).format('yyyy-MM-DD');
+    document.getElementById("edit-shift-starttime").value = moment(selectedShiftInitialStartDate).format('HH:mm');
+    document.getElementById("edit-shift-endtime").value = moment(selectedShiftEndDate).format('HH:mm');
     document.getElementById("edit-shift-position").value = (selectedShift.extendedProps.posWorked);
 
     let volunteerFullNameWithId = selectedShift.extendedProps.vol;
@@ -38,7 +38,7 @@
 
 function autoFillShiftModal() {
     var currentDate = new Date();
-    document.getElementById("add-shift-date").value = currentDate.getFullYear() + "-" + appendLeadingZeroes(currentDate.getMonth() + 1) + "-" + appendLeadingZeroes(currentDate.getDate());
+    document.getElementById("add-shift-date").value = moment(currentDate).format('yyyy-MM-DD');
     document.getElementById("add-shift-starttime").value = "8:30";
     document.getElementById("add-shift-endtime").value = "16:30";
 

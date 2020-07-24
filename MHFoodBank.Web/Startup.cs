@@ -41,7 +41,7 @@ namespace MHFoodBank.Web
                 .AddDefaultTokenProviders();
 
             services.AddHangfire(options => options
-                .UseSerializerSettings(new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore})
+                .UseSerializerSettings(new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })
                 .UseStorage(
                     new MySqlStorage(
                         Configuration.GetConnectionString("HangfireConnection"),
@@ -80,6 +80,14 @@ namespace MHFoodBank.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
+
+                // use DI
+                // seed the database with everything
+                if (DbSeeder.SeedRoles(roleManager))
+                {
+                    DbSeeder.SeedTestVolunteer(userManager, context);
+                    DbSeeder.SeedAdmin(userManager);
+                }
             }
             else
             {
@@ -88,21 +96,13 @@ namespace MHFoodBank.Web
                 app.UseHsts();
             }
 
+            DbSeeder.SeedPositions(context);
+            DbSeeder.SeedStaff(userManager);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
-
-            // put these into a method then put it into IsDevelopment
-            // use DI
-            // seed the database with everything
-            if (DbSeeder.SeedRoles(roleManager))
-            {
-                DbSeeder.SeedAdmin(userManager);
-                DbSeeder.SeedTestVolunteer(userManager, context);
-                DbSeeder.SeedPositions(context);
-                DbSeeder.SeedStaff(userManager);
-            }
 
             app.UseAuthentication();
             app.UseAuthorization();

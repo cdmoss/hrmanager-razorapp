@@ -7,18 +7,14 @@
     Layout = "~/Areas/Volunteer/Pages/Shared/_Layout.cshtml";
 }
 
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+
 <style>
     .fc-content {
         cursor: pointer;
     }
 </style>
 <script>
-        function appendLeadingZeroes(n) {
-            if (n <= 9) {
-                return "0" + n;
-            }
-            return n;
-        }
 
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
@@ -38,11 +34,11 @@
                     var selectedShiftStartDate = shiftinfo.event.start;
 
                     $('#shift-modal-assigned').modal();
-                    document.getElementById("clicked-shift-date").value = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
+                    document.getElementById("clicked-shift-date").value = moment(selectedShiftStartDate).format('yyyy-MM-DD');
                     document.getElementById("assigned-shift-id").value = shiftinfo.event.id;
-                    document.getElementById("assigned-shift-date").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
-                    document.getElementById("assigned-shift-starttime").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
-                    document.getElementById("assigned-shift-endtime").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                    document.getElementById("assigned-shift-date").value = moment(arrDate).format('yyyy-MM-DD');
+                    document.getElementById("assigned-shift-starttime").value = moment(arrDate).format('HH:mm');
+                    document.getElementById("assigned-shift-endtime").value = moment(arrEndDate).format('HH:mm');
                     document.getElementById("assigned-shift-position").value = shiftinfo.event.extendedProps.posWorked;
 
                     if (!isShiftOpen) {
@@ -91,11 +87,6 @@
                             </text>
                             }
                         ],
-                        eventTimeFormat: {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            meridiem: false
-                        }
                     },
                     {
                         events: [

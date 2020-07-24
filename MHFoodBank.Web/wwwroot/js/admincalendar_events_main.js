@@ -1,10 +1,4 @@
 ﻿// these are global so that the start date can be changed when the recurring shift controls are toggled on edit recurring shifts
-function appendLeadingZeroes(n) {
-    if (n <= 9) {
-        return "0" + n;
-    }
-    return n;
-}
 
 function handleEventClick(shiftInfo) {
 

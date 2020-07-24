@@ -9,6 +9,7 @@
 }
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.6/lib/index.min.js"></script>
+<script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="~/js/admincalendar_events_recurring.js"></script>
 <script src="~/js/admincalendar_ui.js"></script>
 <script src="~/js/admincalendar_events_main.js"></script>
@@ -17,13 +18,11 @@
 
 <script>
     $('.shift-form').validate({
-
         rules: {
             RecurrenceSetStartDate: {
                 compareDates: ['add-shift-date', 'add-recshift-enddate']
             }
         }
-
     });
 
     // calendar stuff
@@ -51,7 +50,7 @@
                 $('#add-shift-modal').modal();
                 selectedShiftStartDate = new Date(arg.start);
                 selectedShiftEndDate = new Date(arg.end);
-                document.getElementById("add-shift-date").value = selectedShiftStartDate.getFullYear() + "-" + appendLeadingZeroes(selectedShiftStartDate.getMonth() + 1) + "-" + appendLeadingZeroes(selectedShiftStartDate.getDate());
+                document.getElementById("add-shift-date").value = moment(selectedShiftStartDate).format('yyyy-MM-DD');
 
                 if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
                     // if an initial time isn't given via drag controls, set default times
@@ -59,8 +58,8 @@
                     document.getElementById("add-shift-endtime").value = "16:30";
                 }
                 else {
-                    document.getElementById("add-shift-starttime").value = appendLeadingZeroes(selectedShiftStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftStartDate.getMinutes());
-                    document.getElementById("add-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
+                    document.getElementById("add-shift-starttime").value = moment(selectedShiftStartDate).format('HH:mm');
+                    document.getElementById("add-shift-endtime").value = moment(selectedShiftEndDate).format('HH:mm');
                 }
 
                 calendar.unselect();
@@ -181,7 +180,6 @@
     <hr />
     <div id='calendar'></div>
 </div>
-
 
 <!--modal for adding a new position-->
 <form class="shift-form" method="post">
@@ -405,7 +403,7 @@
                     <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
                     <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
                     <input type="date" class="form-control" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
-                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.StartDateInitial" required>
+                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.OriginalStartDate" required>
                     <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.RecurrenceSetStartDate" required>
 
                     <hr />

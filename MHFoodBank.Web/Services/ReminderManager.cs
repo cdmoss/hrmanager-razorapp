@@ -113,12 +113,12 @@ namespace MHFoodBank.Web.Data
 
         public void SendEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)
         {
-            SmtpClient client = new SmtpClient();
-            client.Connect("smtp.gmail.com", 587);
-            client.Authenticate("chase.mossing2@mymhc.ca", "Mar1995303");
-            var message = CreateEmail(email, firstName, lastName, startTime, endTime, position);
-            client.Send(message);
-            client.Disconnect(true);
+            //SmtpClient client = new SmtpClient();
+            //client.Connect("smtp.gmail.com", 587);
+            //client.Authenticate("chase.mossing2@mymhc.ca", "Mar1995303");
+            //var message = CreateEmail(email, firstName, lastName, startTime, endTime, position);
+            //client.Send(message);
+            //client.Disconnect(true);
         }
 
         public MimeMessage CreateEmail(string email, string firstName, string lastName, string startTime, string endTime, string position)

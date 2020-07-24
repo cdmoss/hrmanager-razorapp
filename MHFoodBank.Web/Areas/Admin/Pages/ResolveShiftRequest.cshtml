@@ -22,16 +22,11 @@
                 $('#calendarModalView').modal();
                 var arrDate = new Date(shiftinfo.event.start);
                 var arrEndDate = new Date(shiftinfo.event.end);
-                function appendLeadingZeroes(n) {
-                    if (n <= 9) {
-                        return "0" + n;
-                    }
-                    return n;
-                }
+
                 document.getElementById("ShiftID").value = shiftinfo.event.id;
-                document.getElementById("ShiftDate").value = arrDate.getFullYear() + "-" + appendLeadingZeroes(arrDate.getMonth() + 1) + "-" + appendLeadingZeroes(arrDate.getDate());
-                document.getElementById("dateTimeStart").value = appendLeadingZeroes(arrDate.getHours()) + ":" + appendLeadingZeroes(arrDate.getMinutes());
-                document.getElementById("dateTimeEnd").value = appendLeadingZeroes(arrEndDate.getHours()) + ":" + appendLeadingZeroes(arrEndDate.getMinutes());
+                document.getElementById("ShiftDate").value = moment(arrDate).format('yyyy-MM-DD');
+                document.getElementById("dateTimeStart").value = moment(arrDate).format('HH:mm');
+                document.getElementById("dateTimeEnd").value = moment(arrEndDate).format('HH:mm');
                 document.getElementById("POS").selectedIndex = shiftinfo.event.extendedProps.posWorked;
             },
             defaultDate: '@Model.ShiftRequest.OriginalShift.StartDate.ToString("yyyy-MM-dd")',
@@ -70,7 +65,7 @@
                                     end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
                                 </text>
                             }
-                            posWorked: '@(s.PositionWorked.Id)', 
+                            posWorked: '@(s.PositionWorked.Id)',
                             vol: '@s.Volunteer.Id'
                             },
                         </text>
