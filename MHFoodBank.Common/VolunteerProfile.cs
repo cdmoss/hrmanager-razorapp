@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MHFoodBank.Common
 {
@@ -25,7 +23,6 @@ namespace MHFoodBank.Common
         public string City { get; set; }
         [Required]
         [Display(Name = "Postal code (Required)")]
-        [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         public string PostalCode { get; set; }
         [Required]
         [Display(Name = "Main phone (Required)")]

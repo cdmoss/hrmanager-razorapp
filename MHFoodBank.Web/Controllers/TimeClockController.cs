@@ -19,9 +19,8 @@ namespace MHFoodBank.Web.Controllers
     {
         private readonly IClockedTimeRepo _clockedTimeRepo;
         private readonly UserManager<AppUser> _userManager;
-        private readonly FoodBankContext _context;
 
-        public TimeClockController(IClockedTimeRepo clockedTimeRepo, UserManager<AppUser> userManager, FoodBankContext context)
+        public TimeClockController(IClockedTimeRepo clockedTimeRepo, UserManager<AppUser> userManager)
         {
             _clockedTimeRepo = clockedTimeRepo;
             _userManager = userManager;

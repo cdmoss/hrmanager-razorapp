@@ -1,10 +1,9 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\dofus\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\dofus\\.nuget\\packages",
-      "D:\\Microsoft\\Xamarin\\NuGet",
-      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      "C:\\Users\\Chase\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Chase\\.nuget\\packages",
+      "C:\\Microsoft\\Xamarin\\NuGet"
     ]
   }
 }

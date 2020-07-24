@@ -41,7 +41,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             public string OldPassword { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [RegularExpression(CustomRegex.password, ErrorMessage = "Your password must contain at least one letter, one number and one special character (@$!%*#?&)")]
             [DataType(DataType.Password)]
             [Display(Name = "New password")]
             public string NewPassword { get; set; }

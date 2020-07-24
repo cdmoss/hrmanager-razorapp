@@ -1,27 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using MHFoodBank.Web.Data;
-using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Hangfire;
 using Hangfire.MySql.Core;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using MailKit.Net.Smtp;
-using Org.BouncyCastle.Asn1.Cms;
-using Hangfire.Common;
-using Google.Protobuf.WellKnownTypes;
 using AutoMapper;
 using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
@@ -86,7 +74,7 @@ namespace MHFoodBank.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager, FoodBankContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager, FoodBankContext context)
         {
             if (env.IsDevelopment())
             {
@@ -105,6 +93,8 @@ namespace MHFoodBank.Web
 
             app.UseRouting();
 
+            // put these into a method then put it into IsDevelopment
+            // use DI
             // seed the database with everything
             if (DbSeeder.SeedRoles(roleManager))
             {

@@ -8,6 +8,7 @@
     ViewData["Title"] = "Admin Calendar";
 }
 
+<script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.6/lib/index.min.js"></script>
 <script src="~/js/admincalendar_events_recurring.js"></script>
 <script src="~/js/admincalendar_ui.js"></script>
 <script src="~/js/admincalendar_events_main.js"></script>
@@ -61,7 +62,7 @@
                     document.getElementById("add-shift-starttime").value = appendLeadingZeroes(selectedShiftStartDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftStartDate.getMinutes());
                     document.getElementById("add-shift-endtime").value = appendLeadingZeroes(selectedShiftEndDate.getHours()) + ":" + appendLeadingZeroes(selectedShiftEndDate.getMinutes());
                 }
-                
+
                 calendar.unselect();
             },
             weekNumbers: true,
