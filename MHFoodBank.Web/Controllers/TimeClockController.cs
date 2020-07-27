@@ -27,7 +27,6 @@ namespace MHFoodBank.Web.Controllers
         }
 
         [HttpPost("punch-clock")]
-        [Authorize(Roles = "Admin, Staff, Volunteer")]
         public async Task<IActionResult> PunchClockAsync(ClockedTimeCreateDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
@@ -36,7 +35,7 @@ namespace MHFoodBank.Web.Controllers
             {
                 userIsAuthenticated = await _userManager.CheckPasswordAsync(user, dto.Password);
             }
-            var clockInResult = new OperationResponse<object>() { Success = false, Message = "Error: Invalid credentials" };
+            var clockInResult = new PunchClockResult() { Success = false, Message = "Error: Invalid credentials" };
 
             if (userIsAuthenticated)
             {

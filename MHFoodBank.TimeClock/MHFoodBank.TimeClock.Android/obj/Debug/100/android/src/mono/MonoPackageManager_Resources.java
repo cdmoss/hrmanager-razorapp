@@ -48,6 +48,7 @@ public class MonoPackageManager_Resources {
 		"Microsoft.Extensions.WebEncoders.dll",
 		"Microsoft.Net.Http.Headers.dll",
 		"Microsoft.Win32.Registry.dll",
+		"Newtonsoft.Json.dll",
 		"Prism.dll",
 		"Prism.DryIoc.Forms.dll",
 		"Prism.Forms.dll",
@@ -104,6 +105,7 @@ public class MonoPackageManager_Resources {
 		"Xamarin.Forms.Platform.dll",
 		"Xamarin.Forms.Xaml.dll",
 		"Xamarin.Google.Android.Material.dll",
+		"MHFoodBank.Common.dll",
 	};
 	public static String[] Dependencies = new String[]{
 	};

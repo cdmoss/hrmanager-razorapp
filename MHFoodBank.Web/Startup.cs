@@ -13,6 +13,7 @@ using Hangfire.MySql.Core;
 using AutoMapper;
 using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
+using MHFoodBank.Api.Repositories;
 
 namespace MHFoodBank.Web
 {
@@ -62,6 +63,7 @@ namespace MHFoodBank.Web
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
+            services.AddScoped<IPositionRepo, MySqlPositionRepo>();
 
             services
                 .AddRazorPages()

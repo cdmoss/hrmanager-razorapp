@@ -36,13 +36,15 @@ namespace MHFoodBank.TimeClock.Views
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                     mainGrid.Children.Clear();
                     mainGrid.Children.Add(imgLogo, 0, 1);
-                    mainGrid.Children.Add(lblWelcome, 0, 2);
+                    mainGrid.Children.Add(lblResult, 0, 2);
                     mainGrid.Children.Add(txtEmail, 0, 3);
                     mainGrid.Children.Add(txtPass, 0, 4);
-                    mainGrid.Children.Add(btnPunch, 0, 5);
+                    mainGrid.Children.Add(cmbPositions, 0, 5);
+                    mainGrid.Children.Add(btnPunch, 0, 6);
                 }
                 else
                 {
@@ -52,12 +54,16 @@ namespace MHFoodBank.TimeClock.Views
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(3, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
                     mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
                     mainGrid.Children.Clear();
                     mainGrid.Children.Add(imgLogo, 0, 1);
-                    mainGrid.Children.Add(txtEmail, 0, 2);
-                    mainGrid.Children.Add(txtPass, 0, 3);
-                    mainGrid.Children.Add(btnPunch, 0, 4);
+                    mainGrid.Children.Add(lblResult, 0, 2);
+                    mainGrid.Children.Add(txtEmail, 0, 3);
+                    mainGrid.Children.Add(txtPass, 0, 4);
+                    mainGrid.Children.Add(cmbPositions, 0, 5);
+                    mainGrid.Children.Add(btnPunch, 0, 6);
                 }
             }
         }

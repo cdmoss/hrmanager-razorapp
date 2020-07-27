@@ -3,6 +3,7 @@ using Android.Content.PM;
 using Android.OS;
 using Prism;
 using Prism.Ioc;
+using System.Net;
 
 namespace MHFoodBank.TimeClock.Droid
 {

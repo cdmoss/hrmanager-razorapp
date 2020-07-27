@@ -73,7 +73,7 @@ mono_aot_mode_name:
 	.section	.rodata.env.str.8,"aMS",@progbits,1
 	.type	.L.env.str.8, @object
 .L.env.str.8:
-	.asciz	"312885f7-de4d-4334-8060-318a176bf87f"
+	.asciz	"83f3e4d2-f271-44b0-9912-2847859c355f"
 	.size	.L.env.str.8, 37
 	.section	.rodata.env.str.9,"aMS",@progbits,1
 	.type	.L.env.str.9, @object
@@ -83,8 +83,8 @@ mono_aot_mode_name:
 	.section	.rodata.env.str.10,"aMS",@progbits,1
 	.type	.L.env.str.10, @object
 .L.env.str.10:
-	.asciz	"System.Net.Http.HttpClientHandler, System.Net.Http"
-	.size	.L.env.str.10, 51
+	.asciz	"System.Net.Http.HttpClientHandler"
+	.size	.L.env.str.10, 34
 	.section	.rodata.env.str.11,"aMS",@progbits,1
 	.type	.L.env.str.11, @object
 .L.env.str.11:
@@ -93,8 +93,8 @@ mono_aot_mode_name:
 	.section	.rodata.env.str.12,"aMS",@progbits,1
 	.type	.L.env.str.12, @object
 .L.env.str.12:
-	.asciz	"btls"
-	.size	.L.env.str.12, 5
+	.asciz	"legacy"
+	.size	.L.env.str.12, 7
 	.section	.rodata.env.str.13,"aMS",@progbits,1
 	.type	.L.env.str.13, @object
 .L.env.str.13:
