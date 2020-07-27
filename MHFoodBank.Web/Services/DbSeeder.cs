@@ -3,191 +3,257 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MHFoodBank.Common;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.Extensions.Hosting;
 
 namespace MHFoodBank.Web.Data
 {
     public static class DbSeeder
     {
-        public static bool SeedRoles(RoleManager<IdentityRole<int>> roleManager)
+        static RoleManager<IdentityRole<int>> roleManager;
+        static UserManager<AppUser> userManager;
+        public static bool Seed(RoleManager<IdentityRole<int>> roleManager, UserManager<AppUser> userManager, FoodBankContext foodBankContext, IWebHostEnvironment env)
         {
-            if (roleManager.FindByNameAsync("Admin").Result == null)
+            DbSeeder.roleManager = roleManager;
+            DbSeeder.userManager = userManager;
+
+            bool result = true;
+
+            result &= SeedRoles();
+
+            if (env.IsDevelopment())
             {
-                IdentityRole<int> admin = new IdentityRole<int>("Admin")
-                {
-                    NormalizedName = "ADMIN"
-                };
-
-                IdentityResult adminResult = roleManager.CreateAsync(admin).Result;
-
-                if (!adminResult.Succeeded || !adminResult.Succeeded)
-                {
-                    return false;
-                }
+                result &= SeedTestVolunteer();
+                result &= SeedStaff();
             }
-            if (roleManager.FindByNameAsync("Staff").Result == null)
+
+            result &= SeedAdmin();
+            result &= SeedPositions(foodBankContext);
+
+            return result;
+        }
+
+        private static bool RoleExists(string roleName)
+        {
+            return roleManager.FindByNameAsync(roleName).Result != null;
+        }
+
+        private static bool UserExists(string userName)
+        {
+            return userManager.FindByNameAsync(userName).Result != null;
+        }
+
+        private static IdentityResult CreateRole(string roleName)
+        {
+            var role = new IdentityRole<int>(roleName)
             {
-                IdentityRole<int> staff = new IdentityRole<int>("Staff")
-                {
-                    NormalizedName = "STAFF"
-                };
+                NormalizedName = roleName.ToUpper()
+            };
 
-                IdentityResult staffResult = roleManager.CreateAsync(staff).Result;
+            return roleManager.CreateAsync(role).Result;
+        }
 
-                if (!staffResult.Succeeded || !staffResult.Succeeded)
-                {
-                    return false;
-                }
-            }
-            if (roleManager.FindByNameAsync("Volunteer").Result == null)
+        private static bool CreateUser(string userName, string userRole)
+        {
+            var user = new AppUser()
             {
-                IdentityRole<int> volunteer = new IdentityRole<int>("Volunteer")
-                {
-                    NormalizedName = "VOLUNTEER"
-                };
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                EmailConfirmed = true
+            };
 
-                IdentityResult volunteerResult = roleManager.CreateAsync(volunteer).Result;
+            IdentityResult result = userManager.CreateAsync(user, "P@$$W0rd").Result;
 
-                if (volunteerResult.Succeeded && volunteerResult.Succeeded)
-                {
-                    return true;
-                }
+            if (result.Succeeded)
+                SetUserToRole(user, userRole);
+            else
                 return false;
+
+            return true;
+        }
+
+        private static bool CreateVolunteer(string userName, string userRole)
+        {
+            var volunteer = new AppUser()
+            {
+                UserName = userName,
+                NormalizedUserName = userName.ToUpper(),
+                EmailConfirmed = true,
+                Email = "cdmossing@gmail.com"
+            };
+
+            VolunteerProfile vi = new VolunteerProfile()
+            {
+                FirstName = "testfirst",
+                LastName = "testlast",
+                Address = "testAddress",
+                City = "testcity",
+                PostalCode = "testpostal",
+                MainPhone = "5555555555",
+                AlternatePhone1 = "5555555555",
+                AlternatePhone2 = "5555555555",
+                Birthdate = DateTime.Now,
+                EmergencyFullName = "testemergency",
+                EmergencyPhone1 = "5555555555",
+                EmergencyPhone2 = "5555555555",
+                EmergencyRelationship = "testrelationship",
+                FoodSafe = false,
+                FirstAid = false,
+                Cpr = false,
+                OtherCertificates = "TestOther",
+                EducationTraining = "testeducation",
+                SkillsInterestsHobbies = "testskills",
+                VolunteerExperience = "testexperience",
+                OtherBoards = "otherboards",
+            };
+
+            Reference reference = new Reference()
+            {
+                Name = "Steve",
+                Volunteer = vi,
+                Phone = "4034056785",
+                Relationship = "Instructor",
+                Occupation = "Professor"
+            };
+
+            WorkExperience workExp = new WorkExperience()
+            {
+                EmployerName = "testemployer",
+                EmployerAddress = "testaddress",
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(20),
+                EmployerPhone = "5555555555",
+                ContactPerson = "testcontact",
+                PositionWorked = "testposition"
+            };
+
+            List<Reference> references = new List<Reference>();
+            references.Add(reference);
+            List<WorkExperience> workExperiences = new List<WorkExperience>();
+            workExperiences.Add(workExp);
+
+            vi.References = references;
+            vi.WorkExperiences = workExperiences;
+            volunteer.VolunteerProfile = vi;
+
+            IdentityResult result = userManager.CreateAsync(volunteer, "P@$$W0rd").Result;
+
+            if (result.Succeeded)
+                SetUserToRole(volunteer, userRole);
+            else
+                return false;
+
+            return true;
+        }
+
+        private static void SetUserToRole(AppUser user, string userRole)
+        {
+            userManager.AddToRoleAsync(user, userRole).Wait();
+        }
+
+        private static bool SeedAdmin()
+        {
+            if (!UserExists(Constants.UserNames.Admin))
+            {
+                bool userCreatedAndRoleWasSet = CreateUser(Constants.UserNames.Admin, Constants.RoleNames.Admin);
+
+                if (!userCreatedAndRoleWasSet)
+                    return false;
             }
             return true;
         }
 
-        public static void SeedAdmin(UserManager<AppUser> userManager)
+        private static bool SeedStaff()
         {
-            if (userManager.FindByNameAsync("fbadmin").Result == null)
+            if (!UserExists(Constants.UserNames.Staff))
             {
-                AppUser admin = new AppUser();
-                admin.UserName = "fbadmin";
-                admin.NormalizedUserName = admin.UserName.ToUpper();
-                admin.EmailConfirmed = true;
+                bool userCreatedAndRoleWasSet = CreateUser(Constants.UserNames.Staff, Constants.RoleNames.Staff);
 
-                IdentityResult result = userManager.CreateAsync(admin, "P@$$W0rd").Result;
-
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(admin, "Admin").Wait();
-                }
+                if (!userCreatedAndRoleWasSet)
+                    return false;
             }
+            return true;
         }
 
-        public static void SeedStaff(UserManager<AppUser> userManager)
+        private static bool SeedTestVolunteer()
         {
-            if (userManager.FindByNameAsync("staff").Result == null)
+            if (!UserExists(Constants.UserNames.Volunteer))
             {
-                AppUser staff = new AppUser();
-                staff.UserName = "staff";
-                staff.NormalizedUserName = staff.UserName.ToUpper();
-                staff.EmailConfirmed = true;
+                bool volunteerCreated = CreateVolunteer(Constants.UserNames.Volunteer, Constants.RoleNames.Volunteer);
 
-                IdentityResult result = userManager.CreateAsync(staff, "P@$$W0rd").Result;
-
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(staff, "Staff").Wait();
-                }
+                if (!volunteerCreated)
+                    return false;
             }
+            return true;
         }
 
-        public static void SeedPositions(FoodBankContext context)
+        private static bool SeedRoles()
+        {
+            if (!RoleExists(Constants.RoleNames.Admin))
+            {
+                IdentityResult adminResult = CreateRole(Constants.RoleNames.Admin);
+
+                if (!adminResult.Succeeded)
+                {
+                    return false;
+                }
+            }
+            if (!RoleExists(Constants.RoleNames.Staff))
+            {
+                IdentityResult staffResult = CreateRole(Constants.RoleNames.Staff);
+
+                if (!staffResult.Succeeded)
+                {
+                    return false;
+                }
+            }
+            if (!RoleExists(Constants.RoleNames.Volunteer))
+            {
+                IdentityResult volunteerResult = CreateRole(Constants.RoleNames.Volunteer);
+
+                if (!volunteerResult.Succeeded)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool SeedPositions(FoodBankContext context)
         {
             if (context.Positions.Count() == 0)
             {
-                Position all = new Position() { Name = "All" };
-                Position warehouse = new Position() { Name = "Warehouse" };
-                Position frontstock = new Position() { Name = "Front Stock" };
-                Position janitorial = new Position() { Name = "Janitorial" };
-                Position generalmaintenance = new Position() { Name = "General Maintenance" };
-                Position specialevents = new Position() { Name = "Special Events" };
-                Position communityrelations = new Position() { Name = "Community Relations" };
-
-                context.Add(all);
-                context.Add(frontstock);
-                context.Add(janitorial);
-                context.Add(generalmaintenance);
-                context.Add(specialevents);
-                context.Add(communityrelations);
-
-                context.SaveChanges();
-            }
-        }
-
-        public static void SeedTestVolunteer(UserManager<AppUser> userManager, FoodBankContext context)
-        {
-            if (userManager.FindByNameAsync("testvol").Result == null)
-            {
-                AppUser testVol = new AppUser();
-                testVol.UserName = "testvol";
-                testVol.NormalizedUserName = testVol.UserName.ToUpper();
-                testVol.EmailConfirmed = true;
-                testVol.Email = "cdmossing@gmail.com";
-
-                VolunteerProfile vi = new VolunteerProfile()
+                try
                 {
-                    FirstName = "testfirst",
-                    LastName = "testlast",
-                    Address = "testAddress",
-                    City = "testcity",
-                    PostalCode = "testpostal",
-                    MainPhone = "5555555555",
-                    AlternatePhone1 = "5555555555",
-                    AlternatePhone2 = "5555555555",
-                    Birthdate = DateTime.Now,
-                    EmergencyFullName = "testemergency",
-                    EmergencyPhone1 = "5555555555",
-                    EmergencyPhone2 = "5555555555",
-                    EmergencyRelationship = "testrelationship",
-                    FoodSafe = true,
-                    FirstAid = true,
-                    Cpr = true,
-                    OtherCertificates = "TestOther",
-                    EducationTraining = "testeducation",
-                    SkillsInterestsHobbies = "testskills",
-                    VolunteerExperience = "testexperience",
-                    OtherBoards = "otherboards",
-                };
+                    Position all = new Position() { Name = "All" };
+                    Position warehouse = new Position() { Name = "Warehouse" };
+                    Position frontstock = new Position() { Name = "Front Stock" };
+                    Position janitorial = new Position() { Name = "Janitorial" };
+                    Position generalmaintenance = new Position() { Name = "General Maintenance" };
+                    Position specialevents = new Position() { Name = "Special Events" };
+                    Position communityrelations = new Position() { Name = "Community Relations" };
 
-                Reference reference = new Reference()
+                    context.Add(all);
+                    context.Add(warehouse);
+                    context.Add(frontstock);
+                    context.Add(janitorial);
+                    context.Add(generalmaintenance);
+                    context.Add(specialevents);
+                    context.Add(communityrelations);
+
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
                 {
-                    Name = "testref",
-                    Volunteer = vi,
-                    Phone = "5555555555",
-                    Relationship = "testrelation",
-                    Occupation = "testoccupataion"
-                };
-
-                WorkExperience workExp = new WorkExperience()
-                {
-                    EmployerName = "testemployer",
-                    EmployerAddress = "testaddress",
-                    StartDate = DateTime.Now,
-                    EndDate = DateTime.Now.AddDays(20),
-                    EmployerPhone = "5555555555",
-                    ContactPerson = "testcontact",
-                    PositionWorked = "testposition"
-                };
-
-                List<Reference> references = new List<Reference>();
-                references.Add(reference);
-                List<WorkExperience> workExperiences = new List<WorkExperience>();
-                workExperiences.Add(workExp);
-
-                vi.References = references;
-                vi.WorkExperiences = workExperiences;
-                testVol.VolunteerProfile = vi;
-
-                IdentityResult result = userManager.CreateAsync(testVol, "P@$$W0rd").Result;
-
-                if (result.Succeeded)
-                {
-                    userManager.AddToRoleAsync(testVol, "Volunteer").Wait();
+                    Console.WriteLine(ex.Message);
+                    return false;
                 }
             }
+            return true;
         }
+
     }
 }

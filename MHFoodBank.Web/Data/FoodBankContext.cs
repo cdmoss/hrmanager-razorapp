@@ -56,67 +56,6 @@ namespace MHFoodBank.Web.Data
                 .WithOne(s => s.User)
                 .HasForeignKey<VolunteerProfile>(l => l.UserID)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<IdentityRole<int>>().HasData(new List<IdentityRole<int>>
-            {
-                new IdentityRole<int>
-                {
-                    Id = 1,
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole<int>
-                {
-                    Id = 2,
-                    Name = "Staff",
-                    NormalizedName = "STAFF"
-                },
-                new IdentityRole<int>
-                {
-                    Id = 3,
-                    Name = "Volunteer",
-                    NormalizedName = "VOLUNTEER"
-                }
-            });
-
-            modelBuilder.Entity<Position>().HasData(new List<Position>
-            {
-                new Position
-                {
-                    Id = 1,
-                    Name = "All"
-                },
-                new Position
-                {
-                    Id = 2,
-                    Name = "General Maintenance"
-                },
-                new Position
-                {
-                    Id = 3,
-                    Name = "Janitorial"
-                },
-                new Position
-                {
-                    Id = 4,
-                    Name = "Front Stock"
-                },
-                new Position
-                {
-                    Id = 5,
-                    Name = "Warehouse"
-                },
-                new Position
-                {
-                    Id = 6,
-                    Name = "Community Relations"
-                },
-                new Position
-                {
-                    Id = 7,
-                    Name = "Special Events"
-                }
-            });
         }
     }
 }

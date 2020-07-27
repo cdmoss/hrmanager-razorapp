@@ -82,14 +82,6 @@ namespace MHFoodBank.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-
-                // use DI
-                // seed the database with everything
-                if (DbSeeder.SeedRoles(roleManager))
-                {
-                    DbSeeder.SeedTestVolunteer(userManager, context);
-                    DbSeeder.SeedAdmin(userManager);
-                }
             }
             else
             {
@@ -98,8 +90,7 @@ namespace MHFoodBank.Web
                 app.UseHsts();
             }
 
-            DbSeeder.SeedPositions(context);
-            DbSeeder.SeedStaff(userManager);
+            DbSeeder.Seed(roleManager, userManager, context, env);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

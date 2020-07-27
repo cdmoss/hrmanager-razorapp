@@ -32,7 +32,7 @@ namespace MHFoodBank.Common.Dtos
         [Required]
         [DataType(DataType.Password)]
         [MinLength(8, ErrorMessage = "Your password must be at least 8 characters long")]
-        [RegularExpression(CustomRegex.password, ErrorMessage = "Your password must contain at least one letter, one number and one special character (@$!%*#?&)")]
+        [RegularExpression(Constants.Regex.password, ErrorMessage = "Your password must contain at least one letter, one number and one special character (@$!%*#?&)")]
         [Compare("ConfirmPassword", ErrorMessage = "The password and confirmation password do not match.")]
         public string Password { get; set; }
         [Required]
@@ -53,7 +53,7 @@ namespace MHFoodBank.Common.Dtos
         public string City { get; set; }
         [Required]
         [Display(Name = "Postal code (Required)")]
-        [RegularExpression(CustomRegex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+        [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         public string PostalCode { get; set; }
         [Required]
         [Display(Name = "Main phone (Required)")]
@@ -138,16 +138,16 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "city")]
         public string City { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+        [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         [Display(Name = "postal code")]
         public string PostalCode { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "phone number")]
         public string MainPhone { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         public string AlternatePhone1 { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         public string AlternatePhone2 { get; set; }
         [Required]
         [Display(Name = "birth date")]
@@ -157,10 +157,10 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "emergency full name")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "emergency phone number")]
         public string EmergencyPhone1 { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         public string EmergencyPhone2 { get; set; }
         [Required]
         [Display(Name = "relationship with this emergency contact")]
@@ -211,27 +211,27 @@ namespace MHFoodBank.Common.Dtos
         [Required]
         public string City { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+        [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "Main Phone Number")]
         public string MainPhone { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "Alternate Phone Number")]
         public string AlternatePhone1 { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "Alternate Phone Number")]
         public string AlternatePhone2 { get; set; }
         [Required]
         [Display(Name = "Emergency Contact Full Name")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "Emergency Contact Phone Number")]
         public string EmergencyPhone1 { get; set; }
-        [RegularExpression(CustomRegex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
         [Display(Name = "Emergency Contact Phone Number")]
         public string EmergencyPhone2 { get; set; }
         [Required]

@@ -10,7 +10,6 @@ using MHFoodBank.Common.Dtos;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Xamarin.Android.Net;
 using System.Net.Security;
 using System.Timers;
 

@@ -1195,3 +1195,8 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_GenerateJavaStubs.stamp
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\bin\Debug\MHFoodBank.Common.dll
+C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\bin\Debug\MHFoodBank.Common.pdb
+C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\MHFoodBank.Common.dll
+C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\MHFoodBank.Common.pdb
+C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Newtonsoft.Json.dll
