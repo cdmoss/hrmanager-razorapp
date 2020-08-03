@@ -7,11 +7,14 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/lib/jquery-timepicker/jquery.timepicker.css" crossorigin="anonymous" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
 </head>
 <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
     <div class="container">
         <main role="main" class="pb-3">
@@ -25,15 +28,15 @@
         </div>
     </footer>
 
-    <script src="~/lib/jquery-validate/additional-methods.js"></script>
     <script src="~/js/availability.js"></script>
-    <script src="~/lib/jquery-timepicker/jquery.timepicker.js"></script>
-    <script>
-        $(".time").timepicker({
-            'timeFormat': 'G:i',
-            'step': 15,
-            'minTime': '6:00',
-            'maxTime': '22:00'
+    <script src="~/lib/jquery-validate/additional-methods.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            $('.datetimepicker-time').datetimepicker(
+            {
+                format: 'HH:mm'
+            });
         });
     </script>
 </body>

@@ -186,10 +186,32 @@
                     <div id="availability">
                         <label>Monday</label>
                         <div class="monday-fields">
-                            <div class="row form-group ml-1">
-                                <input name="monday-1-1" type="text" class="time start-time form-control col-md-2" />
+                            <div class="row ml-1">
+
+                                @*<input name="monday-1-1" type="text" class="time start-time form-control col-md-2" />*@
+
+                                <div class="form-group">
+                                    <div class="input-group date datetimepicker-time" id="dtp-availability-add-start" data-target-input="nearest">
+                                        <input id="edit-recshift-endtime" name="monday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-availability-add-start" />
+                                        <div class="input-group-append" data-target="#dtp-availability-add-start" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <span class="col-md-1 justify-content-center">to</span>
-                                <input name="monday-2-1" type="text" class="time end-time form-control col-md-2" />
+
+                                @*<input name="monday-2-1" type="text" class="time end-time form-control col-md-2" />*@
+
+                                <div class="form-group">
+                                    <div class="input-group date datetimepicker-time" id="dtp-availability-add-end" data-target-input="nearest">
+                                        <input id="edit-recshift-endtime" name="monday-2-1" type="text" class="form-control datetimepicker-input end-time"data-target="#dtp-availability-add-end" />
+                                        <div class="input-group-append" data-target="#dtp-availability-add-end" data-toggle="datetimepicker">
+                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <input id="monday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />

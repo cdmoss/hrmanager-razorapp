@@ -13,7 +13,6 @@
 }
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.6/lib/index.min.js"></script>
-<script src="https://momentjs.com/downloads/moment.js"></script>
 <script src="~/js/admincalendar_events_recurring.js"></script>
 <script src="~/js/admincalendar_ui.js"></script>
 <script src="~/js/admincalendar_events_main.js"></script>
@@ -297,10 +296,30 @@
                         <hr />
                     </div>
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input type="text" class="time form-control" id="add-shift-starttime" asp-for="@Model.SelectedShift.StartTime" required>
+
+                    @*<input type="text" class="form-control datetimepicker-time" id="add-shift-starttime" asp-for="@Model.SelectedShift.StartTime" required>*@
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-shift-add-start" data-target-input="nearest">
+                            <input id="add-shift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-shift-add-start" />
+                            <div class="input-group-append" data-target="#dtp-shift-add-start" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <br />
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input type="text" class="time form-control" id="add-shift-endtime" asp-for="@Model.SelectedShift.EndTime" required>
+
+                    @*<input type="text" class="form-control" id="add-shift-endtime" asp-for="@Model.SelectedShift.EndTime" required>*@
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-shift-add-end" data-target-input="nearest">
+                            <input id="add-shift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndTime" data-target="#dtp-shift-add-end" />
+                            <div class="input-group-append" data-target="#dtp-shift-add-end" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr />
                     <div>
                         <input id="open-shift-add" type="checkbox" onclick="setShiftAsOpenAdd()" />
@@ -352,12 +371,30 @@
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input asp-for="@Model.SelectedShift.StartTime" type="text" class="time form-control" id="edit-shift-starttime" required>
+                    @*<input asp-for="@Model.SelectedShift.StartTime" type="text" class="time form-control" id="edit-shift-starttime" required>*@
+
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-shift-edit-start" data-target-input="nearest">
+                            <input id="edit-shift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-shift-edit-start" />
+                            <div class="input-group-append" data-target="#dtp-shift-add-start" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input asp-for="@Model.SelectedShift.EndTime" type="text" class="time form-control" id="edit-shift-endtime" value="" required>
+                    @*<input asp-for="@Model.SelectedShift.EndTime" type="text" class="time form-control" id="edit-shift-endtime" value="" required>*@
+
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-shift-edit-end" data-target-input="nearest">
+                            <input id="edit-shift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndTime" data-target="#dtp-shift-edit-end" />
+                            <div class="input-group-append" data-target="#dtp-shift-edit-end" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
@@ -469,12 +506,30 @@
                     </div>
 
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input type="text" class="time form-control" id="edit-recshift-starttime" asp-for="@Model.SelectedShift.StartTime" required>
+                    @*<input type="text" class="time form-control" id="edit-recshift-starttime" asp-for="@Model.SelectedShift.StartTime" required>*@
+
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-recshift-edit-end" data-target-input="nearest">
+                            <input id="edit-recshift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-recshift-edit-end" />
+                            <div class="input-group-append" data-target="#dtp-recshift-edit-end" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input type="text" class="time form-control" id="edit-recshift-endtime" asp-for="@Model.SelectedShift.EndTime" required>
+                    @*<input type="text" class="time form-control" id="edit-recshift-endtime" asp-for="@Model.SelectedShift.EndTime" required>*@
+
+                    <div class="form-group">
+                        <div class="input-group date datetimepicker-time" id="dtp-recshift-edit-end" data-target-input="nearest">
+                            <input id="edit-recshift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-recshift-edit-end" />
+                            <div class="input-group-append" data-target="#dtp-recshift-edit-end" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="far fa-clock"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>

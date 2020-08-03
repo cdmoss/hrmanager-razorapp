@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MHFoodBank.Common;
 using MHFoodBank.Common.Dtos;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
@@ -37,17 +38,21 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public int SelectedVolunteerId { get; set; }
 
-        public TimeClockModel(FoodBankContext context, string currentPage = "Time Sheets") : base(context, currentPage)
-        {
+        private readonly IMapper _mapper;
 
+        public TimeClockModel(IMapper mapper, FoodBankContext context, string currentPage = "Time Sheets") : base(context, currentPage)
+        {
+            _mapper = mapper;
         }
 
         public async Task OnGet()
         {
+            var volunteerDomainModel = await _context.VolunteerProfiles.ToListAsync();
+
             Positions = await _context.Positions.ToListAsync();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
             ClockedTimes = new List<ClockedTimeReadDto>();
-            Volunteers = new List<VolunteerMinimalDto>();
+            Volunteers = _mapper.Map(volunteerDomainModel, Volunteers);
         }
     }
 }
