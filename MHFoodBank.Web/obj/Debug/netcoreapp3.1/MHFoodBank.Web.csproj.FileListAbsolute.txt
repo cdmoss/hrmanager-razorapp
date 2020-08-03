@@ -615,7 +615,6 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcore
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ValidationScriptsPartial.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewImports.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\_ViewStart.cshtml.g.cs
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Volunteer\Pages\Main.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Volunteer\Pages\ManageAvailability.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Volunteer\Pages\RequestChange.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Volunteer\Pages\Shared\_Layout.cshtml.g.cs
@@ -640,3 +639,4 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcore
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.pdb
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.genruntimeconfig.cache
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\TimeClock.cshtml.g.cs

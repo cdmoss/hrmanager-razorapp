@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MHFoodBank.TimeClock.Androi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MHFoodBank.TimeClock.iOS", "MHFoodBank.TimeClock\MHFoodBank.TimeClock.iOS\MHFoodBank.TimeClock.iOS.csproj", "{5C190616-9B1E-4A43-A6C4-265E8A6E3FFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MHFoodBank.Common", "MHFoodBank.Common\MHFoodBank.Common.csproj", "{35AA5417-35B8-4454-9121-290B2E41B546}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MHFoodBank.Common", "MHFoodBank.Common\MHFoodBank.Common.csproj", "{35AA5417-35B8-4454-9121-290B2E41B546}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -32,23 +32,30 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
 
-            ShiftRequestAlert selectedRequestAlert = await _context.ShiftAlerts.FirstOrDefaultAsync(a => a.Id == id);
-
-            await _context.Entry(selectedRequestAlert).Reference(p => p.OriginalShift).LoadAsync();
-            await _context.Entry(selectedRequestAlert).Reference(p => p.RequestedShift).LoadAsync();
+            ShiftRequestAlert selectedRequestAlert = await _context.ShiftAlerts
+                .Include(p => p.OriginalShift)
+                .Include(p => p.RequestedShift)
+                .FirstOrDefaultAsync(a => a.Id == id);
 
             if (selectedRequestAlert.DismissedByAdmin)
             {
-                _context.Remove(selectedRequestAlert);
-                await _context.SaveChangesAsync();
-                _context.Remove(selectedRequestAlert.OriginalShift);
-                _context.Remove(selectedRequestAlert.RequestedShift);
+                selectedRequestAlert.Deleted = true;
             }
             else
             {
                 _context.Alerts.Update(selectedRequestAlert);
                 selectedRequestAlert.DismissedByVolunteer = true;
             }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostCancelAsync(int id)
+        {
+            var alert = await _context.ShiftAlerts.FirstOrDefaultAsync(a => a.Id == id);
+            _context.Alerts.Remove(alert);
 
             await _context.SaveChangesAsync();
 

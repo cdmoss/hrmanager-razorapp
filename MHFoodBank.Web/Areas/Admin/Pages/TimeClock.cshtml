@@ -1,0 +1,115 @@
+﻿@page
+@model MHFoodBank.Web.Areas.Admin.Pages.TimeClockModel
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Time Sheets";
+}
+
+@section Styles {
+    <link href="~/css/timeclock_header.css" rel="stylesheet" />
+    <link href="~/css/timeclock_modal.css" rel="stylesheet" />
+}
+
+<div class="ml-5 mr-5">
+    <partial name="_AdminStatusMessage" for="StatusMessage" />
+    <form method="post" id="container">
+        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+        {
+            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
+        }
+        else
+        {
+            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+        }
+
+        <input id="search-start" type="date" class="form-control" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" />
+        <div class="centered" id="date-separator"><span>-</span></div>
+        <input id="search-end" type="date" class="form-control" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" />
+
+        @if (@Model.SearchedPosition == null)
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+            </select>
+        }
+        else
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+            </select>
+        }
+        <button id="search-button" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+        <div id="add-time" onclick="$('#add-time-modal').modal()" class="btn btn-primary"><i class="fas fa-plus"></i> Entry</div>
+        <button id="save-changes" asp-page-handler="SaveChanges" class="btn btn-primary">Save Changes</button>
+    </form>
+    <hr />
+    <table>
+        <thead>
+            <tr>
+                <td>Volunteer</td>
+                <td>Position</td>
+                <td>Date</td>
+                <td>Start</td>
+                <td>End</td>
+                <td>Duration</td>
+                <td></td>
+            </tr>
+        </thead>
+        @foreach (var ct in Model.ClockedTimes)
+        {
+            <tr>
+                <td>@ct.Volunteer.FirstName @ct.Volunteer.LastName</td>
+                <td>@ct.Position.Name</td>
+                <td>@ct.StartTime.ToString("yyy-MM-dd")</td>
+                <td>@ct.StartTime.TimeOfDay</td>
+                <td>@ct.EndTime?.TimeOfDay</td>
+                <td>@(ct.EndTime?.TimeOfDay - ct.StartTime.TimeOfDay)</td>
+                <td>
+                    <form>
+                        <button class="btn btn-sm btn-danger" asp-page-handler="DeleteTime">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<!--modal for adding a new time-->
+<form class="shift-form" method="post">
+    <div id="add-time-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Add New Time Entry</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                </div>
+                <div class="modal-body">
+                    <div id="add-time-container">
+                        <label id="add-time-position-label">Position</label>
+                        <select class="form-control"
+                                asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                                id="add-time-position"
+                                asp-for="@Model.SelectedPositionId"
+                                required>
+                        </select>
+                        <label id="add-time-volunteer-label">Volunteer</label>
+                        <select class="form-control"
+                                id="add-time-volunteer"
+                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
+                                asp-for="@Model.SelectedVolunteerId"
+                                required>
+                        </select>
+                        <label id="add-time-start-label">Start</label>
+                        <input id="add-time-start" type="datetime" class="form-control" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" />
+                        <div class="centered" id="add-time-separator"><span>-</span></div>
+                        <label id="add-time-end-label">End</label>
+                        <input id="add-time-end" type="datetime" class="form-control" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
+                    <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
+                    <button type="button" class="btn btn-dark" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

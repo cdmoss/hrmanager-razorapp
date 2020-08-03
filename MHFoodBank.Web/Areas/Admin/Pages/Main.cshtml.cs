@@ -62,8 +62,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public async Task OnPostDeleteVolunteer()
         {
             int id = Volunteer.Id;
-            Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
-            await _context.Entry(Volunteer).Collection(p => p.Shifts).LoadAsync();
+            Volunteer = await _context.VolunteerProfiles
+                .Include(p => p.Shifts)
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             foreach(Shift shift in Volunteer.Shifts)
             {
@@ -71,7 +72,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 shift.CreateDescription();
             }
 
-            _context.Remove(Volunteer);
+            Volunteer.Deleted = true;
             await _context.SaveChangesAsync();
         }
 
