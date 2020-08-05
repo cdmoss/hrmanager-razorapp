@@ -16,6 +16,10 @@
     <script src="https://momentjs.com/downloads/moment.js"></script>
     <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+
+    @RenderSection("Scripts", false)
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -27,17 +31,6 @@
             <a href="https://www.mhfoodbank.com/">Medicine Hat Food Bank</a> &bull; <a href="mailto:info@mhfoodbank.com">info@mhfoodbank.com</a>
         </div>
     </footer>
-
-    <script src="~/js/availability.js"></script>
     <script src="~/lib/jquery-validate/additional-methods.js"></script>
-
-    <script type="text/javascript">
-        $(function () {
-            $('.datetimepicker-time').datetimepicker(
-            {
-                format: 'HH:mm'
-            });
-        });
-    </script>
 </body>
 </html>

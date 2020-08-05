@@ -34,7 +34,7 @@ namespace MHFoodBank.Web.Repositories
             {
                 var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.UserID == userId);
 
-                var existingClockIn = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.VolunteerProfile.UserID == userId &&
+                var existingClockIn = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Volunteer.UserID == userId &&
                                                                              ct.EndTime == null);
                 if (existingClockIn != null)
                 {
@@ -44,7 +44,7 @@ namespace MHFoodBank.Web.Repositories
 
                     return new PunchClockResult
                     {
-                        Message = $"Goodbye {existingClockIn.VolunteerProfile.FirstName}! You have successfully clocked out.",
+                        Message = $"Goodbye {existingClockIn.Volunteer.FirstName}! You have successfully clocked out.",
                         Success = true
                     };
                 }
@@ -52,7 +52,7 @@ namespace MHFoodBank.Web.Repositories
                 {
                     ClockedTime newClockIn = new ClockedTime()
                     {
-                        VolunteerProfile = volunteer,
+                        Volunteer = volunteer,
                         StartTime = DateTime.UtcNow,
                         Position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == position)
                     };
@@ -61,7 +61,7 @@ namespace MHFoodBank.Web.Repositories
 
                     return new PunchClockResult
                     {
-                        Message = $"Welcome {newClockIn.VolunteerProfile.FirstName}! You have successfully clocked in.",
+                        Message = $"Welcome {newClockIn.Volunteer.FirstName}! You have successfully clocked in.",
                         Success = true
                     };
                 }

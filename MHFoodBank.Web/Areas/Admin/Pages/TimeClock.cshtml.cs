@@ -37,6 +37,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public int SelectedPositionId { get; set; }
         [BindProperty]
         public int SelectedVolunteerId { get; set; }
+        [BindProperty]
+        public 
 
         private readonly IMapper _mapper;
 
@@ -47,12 +49,19 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnGet()
         {
-            var volunteerDomainModel = await _context.VolunteerProfiles.ToListAsync();
+            var volunteerDomainModels = await _context.VolunteerProfiles.ToListAsync();
+            var clockedTimeDomainModels = await _context.ClockedTime
+                .Include(p => p.Volunteer)
+                .Include(p => p.Position)
+                .ToListAsync();
 
             Positions = await _context.Positions.ToListAsync();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
-            ClockedTimes = new List<ClockedTimeReadDto>();
-            Volunteers = _mapper.Map(volunteerDomainModel, Volunteers);
+            Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
+            ClockedTimes = _mapper.Map(clockedTimeDomainModels, ClockedTimes);
+
+            SearchedStartDate = DateTime.Now;
+            SearchedEndDate = DateTime.Now;
         }
     }
 }

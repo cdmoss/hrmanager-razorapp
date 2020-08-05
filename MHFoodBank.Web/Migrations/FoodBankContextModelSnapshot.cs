@@ -141,14 +141,14 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("VolunteerProfileId")
+                    b.Property<int?>("VolunteerId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PositionId");
 
-                    b.HasIndex("VolunteerProfileId");
+                    b.HasIndex("VolunteerId");
 
                     b.ToTable("ClockedTime");
                 });
@@ -677,9 +677,9 @@ namespace MHFoodBank.Web.Migrations
                         .WithMany()
                         .HasForeignKey("PositionId");
 
-                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "VolunteerProfile")
+                    b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany()
-                        .HasForeignKey("VolunteerProfileId");
+                        .HasForeignKey("VolunteerId");
                 });
 
             modelBuilder.Entity("MHFoodBank.Common.PositionVolunteer", b =>

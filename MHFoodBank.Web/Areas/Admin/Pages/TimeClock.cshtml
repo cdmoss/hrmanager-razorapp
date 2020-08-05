@@ -31,9 +31,7 @@
             </div>
         </div>
 
-        @*<input id="search-start" type="date" class="form-control" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" />*@
         <div class="centered" id="date-separator"><span>-</span></div>
-        @*<input id="search-end" type="date" class="form-control" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" />*@
 
         <div class="form-group">
             <div class="input-group date" id="dtp-timeclock-range-end" data-target-input="nearest">
@@ -59,16 +57,16 @@
         <button id="save-changes" asp-page-handler="SaveChanges" class="btn btn-primary">Save Changes</button>
     </form>
     <hr />
-    <table>
+    <table class="table">
         <thead>
-            <tr>
-                <td>Volunteer</td>
-                <td>Position</td>
-                <td>Date</td>
-                <td>Start</td>
-                <td>End</td>
-                <td>Duration</td>
-                <td></td>
+            <tr >
+                <th>Volunteer</th>
+                <th>Position</th>
+                <th>Date</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th></th>
             </tr>
         </thead>
         @foreach (var ct in Model.ClockedTimes)
@@ -76,10 +74,22 @@
             <tr>
                 <td>@ct.Volunteer.FirstName @ct.Volunteer.LastName</td>
                 <td>@ct.Position.Name</td>
-                <td>@ct.StartTime.ToString("yyy-MM-dd")</td>
-                <td>@ct.StartTime.TimeOfDay</td>
-                <td>@ct.EndTime?.TimeOfDay</td>
-                <td>@(ct.EndTime?.TimeOfDay - ct.StartTime.TimeOfDay)</td>
+                <td>@ct.StartTime.ToString("yyyy-MM-dd")</td>
+                <td>@ct.StartTime.TimeOfDay.ToString(@"hh\:mm")</td>
+                <td>@ct.EndTime?.TimeOfDay.ToString(@"hh\:mm")</td>
+                <td>@{
+                        TimeSpan? duration = ct.EndTime?.TimeOfDay - ct.StartTime.TimeOfDay;
+                        string durationString = "";
+                        if (duration != null)
+                        {
+                            int? days = duration?.Days;
+                            int? hours = duration?.Hours;
+                            int? minutes = duration?.Minutes;
+                            int? seconds = duration?.Seconds;
+                            durationString = $"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds";
+                        }
+                    }
+                    @durationString</td>
                 <td>
                     <form>
                         <button class="btn btn-sm btn-danger" asp-page-handler="DeleteTime">Delete</button>
