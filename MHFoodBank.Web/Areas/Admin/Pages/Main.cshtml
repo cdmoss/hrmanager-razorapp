@@ -12,7 +12,7 @@
             grid-template-columns: 2fr 2fr 1fr 5fr;
             grid-template-rows: auto;
             grid-template-areas: "search-name search-position search-button .";
-/*            gap: .5rem;*/
+            gap: .5rem;
         }
 
         @@media (min-width: 1800px) {
@@ -35,7 +35,7 @@
                 grid-template-columns: 2fr 2fr 1fr;
                 grid-template-rows: auto;
                 grid-template-areas: "search-name search-position search-button";
-/*                gap: .5rem;*/
+                gap: .5rem;
             }
         }
 
@@ -52,70 +52,72 @@
         }
     </style>
 
-<div class="ml-5 mr-5">
-    <form id="container" class="mb-3" method="post">
-        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
-        {
-            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-        }
-        else
-        {
-            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-        }
+    <div class="ml-5 mr-5">
+        <partial name="_AdminStatusMessage" for="StatusMessage" />
+        <form id="container" class="mb-3" method="post">
+            @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+            {
+                <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
+            }
+            else
+            {
+                <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+            }
 
-        @if (@Model.SearchedPosition == null)
+            @if (@Model.SearchedPosition == null)
+            {
+                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+                </select>
+            }
+            else
+            {
+                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+                </select>
+            }
+            <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+        </form>
+        @if (@Model.Volunteers.Count() > 0)
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        else
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-    </form>
-    @if (@Model.Volunteers.Count() > 0)
-    {
-        <table class="table volunteer-table">
-            <thead>
-                <tr>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Details</th>
-                    @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
-                    {
-                        <th>Delete</th>                    
-                    }
-                </tr>
-            </thead>
-        @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
-        {
-            <tr>
-                <td>@volunteer.FirstName</td>
-                <td>@volunteer.LastName</td>
-                <td><a class="btn-link" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a><input type="hidden" value="@volunteer.Id" id="volunteer-id" /></td>
-                @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+            <table class="table volunteer-table">
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Details</th>
+                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                        {
+                            <th>Delete</th>
+
+                        }
+                    </tr>
+                </thead>
+                @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
                 {
-                    //Delete button goes here
-                    <td><a class="btn-link" href="#" onclick="openDeleteModal()">Delete</a></td>
+                    <tr>
+                        <td>@volunteer.FirstName</td>
+                        <td>@volunteer.LastName</td>
+                        <td><a class="btn-link" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a><input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
+                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                        {
+                            //Delete button goes here
+                            <td><a class="btn-link" href="#" onclick="openDeleteModal(@volunteer.Id)">Delete</a></td>
+                        }
+                    </tr>
                 }
-            </tr>
+            </table>
         }
-        </table>
-    }
-</div>
+    </div>
 
 <script>
-    function openDeleteModal() {
+    function openDeleteModal(id) {
         $('#delete-volunteer-prompt').modal();
-        document.getElementById("volunteer-id-modal").value = document.getElementById("volunteer-id").value;
+        document.getElementById("volunteer-id-modal").value = document.getElementById("volunteer-id-" + id).value;
     }
 </script>
 
 <form method="post">
     <div id="delete-volunteer-prompt" class="modal fade">
-        <input type="hidden" asp-for="@Model.Volunteer.Id" id="volunteer-id-modal" value="" />
+        <input type="hidden" asp-for="@Model.SelectedVolunteerId" id="volunteer-id-modal" value="" />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

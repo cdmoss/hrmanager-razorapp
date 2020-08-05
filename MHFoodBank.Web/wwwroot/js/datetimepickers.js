@@ -1,12 +1,12 @@
 ﻿function updateDtps() {
     $('.datetimepicker-time').datetimepicker(
-        {
-            format: 'HH:mm'
-        });
+    {
+        format: 'HH:mm'
+    });
 
-    $('.datetimepicker-datetime').datetimepicker();
-
-    $('.datetimepicker-date').datetimepicker({
-        format: 'L'
+    $('.datetimepicker-datetime').datetimepicker(
+    {
+        date: moment(),
+        format: 'YYYY-MM-DD HH:mm',
     });
 };

@@ -18,6 +18,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string StatusMessage { get; set; }
         [BindProperty]
+        public int SelectedClockedTimeId { get; set; }
+        [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
         public Position SearchedPosition { get; set; }
@@ -32,13 +34,17 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public DateTime SearchedEndDate { get; set; }
         [BindProperty]
+        public DateTime EntryStartDate { get; set; }
+        [BindProperty]
+        public DateTime EntryEndDate { get; set; }
+        [BindProperty]
         public List<ClockedTimeReadDto> ClockedTimes { get; set; }
         [BindProperty]
         public int SelectedPositionId { get; set; }
         [BindProperty]
-        public int SelectedVolunteerId { get; set; }
+        public int AddVolunteerId { get; set; }
         [BindProperty]
-        public 
+        public int EditVolunteerId { get; set; }
 
         private readonly IMapper _mapper;
 
@@ -47,8 +53,43 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _mapper = mapper;
         }
 
-        public async Task OnGet()
+        public async Task<IActionResult> OnPostSaveChanges()
         {
+            return RedirectToPage(new { statusMessage = $"A new entry has been successfully added." }); ;
+        }
+
+        public async Task<IActionResult> OnPostAddEntry()
+        {
+            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == AddVolunteerId);
+            var position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SelectedPositionId);
+
+            ClockedTime clock = new ClockedTime()
+            {
+                Position = position,
+                Volunteer = volunteer,
+                StartTime = EntryStartDate,
+                EndTime = EntryEndDate
+            };
+
+            _context.ClockedTime.Add(clock);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { statusMessage = $"A new entry has been successfully added." });
+        }
+
+        public async Task<IActionResult> OnPostDeleteTime()
+        {
+            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(c => c.Id == SelectedClockedTimeId);
+
+            _context.ClockedTime.Remove(clockedTime);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { statusMessage = "The selected entry has been successfully deleted." });
+        }
+
+        public async Task OnGet(string statusMessage)
+        {
+            StatusMessage = statusMessage;
             var volunteerDomainModels = await _context.VolunteerProfiles.ToListAsync();
             var clockedTimeDomainModels = await _context.ClockedTime
                 .Include(p => p.Volunteer)
