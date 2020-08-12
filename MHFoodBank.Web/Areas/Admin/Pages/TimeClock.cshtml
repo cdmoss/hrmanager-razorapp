@@ -6,115 +6,125 @@
 }
 
 @section Styles {
-    <link href="~/css/timeclock_header.css" rel="stylesheet" />
+    <link href="~/css/timeclock_main.css" rel="stylesheet" />
     <link href="~/css/timeclock_modal.css" rel="stylesheet" />
 }
 
-<div class="ml-5 mr-5">
-    <partial name="_AdminStatusMessage" for="StatusMessage" />
-    <form method="post" id="container">
-        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
-        {
-            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-        }
-        else
-        {
-            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-        }
+<form method="post">
+    <div class="ml-5 mr-5">
+        <partial name="_AdminStatusMessage" for="StatusMessage" />
+        <div id="container">
+            @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+            {
+                <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
+            }
+            else
+            {
+                <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+            }
 
-        <div class="form-group">
-            <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-start" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" data-target="#datetimepicker" />
-                <div class="input-group-append" data-target="#dtp-timeclock-range-start" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            <div>
+                <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-start" data-target-input="nearest">
+                    <input id="search-date-range-start" type="text" class="form-control datetimepicker-input" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" data-target="#datetimepicker" />
+                    <div class="input-group-append" data-target="#dtp-timeclock-range-start" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="centered" id="date-separator"><span>-</span></div>
+            <div class="centered" id="date-separator"><span>-</span></div>
 
-        <div class="form-group">
-            <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-end" data-target-input="nearest">
-                <input type="text" class="form-control datetimepicker-input" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" data-target="#datetimepicker" />
-                <div class="input-group-append" data-target="#dtp-timeclock-range-end" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            <div>
+                <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-end" data-target-input="nearest">
+                    <input id="search-date-range-end" type="text" class="form-control datetimepicker-input" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" data-target="#datetimepicker" />
+                    <div class="input-group-append" data-target="#dtp-timeclock-range-end" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        @if (@Model.SearchedPosition == null)
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        else
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        <button id="search-button" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-        <div id="add-time" onclick="$('#add-time-modal').modal()" class="btn btn-primary"><i class="fas fa-plus"></i> Entry</div>
-        <button id="save-changes" asp-page-handler="SaveChanges" class="btn btn-primary">Save Changes</button>
-    </form>
-    <hr />
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Volunteer</th>
-                <th>Position</th>
-                <th>Date</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Duration</th>
-                <th></th>
-            </tr>
-        </thead>
-        @foreach (var ct in Model.ClockedTimes)
-        {
-            <tr>
-                <td>
-                    <input id="entry-id-@ct.Id" type="hidden" value="@ct.Id" />
-                    <select class="form-control"
-                            id="entry-volunteer-@ct.Id"
-                            asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
-                            disabled>
-                    </select>
-                </td>
-                <td>
-                    <select id="entry-position-@ct.Id" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" disabled>
-                    </select>
-                </td>
-                <td><input id="entry-date-@ct.Id" class="form-control" value="@ct.StartTime.ToString("yyyy-MM-dd")" readonly /></td>
-                <td><input id="entry-starttime-@ct.Id" class="form-control" value="@ct.StartTime.TimeOfDay.ToString(@"hh\:mm")" readonly /></td>
-                <td><input id="entry-endttime-@ct.Id" class="form-control" value="@ct.EndTime?.TimeOfDay.ToString(@"hh\:mm")" readonly /></td>
-                <td>
-                    @{
-                        string durationString = "";
-                        if (ct.EndTime.HasValue)
-                        {
-                            TimeSpan? duration = ct.EndTime.Value.Subtract(ct.StartTime);
-                            int? days = duration?.Days;
-                            int? hours = duration?.Hours;
-                            int? minutes = duration?.Minutes;
-                            int? seconds = duration?.Seconds;
-                            durationString = $"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds";
+            @if (@Model.SearchedPosition == null)
+            {
+                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+                </select>
+            }
+            else
+            {
+                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+                </select>
+            }
+            <button id="search-button" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+            <button type="button" id="add-time" onclick="$('#add-time-modal').modal()" class="btn btn-primary"><i class="fas fa-plus"></i> Entry</button>
+        </div>
+        <br/>
+        <table class="table">
+            <colgroup>
+                <col style="width: 15%; vertical-align: middle" />
+                <col style="width: 15%; vertical-align: middle" />
+                <col style="width: 10%; vertical-align: middle" />
+                <col style="width: 7.5%; vertical-align: middle" />
+                <col style="width: 7.5%; vertical-align: middle" />
+                <col style="width: 20%; vertical-align: middle" />
+                <col style="width: 20%; vertical-align: middle; text-align: right" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>Volunteer</th>
+                    <th>Position</th>
+                    <th>Date</th>
+                    <th>Start</th>
+                    <th>End</th>
+                    <th>Duration</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (var ct in Model.ClockedTimes)
+            {
+                <tr>
+                    <td>
+                        <!--this is for the delete modal-->
+                        <input id="entry-id-@ct.Id" type="hidden" value="@ct.Id" />
+                        <select name="entry-volunteer-@ct.Id"
+                                class="form-control"
+                                id="entry-volunteer-@ct.Id"
+                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID", ct.Volunteer.Id))"
+                                value="@ct.Volunteer.Id"
+                                disabled>
+                        </select>
+                    </td>
+                    <td>
+                        <select name="entry-position-@ct.Id" id="entry-position-@ct.Id" class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name", ct.Position.Id))" disabled>
+                        </select>
+                    </td>
+                    <td><input name="entry-date-@ct.Id" id="entry-date-@ct.Id" class="form-control" type="date" value="@ct.StartTime.ToString("yyyy-MM-dd")" readonly /></td>
+                    <td><input name="entry-starttime-@ct.Id" id="entry-starttime-@ct.Id" class="form-control" value="@ct.StartTime.TimeOfDay.ToString(@"hh\:mm")" readonly /></td>
+                    <td><input name="entry-endtime-@ct.Id" id="entry-endtime-@ct.Id" class="form-control" value="@ct.EndTime?.TimeOfDay.ToString(@"hh\:mm")" readonly /></td>
+                    <td>
+                        @{
+                            string durationString = "";
+                            if (ct.EndTime.HasValue)
+                            {
+                                TimeSpan? duration = ct.EndTime.Value.Subtract(ct.StartTime);
+                                int? days = duration?.Days;
+                                int? hours = duration?.Hours;
+                                int? minutes = duration?.Minutes;
+                                int? seconds = duration?.Seconds;
+                                durationString = $"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds";
+                            }
                         }
-                    }
-                    @durationString
-                </td>
-                <td>
-                    <button class="btn btn-sm btn-primary edit-entry-button" onclick="makeEntryEditable(@ct.Id)">Edit</button>
-                    <form method="post">
-                        <button id="save-entry-@ct.Id" style="display: none;" class="btn btn-sm btn-primary" asp-page-handler="SaveChanges">Save Changes</button>
-                    </form>
-                    <button id="cancel-@ct.Id" style="display: none;" class="btn btn-sm btn-dark">Cancel</button>
-                    <button class="btn btn-sm btn-danger delete-entry-button" onclick="openDeleteModal(@ct.Id)">Delete</button>
-                </td>
-        </tr>
-    }
-    </table>
-</div>
-
+                        @durationString
+                    </td>
+                    <td style="text-align: right;">
+                        <button type="button" class="btn btn-sm btn-primary entry-edit-button" onclick="makeEntryEditable(@ct.Id)">Edit</button>
+                        <button id="entry-save-@ct.Id" style="display: none;" class="btn btn-sm btn-primary" asp-route-id="@ct.Id" asp-page-handler="SaveChanges">Save Changes</button>
+                        <button type="button" id="entry-cancel-@ct.Id" style="display: none;" onclick="cancelEntryEdit(@ct.Id)" class="btn btn-sm btn-dark">Cancel</button>
+                        <button type="button" class="btn btn-sm btn-danger entry-delete-button" onclick="openDeleteModal(@ct.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</form>
 <!--modal for adding a new time-->
 <form class="shift-form" method="post">
     <div id="add-time-modal" class="modal fade">
@@ -208,3 +218,4 @@
 <script src="~/js/clockedtime_edit_entries.js"></script>
 <script src="~/js/datetimepickers.js"></script>
 <script src="~/js/availability.js"></script>
+<script src="~/js/clockedtime_search.js"></script>

@@ -33,7 +33,7 @@ namespace MHFoodBank.Web.Data
             bool check = false;
             if (position != null)
             {
-                if (position.Name != "All")
+                if (position.Id != 4)
                 {
                     check = true;
                 }
@@ -99,6 +99,42 @@ namespace MHFoodBank.Web.Data
             }
 
             return shifts;
+        }
+
+        public List<ClockedTimeReadDto> FilterTimeSheetBySearch(
+            List<ClockedTimeReadDto> clockedTimes, 
+            string name, 
+            Position searchedPosition, 
+            DateTime start,
+            DateTime end)
+        {
+            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
+            bool nameWasSearched = CheckIfNameWasSearched(name);
+
+            clockedTimes = clockedTimes.Where(ct =>
+                ct.StartTime >= start &&
+                ct.EndTime <= end).ToList();
+
+            if (positionWasSearched && nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name) &&
+                    s.Position.Id == searchedPosition.Id).ToList();
+            }
+
+            if (!positionWasSearched && nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name)).ToList();
+            }
+
+            if (positionWasSearched && !nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Position.Id == searchedPosition.Id).ToList();
+            }
+
+            return clockedTimes;
         }
 
         public Position GetSearchedPosition(HttpRequest request)

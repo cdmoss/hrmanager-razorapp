@@ -6,7 +6,6 @@
 
     $('.datetimepicker-datetime').datetimepicker(
     {
-        date: moment(),
         format: 'YYYY-MM-DD HH:mm',
     });
 };
