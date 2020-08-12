@@ -39,7 +39,8 @@
     <script src='~/fullcalendar/packages/list/main.js'></script>
     <script src="~/fullcalendar/vendor/rrule.js"></script>
     <script src="~/fullcalendar/packages/rrule/main.js"></script>
-    
+    <script src="~/js/clockedtime_search.js"></script>
+
     <style>
 
 
@@ -133,21 +134,8 @@
 
     <script src="~/lib/sb-admin/js/scripts.js"></script>
 
-    <script type="text/javascript">
-        $(function () {
-            $('.datetimepicker-time').datetimepicker(
-            {
-                format: 'HH:mm'
-            });
-        });
-    </script>
-
-    <script type="text/javascript">
-        
-    </script>
-
-    <script type="text/javascript">
-        
+    <script>
+        updateDtps();
     </script>
 
 </body>

@@ -54,6 +54,7 @@
                 selectedShiftStartDate = new Date(arg.start);
                 selectedShiftEndDate = new Date(arg.end);
                 document.getElementById("add-shift-date").value = moment(selectedShiftStartDate).format('yyyy-MM-DD');
+                document.getElementById("add-recshift-enddate").value = moment(selectedShiftStartDate).add(7, 'days').format('yyyy-MM-DD');
 
                 if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
                     // if an initial time isn't given via drag controls, set default times
@@ -249,7 +250,17 @@
                 </div>
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date</label>
-                    <input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">
+                    @*<input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">*@
+
+                    <div>
+                        <div class="input-group date datetimepicker-date-link-start" id="dtp-admincalendar-shift-start" data-target-input="nearest">
+                            <input id="add-shift-date" type="text" class="form-control datetimepicker-input"asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-shift-start" />
+                            <div class="input-group-append" data-target="#dtp-admincalendar-shift-start" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <br />
                     <div>
                         <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
@@ -259,8 +270,17 @@
                     <div id="add-recshift-container" style="display: none">
 
                         <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date</label>
-                        <input type="date" class="form-control" id="add-recshift-enddate" asp-for="@Model.SelectedShift.EndDate">
-                        <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>
+                        @*<input type="date" class="form-control dtp-notype" id="add-recshift-enddate" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" asp-for="@Model.SelectedShift.EndDate">
+        <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>*@
+
+                        <div>
+                            <div class="input-group date datetimepicker-date-link-end" id="dtp-admincalendar-shift-end" data-target-input="nearest">
+                                <input id="add-recshift-enddate" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndDate" data-target="#dtp-admincalendar-shift-end" />
+                                <div class="input-group-append" data-target="#dtp-admincalendar-shift-end" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr />
 
@@ -366,7 +386,16 @@
                 <div id="modalBody" class="modal-body">
                     <input type="hidden" id="edit-shift-id" asp-for="@Model.SelectedShift.Id">
                     <label style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-                    <input asp-for="@Model.SelectedShift.StartDate" type="date" class="form-control" id="edit-shift-date" required>
+                    @*<input asp-for="@Model.SelectedShift.StartDate" type="date" class="form-control" id="edit-shift-date" required>*@
+
+                    <div>
+                        <div class="input-group date datetimepicker-date-link-end" id="dtp-admincalendar-edit-shift-date" data-target-input="nearest">
+                            <input id="edit-shift-date" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-edit-shift-date" />
+                            <div class="input-group-append" data-target="#dtp-admincalendar-edit-shift-date" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
 
@@ -376,7 +405,7 @@
                     <div class="form-group">
                         <div class="input-group date datetimepicker-time" id="dtp-shift-edit-start" data-target-input="nearest">
                             <input id="edit-shift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-shift-edit-start" />
-                            <div class="input-group-append" data-target="#dtp-shift-add-start" data-toggle="datetimepicker">
+                            <div class="input-group-append" data-target="#dtp-shift-edit-start" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
                             </div>
                         </div>
@@ -445,7 +474,15 @@
                     <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
                     <input type="date" class="form-control" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
                     <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.OriginalStartDate" required>
-                    <input type="date" class="form-control" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.RecurrenceSetStartDate" required>
+
+                    <div>
+                        <div class="input-group date datetimepicker-date-link-start" id="dtp-admincalendar-edit-recshift-date" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" id="edit-recshift-all-startdate" style="display: none;" asp-for="@Model.RecurrenceSetStartDate" data-target="#dtp-admincalendar-edit-recshift-date" required>
+                            <div class="input-group-append" data-target="#dtp-admincalendar-edit-recshift-date" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
 
                     <hr />
 
@@ -461,7 +498,16 @@
                     <div id="edit-recshift-container" style="display: none">
 
                         <label style="margin-top: 3px; padding-right: 10px;">End Recurring Set Date</label>
-                        <input type="date" class="form-control" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>
+                        @*<input type="date" class="form-control" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>*@
+
+                        <div>
+                            <div class="input-group date datetimepicker-date-link-start" id="dtp-admincalendar-edit-recshift-enddate" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" data-target="#dtp-admincalendar-edit-recshift-date" required>
+                                <div class="input-group-append" data-target="#dtp-admincalendar-edit-recshift-enddate" data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
 
                         <hr />
 

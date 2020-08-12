@@ -59,8 +59,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             await PrepareModel();
 
-            SearchedStartDate = DateTime.Now;
-            SearchedEndDate = DateTime.Now;
+            SearchedStartDate = DateTime.Now.Date;
+            SearchedEndDate = DateTime.Now.Date.AddDays(1);
         }
 
         public async Task<IActionResult> OnPostSaveChanges(int id)

@@ -25,7 +25,7 @@
 
             <div>
                 <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-start" data-target-input="nearest">
-                    <input id="search-date-range-start" type="text" class="form-control datetimepicker-input" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" data-target="#datetimepicker" />
+                    <input id="search-date-range-start" type="text" class="form-control datetimepicker-input" value="@Model.SearchedStartDate.ToString("yyyy-MM-dd HH:mm")" asp-for="@Model.SearchedStartDate" data-target="#dtp-timeclock-range-start" />
                     <div class="input-group-append" data-target="#dtp-timeclock-range-start" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -36,7 +36,7 @@
 
             <div>
                 <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-range-end" data-target-input="nearest">
-                    <input id="search-date-range-end" type="text" class="form-control datetimepicker-input" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" data-target="#datetimepicker" />
+                    <input id="search-date-range-end" type="text" class="form-control datetimepicker-input" value="@Model.SearchedEndDate.ToString("yyyy-MM-dd HH:mm")" asp-for="@Model.SearchedEndDate" data-target="#dtp-timeclock-range-end" />
                     <div class="input-group-append" data-target="#dtp-timeclock-range-end" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -152,25 +152,23 @@
                         </select>
 
                         <label id="add-time-start-label">Start</label>
-                        @*<input id="add-time-start" type="datetime" class="form-control" value="@Model.SearchedStartDate" asp-for="@Model.SearchedStartDate" />*@
 
-                        <div id="add-time-start" class="form-group">
-                            <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-entry-start" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" value="@Model.EntryStartDate" asp-for="@Model.EntryStartDate" data-target="#datetimepicker" />
+                        <div id="add-time-start">
+                            <div class="input-group date datetimepicker-datetime-withdate" id="dtp-timeclock-entry-start" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input dtp-notype" value="@Model.EntryStartDate" asp-for="@Model.EntryStartDate" data-target="#datetimepicker" />
                                 <div class="input-group-append" data-target="#dtp-timeclock-entry-start" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="centered" id="add-time-separator"><span>-</span></div>
+                        <div class="row align-items-center justify-content-center" id="add-time-separator"><span>-</span></div>
 
                         <label id="add-time-end-label">End</label>
-                        @* <input id="add-time-end" type="datetime" class="form-control" value="@Model.SearchedEndDate" asp-for="@Model.SearchedEndDate" />*@
 
-                        <div id="add-time-end" class="form-group">
-                            <div class="input-group date datetimepicker-datetime" id="dtp-timeclock-entry-end" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" value="@Model.EntryEndDate" asp-for="@Model.EntryEndDate" data-target="#datetimepicker" />
+                        <div id="add-time-end">
+                            <div class="input-group date datetimepicker-datetime-withdate" id="dtp-timeclock-entry-end" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input dtp-notype" value="@Model.EntryEndDate" asp-for="@Model.EntryEndDate" data-target="#datetimepicker" />
                                 <div class="input-group-append" data-target="#dtp-timeclock-entry-end" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                 </div>
@@ -218,4 +216,3 @@
 <script src="~/js/clockedtime_edit_entries.js"></script>
 <script src="~/js/datetimepickers.js"></script>
 <script src="~/js/availability.js"></script>
-<script src="~/js/clockedtime_search.js"></script>

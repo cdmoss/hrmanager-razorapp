@@ -41,6 +41,11 @@ function setRecurringShiftAsOpen() {
 // for changing the modal display based on recurring shift checkbox
 function toggleAddRecurringShiftControls() {
     if ($("#add-recshift-display").prop("checked") == true) {
+        const startDate = document.getElementById("add-shift-date").value;
+        const endDate = document.getElementById("add-recshift-enddate").value;
+        $('.datetimepicker-date-link-start').datetimepicker('maxDate', moment(endDate));
+        $('.datetimepicker-date-link-end').datetimepicker('minDate', moment(startDate));
+
         // shows recurring shift controls
         $('#add-recshift-container').prop('style', 'display: block');
         // shows add recurring shift button, hides add shift button
@@ -49,6 +54,8 @@ function toggleAddRecurringShiftControls() {
         $('#add-recshift-enddate').prop('required', true);
     }
     else if ($("#add-recshift-display").prop("checked") == false) {
+        $('.datetimepicker-date-link-start').datetimepicker('maxDate', false);
+        $('.datetimepicker-date-link-end').datetimepicker('minDate', false);
         // hides recurring shift controls
         $('#add-recshift-container').prop('style', 'display: none');
         // hides add recurring shift button, shows add shift button
