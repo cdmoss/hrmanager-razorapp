@@ -27,9 +27,8 @@
             <div>
                 <button class="w-100 h-100 btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
             </div>
-            <a align="right" class="ml-2" asp-page="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">
-                <input class="w-100 h-100 btn-primary btn-sm btn" value="Change Password"/>
-            </a>
+            <button class="ml-2 btn btn-sm btn-primary" asp-page-handler="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</button>
+
         </div>
         <hr class="mt-4 mb-4" />
         <div class="row col-md-12">
@@ -64,21 +63,13 @@
                 <div class="col-md-2">Expires:</div>
                 <input class="form-control col-md-4" id="foodsafe-date" type="date" value="@Model.DetailsModel.FoodSafeExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
                 <dl class="col-md-4 row">
-                    <dt class="col-md-10">CPR:</dt>
+                    <dt class="col-md-10">First Aid/Cpr:</dt>
                     <dd class="col-md-2">
-                        <input type="checkbox" id="cpr-check" onclick="ToggleCertificateExpiries('cpr-check','cpr-date')" asp-for="@Model.DetailsModel.Cpr" value="true" />
+                        <input type="checkbox" id="firstaid-check" onclick="ToggleCertificateExpiries('firstaid-check','firstaid-date')" asp-for="@Model.DetailsModel.FirstAidCpr" />
                     </dd>
                 </dl>
                 <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" id="cpr-date" type="date" value="@Model.DetailsModel.CprExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.CprExpiry" />
-                <dl class="col-md-4 row">
-                    <dt class="col-md-10">First Aid:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" id="firstaid-check" onclick="ToggleCertificateExpiries('firstaid-check','firstaid-date')" asp-for="@Model.DetailsModel.FirstAid" />
-                    </dd>
-                </dl>
-                <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" id="firstaid-date" type="date" value="@Model.DetailsModel.FirstAidExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidExpiry" />
+                <input class="form-control col-md-4" id="firstaid-date" type="date" value="@Model.DetailsModel.FirstAidCprExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidCprExpiry" />
                 <dl class="col-md-12 row">
                     <dt class="col-md-4">Other Certificates:</dt>
                     <dd class="col-md-8">

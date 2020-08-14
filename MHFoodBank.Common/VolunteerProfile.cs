@@ -55,14 +55,12 @@ namespace MHFoodBank.Common
         public bool FoodSafe { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FoodSafeExpiry { get; set; }
+        [Display(Name = "Level")]
+        public string FirstAidCprLevel { get; set; }
         [Display(Name = "First aid")]
-        public bool FirstAid { get; set; }
+        public bool FirstAidCpr { get; set; }
         [DataType(DataType.Date)]
-        public DateTime? FirstAidExpiry { get; set; }
-        [Display(Name = "CPR")]
-        public bool Cpr { get; set; }
-        [DataType(DataType.Date)]
-        public DateTime? CprExpiry { get; set; }
+        public DateTime? FirstAidCprExpiry { get; set; }
         [Display(Name = "Other Certificates")] 
         public string OtherCertificates { get; set; }
         [Display(Name = "Education and training")]

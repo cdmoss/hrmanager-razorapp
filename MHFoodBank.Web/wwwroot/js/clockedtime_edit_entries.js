@@ -45,17 +45,25 @@ function makeEntryEditable(id) {
 }
 
 function cancelEntryEdit(id) {
+
     let entryFields = Array.from(document.getElementsByClassName("being-edited"));
+
     entryFields.forEach(function (field) {
         if (field.nodeName == "INPUT") {
-            field.readOnly = true;
+            field.readOnly = false;
         }
         if (field.nodeName == "SELECT") {
-            field.disabled = true;
+            field.disabled = false;
         }
 
         field.classList.remove("being-edited");
     })
+
+    document.getElementById("entry-volunteer-" + id).value = originalEntryValues.volunteer;
+    document.getElementById("entry-position-" + id).value = originalEntryValues.position
+    document.getElementById("entry-date-" + id).value = originalEntryValues.date;
+    document.getElementById("entry-starttime-" + id).value = originalEntryValues.start;
+    document.getElementById("entry-endtime-" + id).value = originalEntryValues.end;
 
     let unselectedButtons = Array.from(document.getElementsByClassName("unselected-buttons"));
 

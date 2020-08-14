@@ -39,7 +39,7 @@ namespace MHFoodBank.Web.Repositories
                 if (existingClockIn != null)
                 {
                     _context.Update(existingClockIn);
-                    existingClockIn.EndTime = DateTime.UtcNow;
+                    existingClockIn.EndTime = DateTime.UtcNow.AddHours(-6);
                     await _context.SaveChangesAsync();
 
                     return new PunchClockResult
@@ -53,7 +53,7 @@ namespace MHFoodBank.Web.Repositories
                     ClockedTime newClockIn = new ClockedTime()
                     {
                         Volunteer = volunteer,
-                        StartTime = DateTime.UtcNow,
+                        StartTime = DateTime.UtcNow.AddHours(-6),
                         Position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == position)
                     };
                     await _context.AddAsync(newClockIn);

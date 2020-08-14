@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using MHFoodBank.Common.Dtos;
 using AutoMapper;
 using MHFoodBank.Common;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -48,11 +49,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public class InputModel
         {
-            [Required]
-            [DataType(DataType.Password)]
-            [Display(Name = "Current password")]
-            public string OldPassword { get; set; }
-
             [Required]
             [RegularExpression(Constants.Regex.password, ErrorMessage = "Your password must contain at least one letter, one number and one special character (@$!%*#?&)")]
             [DataType(DataType.Password)]
@@ -90,6 +86,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var domainVolunteer = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
             await _context.Entry(domainVolunteer).Reference(p => p.VolunteerProfile).LoadAsync();
 
+            _context.Update(domainVolunteer);
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -100,20 +98,28 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            var changePasswordResult = await _userManager.ChangePasswordAsync(domainVolunteer, Input.OldPassword, Input.NewPassword);
-            if (!changePasswordResult.Succeeded)
+            PasswordHasher<AppUser> pass = new PasswordHasher<AppUser>();
+            domainVolunteer.PasswordHash = pass.HashPassword(domainVolunteer, Input.NewPassword);
+
+            if(ModelState.IsValid)
             {
-                foreach (var error in changePasswordResult.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
-                return Page();
+                await _context.SaveChangesAsync();
+                _logger.LogInformation("User changed their password successfully.");
+                StatusMessage = "Your password has been changed.";
+                return RedirectToPage("VolunteerDetails", new { id = domainVolunteer.VolunteerProfile.Id, statusMessage = "You have successfully changed this volunteer's password." });
             }
 
-            _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
+            return Page();
 
-            return RedirectToPage("VolunteerDetails", new { id = domainVolunteer.VolunteerProfile.Id, statusMessage = "You have successfully changed this volunteer's password." });
+            //var changePasswordResult = await _userManager.ChangePasswordAsync(domainVolunteer, domainVolunteer.PasswordHash, Input.NewPassword);
+            //if (!changePasswordResult.Succeeded)
+            //{
+            //    foreach (var error in changePasswordResult.Errors)
+            //    {
+            //        ModelState.AddModelError(string.Empty, error.Description);
+            //    }
+            //    return Page();
+            //}
         }
     }
 }

@@ -49,6 +49,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             return Page();
         }
 
+        public IActionResult OnPostAdminChangePassword(int id)
+        {
+            if(!ModelState.IsValid)
+            {
+                return RedirectToPage("AdminChangePassword", new { id = id });
+            }
+
+            return RedirectToPage("AdminChangePassword", new { id = id });
+        }
+
         public async Task<IActionResult> OnPostChangeStatusAsync(int check, int id)
         {
             PrepareModel(id);
@@ -103,13 +113,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
                     _context.Entry(VolunteerProfile).State = EntityState.Modified;
                     VolunteerProfile.FoodSafe = !VolunteerProfile.FoodSafe;
                     break;
-                case 7:
-                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
-                    VolunteerProfile.Cpr = !VolunteerProfile.Cpr;
-                    break;
                 case 8:
                     _context.Entry(VolunteerProfile).State = EntityState.Modified;
-                    VolunteerProfile.FirstAid = !VolunteerProfile.FirstAid;
+                    VolunteerProfile.FirstAidCpr = !VolunteerProfile.FirstAidCpr;
                     break;
             }
         }

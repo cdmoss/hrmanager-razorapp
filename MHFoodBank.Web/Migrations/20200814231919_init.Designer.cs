@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200805153043_init")]
+    [Migration("20200814231919_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -343,12 +343,6 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("ConfirmationOfProfessionalDesignation")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Cpr")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("CprExpiry")
-                        .HasColumnType("datetime(6)");
-
                     b.Property<bool>("CriminalRecordCheck")
                         .HasColumnType("tinyint(1)");
 
@@ -376,11 +370,14 @@ namespace MHFoodBank.Web.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<bool>("FirstAid")
+                    b.Property<bool>("FirstAidCpr")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<DateTime?>("FirstAidExpiry")
+                    b.Property<DateTime?>("FirstAidCprExpiry")
                         .HasColumnType("datetime(6)");
+
+                    b.Property<int>("FirstAidCprLevel")
+                        .HasColumnType("int");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
