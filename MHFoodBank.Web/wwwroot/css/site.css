@@ -1,6 +1,81 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+:root {
+    --primary: #343A40;
+    --danger: #8A0C0C;
+}
+
+.form-control[readonly].datetime-readonly{
+    background-color: #fff;
+}
+
+/*.table th, .table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 0px solid #fff; 
+}*/
+
+.btn-primary:hover {
+    color: var(--primary);
+    background-color: #fff;
+    border-color: var(--primary);
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    color: #6c757d;
+    background-color: #fff;
+    border-color: #6c757d;
+}
+
+.btn-danger:hover {
+    color: var(--danger);
+    background-color: #fff;
+    border-color: var(--danger);
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: var(--danger);
+    border-color: var(--danger);
+}
+
+.btn-outline-primary {
+    color: #343A40;
+    background-color: #fff;
+    border-color: #343A40;
+}
+
+.btn-outline-primary:hover {
+    color: #fff;
+    background-color: #343A40;
+    border-color: #343A40;
+}
+
+.btn-outline-danger {
+    color: #8A0C0C;
+    background-color: #fff;
+    border-color: #8A0C0C;
+}
+
+.btn-outline-danger:hover {
+    color: #fff;
+    background-color: #8A0C0C;
+    border-color: #8A0C0C;
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -10,12 +85,6 @@ a.navbar-brand {
 /* Provide sufficient contrast against white background */
 a {
   color: #0366d6;
-}
-
-.btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {

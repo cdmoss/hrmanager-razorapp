@@ -19,17 +19,15 @@
     {
         date: moment(),
         format: 'YYYY-MM-DD HH:mm'
-    });
+        });
 
-    $('.datetimepicker-datetime-link-start').datetimepicker(
-    {
-        date: moment(),
+    $('.datetimepicker-datetime-link-start').datetimepicker({
+        maxDate: moment().add(1, 'days').startOf('day'),
         format: 'YYYY-MM-DD HH:mm'
     });
 
-    $('.datetimepicker-datetime-link-end').datetimepicker(
-    {
-        date: moment(),
+    $('.datetimepicker-datetime-link-end').datetimepicker({
+        minDate: moment(),
         format: 'YYYY-MM-DD HH:mm'
     });
 

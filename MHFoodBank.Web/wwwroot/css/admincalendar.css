@@ -1,9 +1,9 @@
 ﻿@media (min-width: 1660px) {
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr 1fr 2fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 2fr 2fr 1fr 2fr 4fr ;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button . email add-shift add-position remove-position";
+        grid-template-areas: "search-name search-position search-button . main-buttons";
         gap: .5rem;
     }
 }
@@ -11,9 +11,9 @@
 @media (max-width: 1659px ) {
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr 1fr 1fr 1fr 1fr 1fr;
+        grid-template-columns: 2fr 2fr 1fr 4fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button email add-shift add-position remove-position";
+        grid-template-areas: "search-name search-position search-button main-buttons";
         gap: .5rem;
     }
 }
@@ -23,7 +23,7 @@
         display: grid;
         grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-name search-position search-position search-button" "email email add-shift add-position remove-position";
+        grid-template-areas: "search-name search-name search-position search-position search-button" "main-buttons";
         gap: .5rem;
     }
 }
@@ -37,7 +37,7 @@
         display: grid;
         grid-template-columns: 2fr 2fr 2fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button" "email email email" "add-shift add-position remove-position";
+        grid-template-areas: "search-name search-position search-button" "main-buttons";
         gap: .5rem;
     }
 }
@@ -54,20 +54,8 @@
     grid-area: search-button;
 }
 
-#email {
-    grid-area: email;
-}
-
-#add-shift {
-    grid-area: add-shift;
-}
-
-#add-position {
-    grid-area: add-position;
-}
-
-#remove-position {
-    grid-area: remove-position;
+#main-buttons {
+    grid-area: main-buttons;
 }
 
 #calendar {

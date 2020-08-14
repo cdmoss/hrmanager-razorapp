@@ -174,11 +174,13 @@
             </select>
         }
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-        <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>
-        <div id="add-shift" onclick="autoFillShiftModal()" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
-        <div id="add-position" onclick="$('#add-position-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Position</div>
-        <div id="remove-position" onclick="$('#edit-position-modal').modal();" class="btn btn-primary">
-            <i class="fa fa-edit"></i> Positions
+        <div class="btn-group" id="main-buttons">
+            <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>
+            <div onclick="autoFillShiftModal()" class="btn btn-primary"><i class="fas fa-plus"></i> Shift</div>
+            <div onclick="$('#add-position-modal').modal();" class="btn btn-primary"><i class="fas fa-plus"></i> Position</div>
+            <div onclick="$('#edit-position-modal').modal();" class="btn btn-primary">
+                <i class="fa fa-edit"></i> Positions
+            </div>
         </div>
     </form>
     <hr />
@@ -200,7 +202,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="AddPosition">Add</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -232,7 +234,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="EditPosition">Submit Changes</button>
                     <button class="btn btn-danger" asp-page-handler="RemovePosition">Remove</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -367,7 +369,7 @@
                 <div class="modal-footer">
                     <button id="add-recshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add</button>
                     <button id="add-shift-submit" class="btn btn-primary" asp-page-handler="AddShift">Add</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -453,7 +455,7 @@
                     <button class="btn btn-primary" asp-page-handler="EditShift">Submit Change</button>
                     <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="handleDeletePrompt()">Delete</div>
                     <button class="btn btn-danger" id="edit-shift-delete-noprompt" asp-page-handler="DeleteShift">Delete</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -604,7 +606,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="EditRecurringShift">Submit Change</button>
                     <button class="btn btn-danger" asp-page-handler="DeleteRecurringShift">Delete</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -628,7 +630,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
                     <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
-                    <button type="button" class="btn btn-dark" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
                 </div>
             </div>
         </div>

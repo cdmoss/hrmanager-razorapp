@@ -35,17 +35,13 @@ function makeEntryEditable(id) {
         field.classList.add("being-edited");
     })
 
-    let editButtons = Array.from(document.getElementsByClassName("entry-edit-button"));
-    let deleteButtons = Array.from(document.getElementsByClassName("entry-delete-button"));
+    let unselectedButtons = Array.from(document.getElementsByClassName("unselected-buttons"));
 
-    let defaultButtons = editButtons.concat(deleteButtons);
-
-    defaultButtons.forEach(function (button) {
-        button.style.display = "none";
+    unselectedButtons.forEach(function (buttonGroup) {
+        buttonGroup.style.display = "none";
     })
 
-    document.getElementById("entry-save-" + id).style.display = "inline";
-    document.getElementById("entry-cancel-" + id).style.display = "inline";
+    document.getElementById("entry-selected-" + id).style.display = "inline-flex";
 }
 
 function cancelEntryEdit(id) {
@@ -61,15 +57,11 @@ function cancelEntryEdit(id) {
         field.classList.remove("being-edited");
     })
 
-    let editButtons = Array.from(document.getElementsByClassName("entry-edit-button"));
-    let deleteButtons = Array.from(document.getElementsByClassName("entry-delete-button"));
+    let unselectedButtons = Array.from(document.getElementsByClassName("unselected-buttons"));
 
-    let defaultButtons = editButtons.concat(deleteButtons);
-
-    defaultButtons.forEach(function (button) {
-        button.style.display = "inline";
+    unselectedButtons.forEach(function (button) {
+        button.style.display = "inline-flex";
     })
 
-    document.getElementById("entry-save-" + id).style.display = "none";
-    document.getElementById("entry-cancel-" + id).style.display = "none";
+    document.getElementById("entry-selected-" + id).style.display = "none";
 }

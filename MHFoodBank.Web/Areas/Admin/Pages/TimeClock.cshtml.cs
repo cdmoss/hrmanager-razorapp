@@ -61,6 +61,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             SearchedStartDate = DateTime.Now.Date;
             SearchedEndDate = DateTime.Now.Date.AddDays(1);
+            EntryStartDate = DateTime.Now;
+            EntryEndDate = DateTime.Now.AddHours(5);
         }
 
         public async Task<IActionResult> OnPostSaveChanges(int id)
