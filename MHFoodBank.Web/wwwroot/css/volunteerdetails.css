@@ -1,0 +1,150 @@
+﻿#header-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr .8fr .8fr;
+    grid-template-areas: "approval-radios . . save-changes change-password";
+    grid-gap: 1rem;
+}
+
+#approval-radios {
+    grid-area: approval-radios;
+}
+
+#save-changes{
+    grid-area: save-changes;
+}
+
+#change-password {
+    grid-area: change-password;
+}
+
+#personal-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2rem;
+    grid-template-areas: "address city postal birth" "email main-phone alt-phone-1 alt-phone-2";
+}
+
+#address {
+    grid-area: address;
+}
+
+#city {
+    grid-area: city;
+}
+
+#postal {
+    grid-area: postal;
+}
+
+#birth {
+    grid-area: birth;
+}
+
+#email {
+    grid-area: email;
+}
+
+#main-phone {
+    grid-area: main-phone;
+}
+
+#alt-phone-1 {
+    grid-area: alt-phone-1;
+}
+
+#alt-phone-2 {
+    grid-area: alt-phone-2;
+}
+
+#emerg-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+    gap: 2rem;
+    grid-template-areas: "emergency-name emergency-relation emergency-phone-1 emergency-phone-2";
+}
+
+#emergency-name {
+    grid-area: emergency-name;
+}
+
+#emergency-relation {
+    grid-area: emergency-relation;
+}
+
+#emergency-phone-1 {
+    grid-area: emergency-phone-1;
+}
+
+#emergency-phone-2 {
+    grid-area: emergency-phone-2;
+}
+
+#cert-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.1fr;
+    grid-template-rows: .3fr .3fr 0.5fr;
+    gap: 2rem;
+    grid-template-areas: "firstaid firstaid required-certs" "foodsafe foodsafe required-certs" "other-certs other-certs other-certs";
+}
+
+#firstaid {
+    grid-area: firstaid;
+}
+
+#foodsafe {
+    grid-area: foodsafe;
+}
+
+#other-certs {
+    grid-area: other-certs;
+}
+
+#required-certs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2rem;
+    grid-template-areas: "criminal driving" "professional welfare";
+    grid-area: required-certs;
+}
+
+#criminal {
+    grid-area: criminal;
+}
+
+#driving {
+    grid-area: driving;
+}
+
+#professional {
+    grid-area: professional;
+}
+
+#welfare {
+    grid-area: welfare;
+}
+
+#exp-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 2rem;
+    grid-template-areas: "education skills" "volexperience boards";
+}
+
+#education {
+    grid-area: education;
+}
+
+#skills {
+    grid-area: skills;
+}
+
+#volexperience {
+    grid-area: volexperience;
+}
+
+#boards {
+    grid-area: boards;
+}

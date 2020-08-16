@@ -5,361 +5,486 @@
     ViewData["Title"] = "VolunteerDetails";
     Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
 }
+
+@section Styles {
+    <link href="~/css/volunteerdetails.css" rel="stylesheet" />
+}
+
 <form method="post">
     <input type="hidden" asp-for="@Model.DetailsModel.FirstName" value="@Model.DetailsModel.FirstName" />
     <input type="hidden" asp-for="@Model.DetailsModel.LastName" value="@Model.DetailsModel.LastName" />
     <div class="ml-5 mr-5">
         <partial name="_AdminStatusMessage" for="StatusMessage" />
-        <div class="row">
-            <h4 class="mr-2"><strong>Volunteer Approval Status: </strong></h4>
-            @if (@Model.DetailsModel.OfficiallyApproved)
-            {
-                <h4 class="ml-2">Approved</h4>
-            }
-            else
-            {
-                <h4>Not approved</h4>
-            }
-            <div class="mr-auto ml-auto form-check">
-                <input class="mt-auto mb-auto" type="checkbox" asp-for="@Model.DetailsModel.OfficiallyApproved" />
-                <label class="mt-auto mb-auto">Approve this volunteer?</label>
+        <div id="header-container">
+            <div id="approval-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="0" /> Approved
+                </label>
+                <label class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="1" /> Pending
+                </label>
+                <label class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="2" /> Not Approved
+                </label>
             </div>
-            <div>
-                <button class="w-100 h-100 btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
-            </div>
-            <button class="ml-2 btn btn-sm btn-primary" asp-page-handler="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</button>
+
+            <button id="save-changes" class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
+            <button id="change-password" class="btn btn-sm btn-primary" asp-page-handler="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</button>
 
         </div>
         <hr class="mt-4 mb-4" />
-        <div class="row col-md-12">
-            <dl class="row col-md-4">
-                <dt class="col-md-4 mb-1">Address:</dt>
-                <dd class="col-md-8 row mb-1"><input type="text" class="form-control" value="@Model.DetailsModel.Address" asp-for="@Model.DetailsModel.Address" /><span asp-validation-for="@Model.DetailsModel.Address" class="text-danger"></span></dd>
-                <dt class="col-md-4 mb-1 ">City:</dt>
-                <dd class="col-md-8 row mb-1"><input type="text" class="form-control" value="@Model.DetailsModel.City" asp-for="@Model.DetailsModel.City" /><span asp-validation-for="@Model.DetailsModel.City" class="text-danger"></span></dd>
-                <dt class="col-md-4 mb-1 ">Postal Code:</dt>
-                <dd class="col-md-8 row mb-1"><input class="form-control" value="@Model.DetailsModel.PostalCode" asp-for="@Model.DetailsModel.PostalCode" /><span asp-validation-for="@Model.DetailsModel.PostalCode" class="text-danger"></span></dd>
-                <dt class="col-md-4 mb-1 ">Birth Date:</dt>
-                <dd class="col-md-8 row mb-1"><input type="date" class="form-control" value="@Model.DetailsModel.Birthdate.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.Birthdate" /><span asp-validation-for="@Model.DetailsModel.Birthdate" class="text-danger"></span></dd>
-            </dl>
-            <dl class="row col-md-4">
-                <dt class="col-md-4 mb-1">Email:</dt>
-                <dd class="col-md-8 row mb-1"><input class="form-control" value="@Model.DetailsModel.Email" asp-for="@Model.DetailsModel.Email" /><span asp-validation-for="@Model.DetailsModel.Email" class="text-danger"></span></dd>
-
-                <dt class="col-md-4 mb-1">Main Phone:</dt>
-                <dd class="col-md-8 row mb-1"><input class="form-control" value="@Model.DetailsModel.MainPhone" asp-for="@Model.DetailsModel.MainPhone" /><span asp-validation-for="@Model.DetailsModel.MainPhone" class="text-danger"></span></dd>
-                <dt class="col-md-4 mb-1">Alternate Phone 1:</dt>
-                <dd class="col-md-8 row mb-1"><input class="form-control" value="@Model.DetailsModel.AlternatePhone1" asp-for="@Model.DetailsModel.AlternatePhone1" /><span asp-validation-for="@Model.DetailsModel.AlternatePhone1" class="text-danger"></span></dd>
-                <dt class="col-md-4 mb-1">Alternate Phone 2:</dt>
-                <dd class="col-md-8 row mb-1"><input class="form-control" value="@Model.DetailsModel.AlternatePhone2" asp-for="@Model.DetailsModel.AlternatePhone2" /><span asp-validation-for="@Model.DetailsModel.AlternatePhone2" class="text-danger"></span></dd>
-            </dl>
-            <div class="col-md-4 row">
-                <dl class="col-md-4 row">
-                    <dt class="col-md-10">Food Safe:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" id="foodsafe-check" onclick="ToggleCertificateExpiries('foodsafe-check','foodsafe-date')" asp-for="@Model.DetailsModel.FoodSafe" value="true" />
-                    </dd>
-                </dl>
-                <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" id="foodsafe-date" type="date" value="@Model.DetailsModel.FoodSafeExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FoodSafeExpiry" />
-                <dl class="col-md-4 row">
-                    <dt class="col-md-10">First Aid/Cpr:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" id="firstaid-check" onclick="ToggleCertificateExpiries('firstaid-check','firstaid-date')" asp-for="@Model.DetailsModel.FirstAidCpr" />
-                    </dd>
-                </dl>
-                <div class="col-md-2">Expires:</div>
-                <input class="form-control col-md-4" id="firstaid-date" type="date" value="@Model.DetailsModel.FirstAidCprExpiry?.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.FirstAidCprExpiry" />
-                <dl class="col-md-12 row">
-                    <dt class="col-md-4">Other Certificates:</dt>
-                    <dd class="col-md-8">
-                        <textarea class="form-control" rows="2" asp-for="@Model.DetailsModel.OtherCertificates" value="@Model.DetailsModel.OtherCertificates"></textarea>
-                    </dd>
-                </dl>
-            </div>
-        </div>
-        <hr class="mt-2 mb-4" />
-        <div class="row col-md-12">
-            <dl class="row col-md-4 mb-4">
-                <dt class="col-md-5 mb-1">Emergency Contact Name:</dt>
-                <dd class="col-md-7 mb-1 row"><input class="form-control" asp-for="@Model.DetailsModel.EmergencyFullName" value="@Model.DetailsModel.EmergencyFullName" /><span asp-validation-for="@Model.DetailsModel.EmergencyFullName" class="text-danger"></span></dd>
-                <dt class="col-md-5 mb-1">Relationship to Emergency Contact</dt>
-                <dd class="col-md-7 mb-1 row"><input class="form-control" asp-for="@Model.DetailsModel.EmergencyRelationship" value="@Model.DetailsModel.EmergencyRelationship" /><span asp-validation-for="@Model.DetailsModel.EmergencyRelationship" class="text-danger"></span></dd>
-
-            </dl>
-            <dl class="row col-md-4 mb-4">
-                <dt class="col-md-5 mb-1">Emergency Phone 1:</dt>
-                <dd class="col-md-7 mb-1 row"><input class="form-control" asp-for="@Model.DetailsModel.EmergencyPhone1" value="@Model.DetailsModel.EmergencyPhone1" /><span asp-validation-for="@Model.DetailsModel.EmergencyPhone1" class="text-danger"></span></dd>
-                <dt class="col-md-5 mb-1">Emergency Phone 2:</dt>
-                <dd class="col-md-7 mb-1 row"><input class="form-control" asp-for="@Model.DetailsModel.EmergencyPhone2" value="@Model.DetailsModel.EmergencyPhone2" /><span asp-validation-for="@Model.DetailsModel.EmergencyPhone2" class="text-danger"></span></dd>
-            </dl>
-            <div class="col-md-4 row">
-                <dl class="row col-md-8">
-                    <dt class="col-md-10">Criminal Record Check:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" asp-for="@Model.DetailsModel.CriminalRecordCheck" value="true" />
-                    </dd>
-                </dl>
-                <dl class="row col-md-8">
-                    <dt class="col-md-10">Driving Abstract:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" asp-for="@Model.DetailsModel.DrivingAbstract" value="true" />
-                    </dd>
-                </dl>
-                .                <dl class="row col-md-8">
-                    <dt class="col-md-10">Confirmation of Professional Designation:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" asp-for="@Model.DetailsModel.ConfirmationOfProfessionalDesignation" value="true" />
-                    </dd>
-                </dl>
-                <dl class="row col-md-8">
-                    <dt class="col-md-10">Child Welfare Check:</dt>
-                    <dd class="col-md-2">
-                        <input type="checkbox" asp-for="@Model.DetailsModel.ChildWelfareCheck" value="true" />
-                    </dd>
-                </dl>
-            </div>
-        </div>
-        <hr class="mt-2 mb-4" />
-        <div class="row col-md-12">
-            <dl class="col-md-6 row">
-                <dt class="col-md-4">Education and Training:</dt>
-                <dd class="col-md-8 row"><textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.EducationTraining" value="@Model.DetailsModel.EducationTraining"></textarea></dd>
-            </dl>
-            <dl class="col-md-6 row">
-                <dt class="col-md-4">Skills Interests and Hobbies:</dt>
-                <dd class="col-md-8 row"><textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.SkillsInterestsHobbies" value="@Model.DetailsModel.SkillsInterestsHobbies"></textarea></dd>
-            </dl>
-        </div>
-        <div class="row col-md-12">
-            <dl class="col-md-6 row">
-                <dt class="col-md-4">Volunteer Experience:</dt>
-                <dd class="col-md-8 row"><textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.VolunteerExperience" value="@Model.DetailsModel.VolunteerExperience"></textarea></dd>
-            </dl>
-            <dl class="col-md-6 row">
-                <dt class="col-md-4">Other Boards:</dt>
-                <dd class="col-md-8 row"><textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.OtherBoards" value="@Model.DetailsModel.OtherBoards"></textarea></dd>
-            </dl>
-        </div>
-        <hr class="mt-2 mb-4" />
-        <h5 class="ml-2">Availability</h5>
-        <table class="availability table">
-
-            <tr>
-                <th>Sunday</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-                <th>Saturday</th>
-            </tr>
-
-            @for (int i = 1; i <= @Model.MaxAvailabilityCount; i++)
-            {
-                <tr>
-                    <td>
-                        @if (Model.Availability["sunday"].Count >= i)
-                        {
-                            <p>@Model.Availability["sunday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["monday"].Count >= i)
-                        {
-                            <p>@Model.Availability["monday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["tuesday"].Count >= i)
-                        {
-                            <p>@Model.Availability["tuesday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["wednesday"].Count >= i)
-                        {
-                            <p>@Model.Availability["wednesday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["thursday"].Count >= i)
-                        {
-                            <p>@Model.Availability["thursday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["friday"].Count >= i)
-                        {
-                            <p>@Model.Availability["friday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                    <td>
-                        @if (Model.Availability["saturday"].Count >= i)
-                        {
-                            <p>@Model.Availability["saturday"][i - 1].ToString()</p>
-                        }
-                    </td>
-                </tr>
-            }
-        </table>
-
-        <hr class="mt-2 mb-4" />
-        <dl class="row col-md-12">
-            <dt class="col-md-2">Preferred Positions:</dt>
-            <dd class=" col-md-10 row">
-                @foreach (Position position in Model.Positions)
-                {
-                    <div class="form-check">
-                        @if (Model.DetailsModel.Positions.Any(p =>
-                         p.Position == position &&
-                         p.Association != PositionVolunteer.AssociationType.Assigned))
-                        {
-                            <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
-                        }
-                        else
-                        {
-                            <input class="mr-3" type="checkbox" name="preferred-@position.Name" />
-                        }
-                        <label for="@position.Name">@position.Name,</label>
-                    </div>
-                }
-            </dd>
-        </dl>
-        <dl class="row col-md-12">
-            <dt class="col-md-2">Assigned Positions:</dt>
-            <dd class="col-md-10 row">
-                @foreach (Position position in @Model.Positions)
-                {
-                    <div class="form-check">
-                        @if (@Model.DetailsModel.Positions.Any(p =>
-                         p.Position == position &&
-                         p.Association != PositionVolunteer.AssociationType.Preferred))
-                        {
-                            <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
-                        }
-                        else
-                        {
-                            <input class="mr-3" type="checkbox" name="assigned-@position.Name" />
-                        }
-                        <label for="@position.Name">@position.Name,</label>
-                    </div>
-                }
-            </dd>
-        </dl>
-
-        <hr class="mt-2 mb-4" />
-        <h5 class="ml-2">Work Experiences</h5>
-        <br />
-        <div class="row col-md-12">
-            @for (int i = 1; i <= @Model.DetailsModel.WorkExperiences.Count; i++)
-            {
-                <input type="hidden" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].Id" />
-                <br>
-                <dl class="row col-md-4">
-                    <dt class="col-md-4">Employer Name:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" /></dd>
-                    <dt class="col-md-4">Employer Phone:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" /><span asp-validation-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" class="text-danger"></span></dd>
-                    <dt class="col-md-4">Employer Address:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" /></dd>
-                    <dt class="col-md-4">Position Worked:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].PositionWorked" value="@Model.DetailsModel.WorkExperiences[i - 1].PositionWorked" /></dd>
-                    <dt class="col-md-4">Contact Person:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].ContactPerson" value="@Model.DetailsModel.WorkExperiences[i - 1].ContactPerson" /></dd>
-                    <dt class="col-md-4">Start Date:</dt>
-                    <dd class="col-md-8 row"><input type="date" class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].StartDate" value="@Model.DetailsModel.WorkExperiences[i - 1].StartDate?.ToString("yyyy-MM-dd")" /></dd>
-                    <dt id="workexp-current-label-@i" class="col-md-4">End Date:</dt>
-                    <dd id="workexp-current-enddate-@i" class="col-md-8 row"><input type="date" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EndDate" class="form-control" /></dd>
-                    <dt id="workexp-current-spacer" class="col-md-4"></dt>
-                    <dd style="text-align: right;" class="col-md-8">
-                        <div class="form-check">
-                            <input id="workexp-current-check-@i" onclick="makeWorkExperienceCurrent(@i)" value="true" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].CurrentJob" />
-                            <label>Current Job</label>
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="personalInfoHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#personalInfoCollapse" aria-expanded="true" aria-controls="personalInfoCollapse">
+                            Personal Information
+                        </a>
+                    </h5>
+                </div>
+                <div id="personalInfoCollapse" class="collapse" role="tabpanel" aria-labelledby="personalInfoHeader">
+                    <di class="card-body" id="personal-container">
+                        <div id="address" class="form-group">
+                            <label asp-for="@Model.DetailsModel.Address" value="@Model.DetailsModel.Address">Address</label>
+                            <input class="form-control" value="@Model.DetailsModel.Address" asp-for="@Model.DetailsModel.Address" />
+                            <span asp-validation-for="@Model.DetailsModel.Address" class="text-danger"></span>
                         </div>
-                    </dd>
-                </dl>
-            }
+                        <div id="city" class="form-group">
+                            <label asp-for="@Model.DetailsModel.City" value="@Model.DetailsModel.City">City</label>
+                            <input class="form-control" value="@Model.DetailsModel.City" asp-for="@Model.DetailsModel.City" />
+                            <span asp-validation-for="@Model.DetailsModel.City" class="text-danger"></span>
+                        </div>
+                        <div id="postal" class="form-group">
+                            <label asp-for="@Model.DetailsModel.PostalCode" value="@Model.DetailsModel.PostalCode">Postal Code</label>
+                            <input class="form-control" value="@Model.DetailsModel.PostalCode" asp-for="@Model.DetailsModel.PostalCode" />
+                            <span asp-validation-for="@Model.DetailsModel.PostalCode" class="text-danger"></span>
+                        </div>
+                        <div id="birth" class="form-group">
+                            <label asp-for="@Model.DetailsModel.Birthdate" value="@Model.DetailsModel.Birthdate">Birth Date</label>
+                            <input class="form-control" type="date" value="@Model.DetailsModel.Birthdate" asp-for="@Model.DetailsModel.Birthdate" />
+                            <span asp-validation-for="@Model.DetailsModel.Birthdate" class="text-danger"></span>
+                        </div>
+                        <div id="email" class="form-group">
+                            <label asp-for="@Model.DetailsModel.Email" value="@Model.DetailsModel.Email">Email</label>
+                            <input class="form-control" value="@Model.DetailsModel.Email" asp-for="@Model.DetailsModel.Email" />
+                            <span asp-validation-for="@Model.DetailsModel.Email" class="text-danger"></span>
+                        </div>
+                        <div id="main-phone" class="form-group">
+                            <label asp-for="@Model.DetailsModel.MainPhone" value="@Model.DetailsModel.MainPhone">Main Phone</label>
+                            <input class="form-control" value="@Model.DetailsModel.MainPhone" asp-for="@Model.DetailsModel.MainPhone" />
+                            <span asp-validation-for="@Model.DetailsModel.MainPhone" class="text-danger"></span>
+                        </div>
+                        <div id="alt-phone-1" class="form-group">
+                            <label asp-for="@Model.DetailsModel.AlternatePhone1" value="@Model.DetailsModel.AlternatePhone1">Alternate Phone 1</label>
+                            <input class="form-control" value="@Model.DetailsModel.AlternatePhone1" asp-for="@Model.DetailsModel.AlternatePhone1" />
+                            <span asp-validation-for="@Model.DetailsModel.AlternatePhone1" class="text-danger"></span>
+                        </div>
+                        <div id="alt-phone-2" class="form-group">
+                            <label asp-for="@Model.DetailsModel.AlternatePhone2" value="@Model.DetailsModel.AlternatePhone2">Alternate Phone 2</label>
+                            <input class="form-control" value="@Model.DetailsModel.AlternatePhone2" asp-for="@Model.DetailsModel.AlternatePhone2" />
+                            <span asp-validation-for="@Model.DetailsModel.AlternatePhone2" class="text-danger"></span>
+                        </div>
+                </div>
+            </div>
         </div>
-        <hr class="mb-4 mt-2" />
-        <h5 class="ml-2">References</h5>
-        <br />
-        <div class="row col-md-12">
-            @for (int i = 1; i <= @Model.DetailsModel.References.Count; i++)
-            {
-                <input type="hidden" asp-for="@Model.DetailsModel.References[i - 1].Id" />
-                <br>
-                <dl class="row col-md-4">
-                    <dt class="col-md-4">Name:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Name" value="@Model.DetailsModel.References[i - 1].Name" /></dd>
-                    <dt class="col-md-4">Phone:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Phone" value="@Model.DetailsModel.References[i - 1].Phone" /><span asp-validation-for="@Model.DetailsModel.References[i - 1].Phone" class="text-danger"></span></dd>
-                    <dt class="col-md-4">Relationship:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Relationship" value="@Model.DetailsModel.References[i - 1].Relationship" /></dd>
-                    <dt class="col-md-4">Occupation:</dt>
-                    <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Occupation" value="@Model.DetailsModel.References[i - 1].Occupation" /></dd>
-                </dl>
-            }
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="emergHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#emergCollapse" aria-expanded="true" aria-controls="emergCollapse">
+                            Emergency Contact Information
+                        </a>
+                    </h5>
+                </div>
+                <div id="emergCollapse" class="collapse" role="tabpanel" aria-labelledby="emergHeader">
+                    <div class="card-body" id="emerg-container">
+                        <div id="emergency-name" class="form-group">
+                            <label>Emergency Contact Name</label>
+                            <input class="form-control" asp-for="@Model.DetailsModel.EmergencyFullName" value="@Model.DetailsModel.EmergencyFullName" />
+                            <span asp-validation-for="@Model.DetailsModel.EmergencyFullName" class="text-danger"></span>
+                        </div>
+                        <div id="emergency-relation" class="form-group">
+                            <label>Emergency Contact Relationship</label>
+                            <input class="form-control" asp-for="@Model.DetailsModel.EmergencyRelationship" value="@Model.DetailsModel.EmergencyRelationship" />
+                            <span asp-validation-for="@Model.DetailsModel.EmergencyRelationship" class="text-danger"></span>
+                        </div>
+                        <div id="emergency-phone-1" class="form-group">
+                            <label>Emergency Phone 1</label>
+                            <input class="form-control" asp-for="@Model.DetailsModel.EmergencyPhone1" value="@Model.DetailsModel.EmergencyPhone1" />
+                            <span asp-validation-for="@Model.DetailsModel.EmergencyPhone1" class="text-danger"></span>
+                        </div>
+                        <div id="emergency-phone-2" class="form-group">
+                            <label>Emergency Phone 2</label>
+                            <input class="form-control" asp-for="@Model.DetailsModel.EmergencyPhone2" value="@Model.DetailsModel.EmergencyPhone2" />
+                            <span asp-validation-for="@Model.DetailsModel.EmergencyPhone2" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="certHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#certCollapse" aria-expanded="true" aria-controls="certCollapse">
+                            Certifications
+                        </a>
+                    </h5>
+                </div>
+                <div id="certCollapse" class="collapse" role="tabpanel" aria-labelledby="certHeader">
+                    <div class="card-body" id="cert-container">
+                        <div id="firstaid" class="row">
+                            <div class="col-4">
+                                <input id="firstaid-check" onclick="toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container')" asp-for="DetailsModel.FirstAidCpr" />
+                                <label asp-for="DetailsModel.FirstAidCpr" class="form-check-label">First aid/Cpr</label>
+                            </div>
+
+                            <div class="d-none" id="firstaid-container">
+                                <div class="col-7">
+                                    <label>Expiry:</label>
+                                    <input class="form-control" id="firstaid-date" asp-for="DetailsModel.FirstAidCprExpiry" disabled />
+                                </div>
+                                <div class="col-5">
+                                    <label asp-for="@Model.DetailsModel.FirstAidCprLevel">Level:</label>
+                                    <input class="form-control" id="firstaid-level" type="text" asp-for="@Model.DetailsModel.FirstAidCprLevel" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="foodsafe" class="row">
+                            <div class="col-4">
+                                <input id="foodsafe-check" onclick="toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container')" asp-for="DetailsModel.FoodSafe" />
+                                <label asp-for="DetailsModel.FoodSafe" class="form-check-label">Food Safe</label>
+                            </div>
+                            <div class="d-none" id="foodsafe-container">
+                                <div class="col-7">
+                                    <label>Expiry:</label>
+                                    <input id="foodsafe-date" class="form-control" asp-for="DetailsModel.FoodSafeExpiry" disabled />
+                                </div>
+                            </div>
+                        </div>
+                        <div id="required-certs">
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.DetailsModel.CriminalRecordCheck" value="true" />
+                                <label class="form-check-label">Criminal Record Check</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.DetailsModel.DrivingAbstract" value="true" />
+                                <label class="form-check-label">Driving Abstract</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.DetailsModel.ConfirmationOfProfessionalDesignation" value="true" />
+                                <label class="form-check-label">Professional Designation</label>
+                            </div>
+
+                            <div class="form-check">
+                                <input type="checkbox" asp-for="@Model.DetailsModel.ChildWelfareCheck" value="true" />
+                                <label class="form-check-label">Child Welfare Check</label>
+                            </div>
+                        </div>
+                        <div id="other-certs" class="form-group">
+                            <label>Other Certificates</label>
+                            <textarea class="form-control" rows="2" asp-for="@Model.DetailsModel.OtherCertificates" value="@Model.DetailsModel.OtherCertificates"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="expHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#expCollapse" aria-expanded="true" aria-controls="expCollapse">
+                            Experience
+                        </a>
+                    </h5>
+                </div>
+                <div id="expCollapse" class="collapse" role="tabpanel" aria-labelledby="expHeader">
+                    <div class="card-body" id="exp-container">
+                        <div id="education" class="form-group">
+                            <label>Education and Training</label>
+                            <textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.EducationTraining" value="@Model.DetailsModel.EducationTraining"></textarea>
+                        </div>
+                        <div id="skills" class="form-group">
+                            <label>Skills, Interests and Hobbies</label>
+                            <textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.SkillsInterestsHobbies" value="@Model.DetailsModel.SkillsInterestsHobbies"></textarea>
+                        </div>
+                        <div id="volexperience" class="form-group">
+                            <label>Volunteer Experience</label>
+                            <textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.VolunteerExperience" value="@Model.DetailsModel.VolunteerExperience"></textarea>
+                        </div>
+                        <div id="boards" class="form-group">
+                            <label>Other Boards</label>
+                            <textarea rows="4" class="form-control" asp-for="@Model.DetailsModel.OtherBoards" value="@Model.DetailsModel.OtherBoards"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="availHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#availCollapse" aria-expanded="true" aria-controls="availCollapse">
+                            Availabilities
+                        </a>
+                    </h5>
+                </div>
+                <div id="availCollapse" class="collapse" role="tabpanel" aria-labelledby="availHeader">
+                    <table class="availability table">
+
+                        <tr>
+                            <th>Sunday</th>
+                            <th>Monday</th>
+                            <th>Tuesday</th>
+                            <th>Wednesday</th>
+                            <th>Thursday</th>
+                            <th>Friday</th>
+                            <th>Saturday</th>
+                        </tr>
+
+                        @for (int i = 1; i <= @Model.MaxAvailabilityCount; i++)
+                        {
+                            <tr>
+                                <td>
+                                    @if (Model.Availability["sunday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["sunday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["monday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["monday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["tuesday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["tuesday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["wednesday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["wednesday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["thursday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["thursday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["friday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["friday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                                <td>
+                                    @if (Model.Availability["saturday"].Count >= i)
+                                    {
+                                        <p>@Model.Availability["saturday"][i - 1].ToString()</p>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="positionsHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#positionsCollapse" aria-expanded="true" aria-controls="positionsCollapse">
+                            Positions
+                        </a>
+                    </h5>
+                </div>
+                <div id="positionsCollapse" class="collapse" role="tabpanel" aria-labelledby="positionsHeader">
+                    <dl class="row col-md-12">
+                        <dt class="col-md-2">Preferred Positions:</dt>
+                        <dd class=" col-md-10 row">
+                            @foreach (Position position in Model.Positions)
+                            {
+                                <div class="form-check">
+                                    @if (Model.DetailsModel.Positions.Any(p =>
+                        p.Position == position &&
+                        p.Association != PositionVolunteer.AssociationType.Assigned))
+                                    {
+                                        <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
+                                    }
+                                    else
+                                    {
+                                        <input class="mr-3" type="checkbox" name="preferred-@position.Name" />
+                                    }
+                                    <label for="@position.Name">@position.Name,</label>
+                                </div>
+                            }
+                        </dd>
+                    </dl>
+                    <dl class="row col-md-12">
+                        <dt class="col-md-2">Assigned Positions:</dt>
+                        <dd class="col-md-10 row">
+                            @foreach (Position position in @Model.Positions)
+                            {
+                                <div class="form-check">
+                                    @if (@Model.DetailsModel.Positions.Any(p =>
+                        p.Position == position &&
+                        p.Association != PositionVolunteer.AssociationType.Preferred))
+                                    {
+                                        <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
+                                    }
+                                    else
+                                    {
+                                        <input class="mr-3" type="checkbox" name="assigned-@position.Name" />
+                                    }
+                                    <label for="@position.Name">@position.Name,</label>
+                                </div>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="workExpHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#workExpCollapse" aria-expanded="true" aria-controls="workExpCollapse">
+                            Work Experience
+                        </a>
+                    </h5>
+                </div>
+                <div id="workExpCollapse" class="collapse" role="tabpanel" aria-labelledby="workExpHeader">
+                    @for (int i = 1; i <= @Model.DetailsModel.WorkExperiences.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].Id" />
+                        <br>
+                        <dl class="row col-md-4">
+                            <dt class="col-md-4">Employer Name:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" /></dd>
+                            <dt class="col-md-4">Employer Phone:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" /><span asp-validation-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerPhone" class="text-danger"></span></dd>
+                            <dt class="col-md-4">Employer Address:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerAddress" /></dd>
+                            <dt class="col-md-4">Position Worked:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].PositionWorked" value="@Model.DetailsModel.WorkExperiences[i - 1].PositionWorked" /></dd>
+                            <dt class="col-md-4">Contact Person:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].ContactPerson" value="@Model.DetailsModel.WorkExperiences[i - 1].ContactPerson" /></dd>
+                            <dt class="col-md-4">Start Date:</dt>
+                            <dd class="col-md-8 row"><input type="date" class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].StartDate" value="@Model.DetailsModel.WorkExperiences[i - 1].StartDate?.ToString("yyyy-MM-dd")" /></dd>
+                            <dt id="workexp-current-label-@i" class="col-md-4">End Date:</dt>
+                            <dd id="workexp-current-enddate-@i" class="col-md-8 row"><input type="date" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EndDate" class="form-control" /></dd>
+                            <dt id="workexp-current-spacer" class="col-md-4"></dt>
+                            <dd style="text-align: right;" class="col-md-8">
+                                <div class="form-check">
+                                    <input id="workexp-current-check-@i" onclick="makeWorkExperienceCurrent(@i)" value="true" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].CurrentJob" />
+                                    <label>Current Job</label>
+                                </div>
+                            </dd>
+                        </dl>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div role="tablist">
+            <div class="card">
+                <div class="card-header" role="tab" id="refHeader">
+                    <h5>
+                        <a style="text-decoration: none; color: black" data-toggle="collapse" href="#refCollapse" aria-expanded="true" aria-controls="refCollapse">
+                            References
+                        </a>
+                    </h5>
+                </div>
+                <div id="refCollapse" class="collapse" role="tabpanel" aria-labelledby="refHeader">
+                    @for (int i = 1; i <= @Model.DetailsModel.References.Count; i++)
+                    {
+                        <input type="hidden" asp-for="@Model.DetailsModel.References[i - 1].Id" />
+                        <br>
+                        <dl class="row col-md-4">
+                            <dt class="col-md-4">Name:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Name" value="@Model.DetailsModel.References[i - 1].Name" /></dd>
+                            <dt class="col-md-4">Phone:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Phone" value="@Model.DetailsModel.References[i - 1].Phone" /><span asp-validation-for="@Model.DetailsModel.References[i - 1].Phone" class="text-danger"></span></dd>
+                            <dt class="col-md-4">Relationship:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Relationship" value="@Model.DetailsModel.References[i - 1].Relationship" /></dd>
+                            <dt class="col-md-4">Occupation:</dt>
+                            <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Occupation" value="@Model.DetailsModel.References[i - 1].Occupation" /></dd>
+                        </dl>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 </form>
 <script src="~/js/checkboxes.js"></script>
 <script src="~/js/datetimepickers.js"></script>
 @*<script>
-    ToggleCertificateExpiries('DetailsModel_FoodSafe', 'DetailsModel_FoodSafeExpiry');
-    ToggleCertificateExpiries('DetailsModel_Cpr', 'DetailsModel_CprExpiry');
-    ToggleCertificateExpiries('DetailsModel_FirstAid', 'DetailsModel_FirstAidExpiry');
-    initializeWorkExperiences();
+        ToggleCertificateExpiries('DetailsModel_FoodSafe', 'DetailsModel_FoodSafeExpiry');
+        ToggleCertificateExpiries('DetailsModel_Cpr', 'DetailsModel_CprExpiry');
+        ToggleCertificateExpiries('DetailsModel_FirstAid', 'DetailsModel_FirstAidExpiry');
+        initializeWorkExperiences();
 
-    function initializeWorkExperiences() {
-        let checkboxes = document.querySelectorAll('*[id^="workexp-current"]');
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked === true) {
-                let checkedId = checkboxes[i].id[checkboxes[i].id.length - 1];
-                let workExperienceEndDateId = "workexp-current-enddate-" + checkedId;
-                let workExperienceLabelId = "workexp-current-label-" + checkedId;
-                let workExperienceEndDate = document.getElementById(workExperienceEndDateId);
-                let workExperienceLabel = document.getElementById(workExperienceLabelId);
-                workExperienceEndDate.style.display = 'none';
-                workExperienceLabel.style.display = 'none';
+        function initializeWorkExperiences() {
+            let checkboxes = document.querySelectorAll('*[id^="workexp-current"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked === true) {
+                    let checkedId = checkboxes[i].id[checkboxes[i].id.length - 1];
+                    let workExperienceEndDateId = "workexp-current-enddate-" + checkedId;
+                    let workExperienceLabelId = "workexp-current-label-" + checkedId;
+                    let workExperienceEndDate = document.getElementById(workExperienceEndDateId);
+                    let workExperienceLabel = document.getElementById(workExperienceLabelId);
+                    workExperienceEndDate.style.display = 'none';
+                    workExperienceLabel.style.display = 'none';
+                }
             }
         }
-    }
 
-    function ToggleCertificateExpiries(checkboxId, dateId) {
-        if ($(`#${checkboxId}`).prop("checked") == true) {
-            $(`#${dateId}`).prop('disabled', false);
+        function ToggleCertificateExpiries(checkboxId, dateId) {
+            if ($(`#${checkboxId}`).prop("checked") == true) {
+                $(`#${dateId}`).prop('disabled', false);
+            }
+            else if ($(`#${checkboxId}`).prop("checked") == false) {
+                $(`#${dateId}`).prop('disabled', true);
+                $(`#${dateId}`).prop('disabled', true);
+            }
         }
-        else if ($(`#${checkboxId}`).prop("checked") == false) {
-            $(`#${dateId}`).prop('disabled', true);
-            $(`#${dateId}`).prop('disabled', true);
+
+        function makeWorkExperienceCurrent(workExpId) {
+
+            // get the ids of the selected work experience elements
+            let workExperienceCheckId = "workexp-current-check-" + workExpId;
+            let workExperienceEndDateId = "workexp-current-enddate-" + workExpId;
+            let workExperienceLabelId = "workexp-current-label-" + workExpId;
+
+            // get the elements using the ids
+            let workExperienceCheck = document.getElementById(workExperienceCheckId);
+            let workExperienceEndDate = document.getElementById(workExperienceEndDateId);
+            let workExperienceLabel = document.getElementById(workExperienceLabelId);
+
+            // get all checkboxes that weren't selected
+            let checkboxes = $('[id^="workexp-current"]');
+
+            // hide/show end date and other checkboxes based on checked value
+            if (workExperienceCheck.checked === true) {
+                workExperienceEndDate.style.display = 'none';
+                workExperienceLabel.style.display = 'none';
+                workExperienceEndDate.valueAsDate = new Date(1970, 1, 1);
+            }
+            else {
+                workExperienceLabel.style.display = 'block';
+                workExperienceEndDate.style.display = 'block';
+            }
         }
-    }
-
-    function makeWorkExperienceCurrent(workExpId) {
-
-        // get the ids of the selected work experience elements
-        let workExperienceCheckId = "workexp-current-check-" + workExpId;
-        let workExperienceEndDateId = "workexp-current-enddate-" + workExpId;
-        let workExperienceLabelId = "workexp-current-label-" + workExpId;
-
-        // get the elements using the ids
-        let workExperienceCheck = document.getElementById(workExperienceCheckId);
-        let workExperienceEndDate = document.getElementById(workExperienceEndDateId);
-        let workExperienceLabel = document.getElementById(workExperienceLabelId);
-
-        // get all checkboxes that weren't selected
-        let checkboxes = $('[id^="workexp-current"]');
-
-        // hide/show end date and other checkboxes based on checked value
-        if (workExperienceCheck.checked === true) {
-            workExperienceEndDate.style.display = 'none';
-            workExperienceLabel.style.display = 'none';
-            workExperienceEndDate.valueAsDate = new Date(1970, 1, 1);
-        }
-        else {
-            workExperienceLabel.style.display = 'block';
-            workExperienceEndDate.style.display = 'block';
-        }
-    }
-</script>*@
+    </script>*@

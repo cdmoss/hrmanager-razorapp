@@ -1,7 +1,7 @@
 ﻿
-ToggleCertificateExpiries('foodsafe-check', 'foodsafe-date');
-ToggleCertificateExpiries('cpr-check', 'cpr-date');
-ToggleCertificateExpiries('firstaid-check', 'firstaid-date');
+toggleCertificates('foodsafe-check', 'foodsafe-date');
+toggleCertificates('cpr-check', 'cpr-date');
+toggleCertificates('firstaid-check', 'firstaid-date');
 initializeWorkExperiences();
 
 function initializeWorkExperiences() {
@@ -19,12 +19,25 @@ function initializeWorkExperiences() {
     }
 }
 
-function ToggleCertificateExpiries(checkboxId, dateId) {
+function toggleCertificates(checkboxId, inputIds, divId) {
     if ($(`#${checkboxId}`).prop("checked") == true) {
-        $(`#${dateId}`).prop('disabled', false);
+        inputIds.forEach(function (inputId) {
+            $(`#${inputId}`).prop('disabled', false);
+        })
+
+        $(`#${divId}`).removeClass('d-none');
+        $(`#${divId}`).addClass('row col-8');
     }
     else if ($(`#${checkboxId}`).prop("checked") == false) {
-        $(`#${dateId}`).prop('disabled', true);
+        const div = $(`#${divId}`);
+        div.prop('display', 'none');
+
+        for (let i = 0; i < inputIds.length; i++) {
+            $(`#${inputIds[i]}`).prop('disabled', true);
+        }
+
+        $(`#${divId}`).removeClass('row col-8');
+        $(`#${divId}`).addClass('d-none');
     }
 }
 

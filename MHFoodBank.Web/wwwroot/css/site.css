@@ -22,7 +22,19 @@ for details on configuring this project to bundle and minify static web assets. 
     border-color: var(--primary);
 }
 
+.btn-reverse-primary{
+    color: var(--primary);
+    background-color: #fff;
+    border-color: var(--primary);
+}
+
 .btn-primary {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+.btn-reverse-primary:not(:disabled):not(.disabled):active, .btn-reverse-primary:not(:disabled):not(.disabled).active, .show > .btn-reverse-primary.dropdown-toggle {
     color: #fff;
     background-color: var(--primary);
     border-color: var(--primary);
