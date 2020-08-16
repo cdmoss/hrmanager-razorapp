@@ -131,55 +131,62 @@
 
 </script>
 <div class="ml-5 mr-5">
-    <div class="row">
-        <h1 class="col-md-4">Schedule</h1>
-        <div class="col-md-5"></div>
-        <h5 class="col-md-3">Click on a shift to make a shift change request.</h5>
-    </div>
-    <partial name="_VolunteerStatusMessage" for="StatusMessage" />
-    <hr />
-    <form method="post">
-        <div id="shift-modal-assigned" class="modal fade">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 id="modalTitle" class="modal-title">Viewing Shift</h4>
-                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
-                    </div>
-                    <div id="modalBody" class="modal-body">
-                        <input type="hidden" id="clicked-shift-date" asp-for="@Model.ClickedShiftDate" />
-                        <input type="hidden" id="assigned-shift-id" asp-for="@Model.SelectedShift.Id">
+    @if (Model.Approved)
+    {
+        <div class="row">
+            <h1 class="col-md-4">Schedule</h1>
+            <div class="col-md-5"></div>
+            <h5 class="col-md-3">Click on a shift to make a shift change request.</h5>
+        </div>
+        <partial name="_VolunteerStatusMessage" for="StatusMessage" />
+        <hr />
+        <form method="post">
+            <div id="shift-modal-assigned" class="modal fade">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 id="modalTitle" class="modal-title">Viewing Shift</h4>
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
+                        </div>
+                        <div id="modalBody" class="modal-body">
+                            <input type="hidden" id="clicked-shift-date" asp-for="@Model.ClickedShiftDate" />
+                            <input type="hidden" id="assigned-shift-id" asp-for="@Model.SelectedShift.Id">
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="assigned-0shift-date">Shift Date</label>
-                        <input value="" type="date" class="form-control" id="assigned-shift-date" asp-for="@Model.SelectedShift.StartDate" readonly>
+                            <label style="margin-top: 3px; padding-right: 10px;" for="assigned-0shift-date">Shift Date</label>
+                            <input value="" type="date" class="form-control" id="assigned-shift-date" asp-for="@Model.SelectedShift.StartDate" readonly>
 
-                        <hr />
+                            <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="assigned-shift-starttime">Start Time</label>
-                        <input type="text" class="time form-control" id="assigned-shift-starttime" asp-for="@Model.SelectedShift.StartTime"  readonly>
-                        <hr />
+                            <label style="margin-top: 3px; padding-right: 10px;" for="assigned-shift-starttime">Start Time</label>
+                            <input type="text" class="time form-control" id="assigned-shift-starttime" asp-for="@Model.SelectedShift.StartTime" readonly>
+                            <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                        <input type="text" class="time form-control" id="assigned-shift-endtime" asp-for="@Model.SelectedShift.EndTime" readonly>
+                            <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                            <input type="text" class="time form-control" id="assigned-shift-endtime" asp-for="@Model.SelectedShift.EndTime" readonly>
 
-                        <hr />
-                        <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                        <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))" 
-                                id="assigned-shift-position"
-                                asp-for="@Model.SelectedPositionId"
-                                readonly 
-                                disabled>
-                        </select>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        <button class="btn btn-primary" id="btn-requestShiftChange" asp-page-handler="RequestChange">Request Shift Change</button>
-                        <button class="btn btn-primary" id="btn-workThisShift" asp-page-handler="WorkShift">Work This Shift</button>
+                            <hr />
+                            <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
+                            <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
+                                    id="assigned-shift-position"
+                                    asp-for="@Model.SelectedPositionId"
+                                    readonly
+                                    disabled>
+                            </select>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button class="btn btn-primary" id="btn-requestShiftChange" asp-page-handler="RequestChange">Request Shift Change</button>
+                            <button class="btn btn-primary" id="btn-workThisShift" asp-page-handler="WorkShift">Work This Shift</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </form>
-    <div id='calendar'></div>
+        </form>
+        <div id='calendar'></div>
+    }
+    else
+    {
+        <h3>We will email you once your application has been approved, then you will you be able to view the calendar ans sign up for shifts.</h3>
+    }
 </div>
 

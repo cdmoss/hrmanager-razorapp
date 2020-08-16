@@ -150,7 +150,7 @@
                         <span asp-validation-for="Volunteer.FirstAidCpr" class="text-danger"></span>
                     </div>
 
-                    <div class="col-md-2">
+                    @*<div class="col-md-2">
                         <div class="btn-group btn-group-toggle" data-toggle="buttons">
                             <label class="btn btn-secondary active">
                                 <input type="radio" name="options" autocomplete="off"> Level A
@@ -159,7 +159,7 @@
                                 <input type="radio" name="options" autocomplete="off"> Level C
                             </label>
                         </div>
-                    </div>
+                    </div>*@
 
                     <p class="col-md-2">Expiry:</p>
                     <input id="firstaid-date" class="col-md-4 form-control" asp-for="Volunteer.FirstAidCprExpiry" disabled />
@@ -171,7 +171,6 @@
                         <label asp-for="Volunteer.FoodSafe" class="form-check-label"></label>
                         <span asp-validation-for="Volunteer.FoodSafe" class="text-danger"></span>
                     </div>
-                    <div class="col-md-2"></div>
                     <p class="col-md-2">Expiry:</p>
                     <input id="foodsafe-date" class="col-md-4 form-control" asp-for="Volunteer.FoodSafeExpiry" disabled />
                 </div>
