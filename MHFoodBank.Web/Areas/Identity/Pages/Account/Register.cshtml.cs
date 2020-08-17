@@ -83,6 +83,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             }
             Volunteer.WorkExperiences = WorkExperiences;
             Volunteer.References = References;
+            Volunteer.ApprovalStatus = ApprovalStatus.Pending;
 
             var domainVolunteerProfile = _mapper.Map<VolunteerProfile>(Volunteer);
 

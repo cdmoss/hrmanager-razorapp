@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MHFoodBank.Web.Migrations
 {
-    public partial class current : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -213,7 +213,7 @@ namespace MHFoodBank.Web.Migrations
                     DrivingAbstract = table.Column<bool>(nullable: false),
                     ConfirmationOfProfessionalDesignation = table.Column<bool>(nullable: false),
                     ChildWelfareCheck = table.Column<bool>(nullable: false),
-                    OfficiallyApproved = table.Column<bool>(nullable: false),
+                    ApprovalStatus = table.Column<int>(nullable: false),
                     UserID = table.Column<int>(nullable: false),
                     Deleted = table.Column<bool>(nullable: false)
                 },

@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200815211510_current")]
-    partial class current
+    [Migration("20200817152729_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -330,6 +330,9 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<string>("AlternatePhone2")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Birthdate")
                         .HasColumnType("datetime(6)");
 
@@ -396,9 +399,6 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<string>("MainPhone")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("OfficiallyApproved")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("OtherBoards")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

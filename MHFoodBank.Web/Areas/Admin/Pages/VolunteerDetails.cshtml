@@ -17,14 +17,14 @@
         <partial name="_AdminStatusMessage" for="StatusMessage" />
         <div id="header-container">
             <div id="approval-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="0" /> Approved
+                <label id="approved" class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="0" /> Approved
                 </label>
-                <label class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="1" /> Pending
+                <label id="pending" class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="1" /> Pending
                 </label>
-                <label class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.OfficiallyApproved" value="2" /> Not Approved
+                <label id="not-approved" class="btn btn-reverse-primary">
+                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="2" /> Not Approved
                 </label>
             </div>
 
@@ -60,7 +60,7 @@
                     </div>
                     <div id="birth" class="form-group">
                         <label asp-for="@Model.DetailsModel.Birthdate" value="@Model.DetailsModel.Birthdate">Birth Date</label>
-                        <input class="form-control" type="date" value="@Model.DetailsModel.Birthdate" asp-for="@Model.DetailsModel.Birthdate" />
+                        <input class="form-control" type="date" value="@Model.DetailsModel.Birthdate.ToString("yyyy-MM-dd")" asp-for="@Model.DetailsModel.Birthdate" />
                         <span asp-validation-for="@Model.DetailsModel.Birthdate" class="text-danger"></span>
                     </div>
                     <div id="email" class="form-group">
@@ -212,65 +212,455 @@
                 </div>
             </button>
             <div id="availCollapse" class="collapse collapse-section" role="tabpanel" aria-labelledby="availHeader">
-                <table class="availability table">
-                    <tr>
-                        <th>Sunday</th>
-                        <th>Monday</th>
-                        <th>Tuesday</th>
-                        <th>Wednesday</th>
-                        <th>Thursday</th>
-                        <th>Friday</th>
-                        <th>Saturday</th>
-                    </tr>
+                <div class="card-body">
+                    <div class="week-container">
+                        <div class="sunday-container">
+                            <h4>Sunday</h4>
+                            <div class="sunday-fields">
+                                @if (@Model.OldAvailability["sunday"].Count > 0)
+                                {
+                                    @for (int i = 0; i < @Model.OldAvailability["sunday"].Count; i++)
+                                    {
+                                        <div class="row ml-1 sunday-field">
 
-                    @for (int i = 1; i <= @Model.MaxAvailabilityCount; i++)
-                    {
-                        <tr>
-                            <td>
-                                @if (Model.Availability["sunday"].Count >= i)
-                                {
-                                    <p>@Model.Availability["sunday"][i - 1].ToString()</p>
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-sunday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="sunday-1-@(i + 1)" type="text" value="@Model.OldAvailability["sunday"][i].StartTime" class="form-control
+                                       start-time" data-target="#dtp-sunday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-sunday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-sunday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="sunday-2-@(i+1)" type="text" value="@Model.OldAvailability["sunday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-sunday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-sunday-@(i+1)' onclick="removeField(this, 'sunday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["monday"].Count >= i)
+                                else
                                 {
-                                    <p>@Model.Availability["monday"][i - 1].ToString()</p>
+                                    <div class="row ml-1 sunday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-sunday-1-1" data-target-input="nearest">
+                                                <input name="sunday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-sunday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-sunday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-sunday-2-1" data-target-input="nearest">
+                                                <input name="sunday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-sunday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["tuesday"].Count >= i)
+                            </div>
+                            <input id="sunday" type="button" onclick="addField(this, 'sunday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <div class="monday-container">
+                            <h4>Monday</h4>
+                            <div class="monday-fields">
+                                @if (@Model.OldAvailability["monday"].Count > 0)
                                 {
-                                    <p>@Model.Availability["tuesday"][i - 1].ToString()</p>
+                                    @for (int i = 0; i < @Model.OldAvailability["monday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 monday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-monday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="monday-1-@(i + 1)" type="text" value="@Model.OldAvailability["monday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-monday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-monday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-monday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="monday-2-@(i+1)" type="text" value="@Model.OldAvailability["monday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-monday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-monday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-monday-@(i+1)' onclick="removeField(this, 'monday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["wednesday"].Count >= i)
+                                else
                                 {
-                                    <p>@Model.Availability["wednesday"][i - 1].ToString()</p>
+                                    <div class="row ml-1 monday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-monday-1-1" data-target-input="nearest">
+                                                <input name="monday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-monday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-monday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-monday-2-1" data-target-input="nearest">
+                                                <input name="monday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-monday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-monday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["thursday"].Count >= i)
+                            </div>
+                            <input id="monday" type="button" onclick="addField(this, 'monday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <br />
+                        <div class="tuesday-container">
+                            <h4>Tuesday</h4>
+                            <div class="tuesday-fields">
+                                @if (@Model.OldAvailability["tuesday"].Count > 0)
                                 {
-                                    <p>@Model.Availability["thursday"][i - 1].ToString()</p>
+                                    @for (int i = 0; i < @Model.OldAvailability["tuesday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 tuesday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-tuesday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="tuesday-1-@(i + 1)" type="text" value="@Model.OldAvailability["tuesday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-tuesday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-tuesday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-tuesday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="tuesday-2-@(i+1)" type="text" value="@Model.OldAvailability["tuesday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-tuesday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-tuesday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-tuesday-@(i+1)' onclick="removeField(this, 'tuesday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["friday"].Count >= i)
+                                else
                                 {
-                                    <p>@Model.Availability["friday"][i - 1].ToString()</p>
+                                    <div class="row ml-1 tuesday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-tuesday-1-1" data-target-input="nearest">
+                                                <input name="tuesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-tuesday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-tuesday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-tuesday-2-1" data-target-input="nearest">
+                                                <input name="tuesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-tuesday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-tuesday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 }
-                            </td>
-                            <td>
-                                @if (Model.Availability["saturday"].Count >= i)
+                            </div>
+                            <input id="tuesday" type="button" onclick="addField(this, 'tuesday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <div class="wednesday-container">
+                            <h4>Wednesday</h4>
+                            <div class="wednesday-fields">
+                                @if (@Model.OldAvailability["wednesday"].Count > 0)
                                 {
-                                    <p>@Model.Availability["saturday"][i - 1].ToString()</p>
+                                    @for (int i = 0; i < @Model.OldAvailability["wednesday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 wednesday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-wednesday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="wednesday-1-@(i + 1)" type="text" value="@Model.OldAvailability["wednesday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-wednesday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-wednesday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="wednesday-2-@(i+1)" type="text" value="@Model.OldAvailability["wednesday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-wednesday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-wednesday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-wednesday-@(i+1)' onclick="removeField(this, 'wednesday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
                                 }
-                            </td>
-                        </tr>
-                    }
-                </table>
+                                else
+                                {
+                                    <div class="row ml-1 wednesday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-wednesday-1-1" data-target-input="nearest">
+                                                <input name="wednesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-wednesday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-wednesday-2-1" data-target-input="nearest">
+                                                <input name="wednesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-wednesday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-wednesday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input id="wednesday" type="button" onclick="addField(this, 'wednesday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <br />
+                        <div class="thursday-container">
+                            <h4>Thursday</h4>
+                            <div class="thursday-fields">
+                                @if (@Model.OldAvailability["thursday"].Count > 0)
+                                {
+                                    @for (int i = 0; i < @Model.OldAvailability["thursday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 thursday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-thursday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="thursday-1-@(i + 1)" type="text" value="@Model.OldAvailability["thursday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-thursday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-thursday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="thursday-2-@(i+1)" type="text" value="@Model.OldAvailability["thursday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-thursday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-thursday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-thursday-@(i+1)' onclick="removeField(this, 'thursday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="row ml-1 thursday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-thursday-1-1" data-target-input="nearest">
+                                                <input name="thursday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-thursday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-thursday-2-1" data-target-input="nearest">
+                                                <input name="thursday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-thursday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-thursday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input id="thursday" type="button" onclick="addField(this, 'thursday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <div class="friday-container">
+                            <h4>Friday</h4>
+                            <div class="friday-fields">
+                                @if (@Model.OldAvailability["friday"].Count > 0)
+                                {
+                                    @for (int i = 0; i < @Model.OldAvailability["friday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 friday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-friday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="friday-1-@(i + 1)" type="text" value="@Model.OldAvailability["friday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-friday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-friday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="friday-2-@(i+1)" type="text" value="@Model.OldAvailability["friday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-friday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-friday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-friday-@(i+1)' onclick="removeField(this, 'friday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="row ml-1 friday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-friday-1-1" data-target-input="nearest">
+                                                <input name="friday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-friday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-friday-2-1" data-target-input="nearest">
+                                                <input name="friday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-friday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-friday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input id="friday" type="button" onclick="addField(this, 'friday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                        <br />
+                        <div class="saturday-container">
+                            <h4>Saturday</h4>
+                            <div class="saturday-fields">
+                                @if (@Model.OldAvailability["saturday"].Count > 0)
+                                {
+                                    @for (int i = 0; i < @Model.OldAvailability["saturday"].Count; i++)
+                                    {
+
+                                        <div class="row ml-1 saturday-field">
+
+                                            <div class="form-group col=">
+                                                <div class="input-group date datetimepicker-time" id="dtp-saturday-1-@(i + 1)" data-target-input="nearest">
+                                                    <input name="saturday-1-@(i + 1)" type="text" value="@Model.OldAvailability["saturday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-saturday-1-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <span class="col-md-1 justify-content-center">to</span>
+
+                                            <div class="form-group">
+                                                <div class="input-group date datetimepicker-time" id="dtp-saturday-2-@(i + 1)" data-target-input="nearest">
+                                                    <input name="saturday-2-@(i+1)" type="text" value="@Model.OldAvailability["saturday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-saturday-2-@(i + 1)" />
+                                                    <div class="input-group-append" data-target="#dtp-saturday-2-@(i + 1)" data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            @if (i > 0)
+                                            {
+                                                <button type="button" id='remove-saturday-@(i+1)' onclick="removeField(this, 'saturday')" class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button>
+                                            }
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="row ml-1 saturday-field">
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-saturday-1-1" data-target-input="nearest">
+                                                <input id="edit-recshift-endtime" name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
+                                                <div class="input-group-append" data-target="#dtp-saturday-1-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <span class="col-md-1 justify-content-center">to</span>
+
+                                        <div class="form-group">
+                                            <div class="input-group date datetimepicker-time" id="dtp-saturday-2-1" data-target-input="nearest">
+                                                <input id="edit-recshift-endtime" name="saturday-2-1" type="text" class="form-control
+                                   end-time" data-target="#dtp-saturday-2-1" />
+                                                <div class="input-group-append" data-target="#dtp-saturday-2-1" data-toggle="datetimepicker">
+                                                    <div class="input-group-text"><i class="far fa-clock"></i></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <input id="saturday" type="button" onclick="addField(this, 'saturday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                        </div>
+                    </div>
+                </div>
             </div>
             <button id="positionsHeader" type="button" role="tab" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('position-chevron')" data-toggle="collapse" data-target="#positionsCollapse" aria-expanded="true" aria-controls="positionsCollapse">
                 <div class="d-flex justify-content-between">
@@ -279,48 +669,50 @@
                 </div>
             </button>
             <div id="positionsCollapse" class="collapse collapse-section" role="tabpanel" aria-labelledby="positionsHeader">
-                <dl class="row col-md-12">
-                    <dt class="col-md-2">Preferred Positions:</dt>
-                    <dd class=" col-md-10 row">
-                        @foreach (Position position in Model.Positions)
-                        {
-                            <div class="form-check">
-                                @if (Model.DetailsModel.Positions.Any(p =>
-                   p.Position == position &&
-                   p.Association != PositionVolunteer.AssociationType.Assigned))
-                                {
-                                    <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
-                                }
-                                else
-                                {
-                                    <input class="mr-3" type="checkbox" name="preferred-@position.Name" />
-                                }
-                                <label for="@position.Name">@position.Name,</label>
-                            </div>
-                        }
-                    </dd>
-                </dl>
-                <dl class="row col-md-12">
-                    <dt class="col-md-2">Assigned Positions:</dt>
-                    <dd class="col-md-10 row">
-                        @foreach (Position position in @Model.Positions)
-                        {
-                            <div class="form-check">
-                                @if (@Model.DetailsModel.Positions.Any(p =>
-                   p.Position == position &&
-                   p.Association != PositionVolunteer.AssociationType.Preferred))
-                                {
-                                    <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
-                                }
-                                else
-                                {
-                                    <input class="mr-3" type="checkbox" name="assigned-@position.Name" />
-                                }
-                                <label for="@position.Name">@position.Name,</label>
-                            </div>
-                        }
-                    </dd>
-                </dl>
+                <div class="card-body">
+                    <dl class="row col-md-12">
+                        <dt class="col-md-2 p-0">Preferred Positions:</dt>
+                        <dd class=" col-md-10 row">
+                            @foreach (Position position in Model.Positions)
+                            {
+                                <div class="form-check">
+                                    @if (Model.DetailsModel.Positions.Any(p =>
+                      p.Position == position &&
+                      p.Association != PositionVolunteer.AssociationType.Assigned))
+                                    {
+                                        <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
+                                    }
+                                    else
+                                    {
+                                        <input class="mr-3" type="checkbox" name="preferred-@position.Name" />
+                                    }
+                                    <label for="@position.Name">@position.Name,</label>
+                                </div>
+                            }
+                        </dd>
+                    </dl>
+                    <dl class="row col-md-12">
+                        <dt class="col-md-2 p-0">Assigned Positions:</dt>
+                        <dd class="col-md-10 row">
+                            @foreach (Position position in @Model.Positions)
+                            {
+                                <div class="form-check">
+                                    @if (@Model.DetailsModel.Positions.Any(p =>
+                     p.Position == position &&
+                     p.Association != PositionVolunteer.AssociationType.Preferred))
+                                    {
+                                        <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
+                                    }
+                                    else
+                                    {
+                                        <input class="mr-3" type="checkbox" name="assigned-@position.Name" />
+                                    }
+                                    <label for="@position.Name">@position.Name,</label>
+                                </div>
+                            }
+                        </dd>
+                    </dl>
+                </div>
             </div>
             <button role="tab" id="workExpHeader" type="button" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('workexp-chevron')" data-toggle="collapse" data-target="#workExpCollapse" aria-expanded="true" aria-controls="workExpCollapse">
                 <div class="d-flex justify-content-between">
@@ -333,7 +725,7 @@
                 {
                     <input type="hidden" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].Id" />
                     <br>
-                    <dl class="row col-md-4">
+                    <dl class="row col-md-4 ml-1">
                         <dt class="col-md-4">Employer Name:</dt>
                         <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" value="@Model.DetailsModel.WorkExperiences[i - 1].EmployerName" /></dd>
                         <dt class="col-md-4">Employer Phone:</dt>
@@ -369,7 +761,7 @@
                 {
                     <input type="hidden" asp-for="@Model.DetailsModel.References[i - 1].Id" />
                     <br>
-                    <dl class="row col-md-4">
+                    <dl class="row col-md-4 ml-1">
                         <dt class="col-md-4">Name:</dt>
                         <dd class="col-md-8 row"><input class="form-control" asp-for="@Model.DetailsModel.References[i - 1].Name" value="@Model.DetailsModel.References[i - 1].Name" /></dd>
                         <dt class="col-md-4">Phone:</dt>
@@ -387,6 +779,22 @@
 </form>
 <script src="~/js/checkboxes.js"></script>
 <script src="~/js/datetimepickers.js"></script>
+<script src="~/js/availability.js"></script>
+<script>
+    const approvalStatus = @Convert.ToInt32(Model.DetailsModel.ApprovalStatus);
+
+    switch (approvalStatus) {
+        case 0:
+            $("#approved").addClass("active");
+            break;
+        case 1:
+            $("#pending").addClass("active");
+            break;
+        case 2:
+            $("#not-approved").addClass("active");
+            break;
+    }
+</script>
 
 <script>
 

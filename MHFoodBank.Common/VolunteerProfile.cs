@@ -5,6 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MHFoodBank.Common
 {
+
+    public enum ApprovalStatus { 
+        Approved,
+        Pending,
+        NotApproved
+    }
+
     [Serializable]
     public class VolunteerProfile
     {
@@ -77,7 +84,7 @@ namespace MHFoodBank.Common
         public bool DrivingAbstract { get; set; }
         public bool ConfirmationOfProfessionalDesignation { get; set; }
         public bool ChildWelfareCheck { get; set; }
-        public bool OfficiallyApproved { get; set; }
+        public ApprovalStatus ApprovalStatus { get; set; }
         public IList<Reference> References { get; set; }
         public IList<WorkExperience> WorkExperiences { get; set; }
         public IList<Shift> Shifts { get; set; }

@@ -35,7 +35,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         [BindProperty]
         public ShiftReadEditDto SelectedShift { get; set; }
         [BindProperty]
-        public bool Approved { get; set; }
+        public ApprovalStatus Approved { get; set; }
 
         public VolunteerCalendarModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper) : base(userManager, context)
         {
@@ -80,7 +80,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
             await _context.Entry(user.VolunteerProfile).Collection(p => p.Shifts).LoadAsync();
 
-            Approved = user.VolunteerProfile.OfficiallyApproved;
+            Approved = user.VolunteerProfile.ApprovalStatus;
 
             var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
