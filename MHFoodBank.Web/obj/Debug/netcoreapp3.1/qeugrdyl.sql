@@ -1,24 +1,4 @@
--- --------------------------------------------------------
--- Host:                         127.0.0.1
--- Server version:               10.4.12-MariaDB - mariadb.org binary distribution
--- Server OS:                    Win64
--- HeidiSQL Version:             10.2.0.5599
--- --------------------------------------------------------
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET NAMES utf8 */;
-/*!50503 SET NAMES utf8mb4 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-
-
--- Dumping database structure for foodbankhangfire
-CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET latin1 */;
-
-CREATE DATABASE IF NOT EXISTS foodbankdb /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE foodbankdb;
-
-CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(95) NOT NULL,
     `ProductVersion` varchar(32) NOT NULL,
     CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
