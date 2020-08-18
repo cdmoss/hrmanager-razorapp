@@ -9,7 +9,22 @@
 }
 
 @section Styles {
+    <link href='~/fullcalendar/packages/core/main.css' rel='stylesheet' />
+    <link href='~/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
+    <link href='~/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
+    <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
     <link href="~/css/admincalendar.css" rel="stylesheet" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
+}
+
+@section Scripts {
+    <script src='~/fullcalendar/packages/core/main.js'></script>
+    <script src='~/fullcalendar/packages/interaction/main.js'></script>
+    <script src='~/fullcalendar/packages/daygrid/main.js'></script>
+    <script src='~/fullcalendar/packages/timegrid/main.js'></script>
+    <script src='~/fullcalendar/packages/list/main.js'></script>
+    <script src="~/fullcalendar/vendor/rrule.js"></script>
+    <script src="~/fullcalendar/packages/rrule/main.js"></script>
 }
 
 <script src="https://cdn.jsdelivr.net/npm/handlebars@4.7.6/lib/index.min.js"></script>
@@ -256,7 +271,7 @@
 
                     <div>
                         <div class="input-group date datetimepicker-date-link-start" id="dtp-admincalendar-shift-start" data-target-input="nearest">
-                            <input id="add-shift-date" type="text" class="form-control datetimepicker-input"asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-shift-start" />
+                            <input id="add-shift-date" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-shift-start" />
                             <div class="input-group-append" data-target="#dtp-admincalendar-shift-start" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                             </div>
@@ -273,7 +288,7 @@
 
                         <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date</label>
                         @*<input type="date" class="form-control dtp-notype" id="add-recshift-enddate" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" asp-for="@Model.SelectedShift.EndDate">
-        <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>*@
+                            <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>*@
 
                         <div>
                             <div class="input-group date datetimepicker-date-link-end" id="dtp-admincalendar-shift-end" data-target-input="nearest">
@@ -321,7 +336,7 @@
 
                     @*<input type="text" class="form-control datetimepicker-time" id="add-shift-starttime" asp-for="@Model.SelectedShift.StartTime" required>*@
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-shift-add-start" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-start" id="dtp-shift-add-start" data-target-input="nearest">
                             <input id="add-shift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-shift-add-start" />
                             <div class="input-group-append" data-target="#dtp-shift-add-start" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -334,7 +349,7 @@
 
                     @*<input type="text" class="form-control" id="add-shift-endtime" asp-for="@Model.SelectedShift.EndTime" required>*@
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-shift-add-end" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-end" id="dtp-shift-add-end" data-target-input="nearest">
                             <input id="add-shift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndTime" data-target="#dtp-shift-add-end" />
                             <div class="input-group-append" data-target="#dtp-shift-add-end" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -405,7 +420,7 @@
                     @*<input asp-for="@Model.SelectedShift.StartTime" type="text" class="time form-control" id="edit-shift-starttime" required>*@
 
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-shift-edit-start" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-start" id="dtp-shift-edit-start" data-target-input="nearest">
                             <input id="edit-shift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-shift-edit-start" />
                             <div class="input-group-append" data-target="#dtp-shift-edit-start" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -419,7 +434,7 @@
                     @*<input asp-for="@Model.SelectedShift.EndTime" type="text" class="time form-control" id="edit-shift-endtime" value="" required>*@
 
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-shift-edit-end" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-end" id="dtp-shift-edit-end" data-target-input="nearest">
                             <input id="edit-shift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndTime" data-target="#dtp-shift-edit-end" />
                             <div class="input-group-append" data-target="#dtp-shift-edit-end" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -557,7 +572,7 @@
                     @*<input type="text" class="time form-control" id="edit-recshift-starttime" asp-for="@Model.SelectedShift.StartTime" required>*@
 
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-recshift-edit-end" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-start" id="dtp-recshift-edit-end" data-target-input="nearest">
                             <input id="edit-recshift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-recshift-edit-end" />
                             <div class="input-group-append" data-target="#dtp-recshift-edit-end" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -571,7 +586,7 @@
                     @*<input type="text" class="time form-control" id="edit-recshift-endtime" asp-for="@Model.SelectedShift.EndTime" required>*@
 
                     <div class="form-group">
-                        <div class="input-group date datetimepicker-time" id="dtp-recshift-edit-end" data-target-input="nearest">
+                        <div class="input-group date datetimepicker-time-end" id="dtp-recshift-edit-end" data-target-input="nearest">
                             <input id="edit-recshift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-recshift-edit-end" />
                             <div class="input-group-append" data-target="#dtp-recshift-edit-end" data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -638,3 +653,14 @@
 </form>
 
 <script src="~/js/datetimepickers.js"></script>
+<script>
+    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
+        const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
+        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+
+    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
+        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
+        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+</script>

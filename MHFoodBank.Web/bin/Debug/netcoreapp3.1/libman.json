@@ -9,6 +9,10 @@
     {
       "library": "tempusdominus-bootstrap-4@5.1.2",
       "destination": "wwwroot/lib/tempusdominus-bootstrap-4/"
+    },
+    {
+      "library": "jquery@3.5.1",
+      "destination": "wwwroot/lib/jquery/"
     }
   ]
 }

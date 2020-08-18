@@ -41,5 +41,3 @@ $(".time").rules("add",
     {
         endtime_greater_starttime: true
     });
-
-updateDtps();

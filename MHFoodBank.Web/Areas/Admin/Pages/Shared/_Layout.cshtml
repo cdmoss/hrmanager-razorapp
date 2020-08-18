@@ -15,29 +15,18 @@
     <title>Medicine Hat Food Bank</title>
     <link href="~/lib/sb-admin/css/styles.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
-    <link href='~/fullcalendar/packages/core/main.css' rel='stylesheet' />
-    <link href='~/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
-    <link href='~/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
-    <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
-    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
     @RenderSection("Styles", false)
 </head>
 <body class="sb-nav-fixed">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://momentjs.com/downloads/moment.js"></script>
     <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
     <script src="~/lib/sb-admin/js/scripts.js"></script>
     <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-    <script src='~/fullcalendar/packages/core/main.js'></script>
-    <script src='~/fullcalendar/packages/interaction/main.js'></script>
-    <script src='~/fullcalendar/packages/daygrid/main.js'></script>
-    <script src='~/fullcalendar/packages/timegrid/main.js'></script>
-    <script src='~/fullcalendar/packages/list/main.js'></script>
-    <script src="~/fullcalendar/vendor/rrule.js"></script>
-    <script src="~/fullcalendar/packages/rrule/main.js"></script>
-    <script src="~/js/clockedtime_search.js"></script>
+
+    @RenderSection("Scripts", false)
 
     <style>
 
@@ -131,10 +120,6 @@
     </div>
 
     <script src="~/lib/sb-admin/js/scripts.js"></script>
-
-    <script>
-        updateDtps();
-    </script>
 
 </body>
 </html>

@@ -8,6 +8,7 @@
 
 @section Styles {
     <link href="~/css/volunteerdetails.css" rel="stylesheet" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
 }
 
 <form method="post">
@@ -40,7 +41,7 @@
                     <span class="chevron" id="personal-chevron"><i class="fas fa-chevron-right"></i></span>
                 </div>
             </button>
-            
+
             <div id="personalInfoCollapse" class="collapse collapse-section" role="tabpanel" aria-labelledby="personalInfoHeader">
                 <div class="card-body" id="personal-container">
                     <div id="address" class="form-group">
@@ -275,7 +276,7 @@
                                     </div>
                                 }
                             </div>
-                            <input id="sunday" type="button" onclick="addField(this, 'sunday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                            <input id="sunday" type="button" onclick="addField(this, 'sunday')" value="Add Another Time" class="add-1field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                         </div>
                         <div class="monday-container">
                             <h4>Monday</h4>
@@ -677,8 +678,8 @@
                             {
                                 <div class="form-check">
                                     @if (Model.DetailsModel.Positions.Any(p =>
-                      p.Position == position &&
-                      p.Association != PositionVolunteer.AssociationType.Assigned))
+                     p.Position == position &&
+                     p.Association != PositionVolunteer.AssociationType.Assigned))
                                     {
                                         <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
                                     }
@@ -698,8 +699,8 @@
                             {
                                 <div class="form-check">
                                     @if (@Model.DetailsModel.Positions.Any(p =>
-                     p.Position == position &&
-                     p.Association != PositionVolunteer.AssociationType.Preferred))
+p.Position == position &&
+p.Association != PositionVolunteer.AssociationType.Preferred))
                                     {
                                         <input class="mr-3" type="checkbox" name="assigned-@position.Name" checked />
                                     }
@@ -774,7 +775,7 @@
                 }
             </div>
         </div>
-        
+
     </div>
 </form>
 <script src="~/js/checkboxes.js"></script>

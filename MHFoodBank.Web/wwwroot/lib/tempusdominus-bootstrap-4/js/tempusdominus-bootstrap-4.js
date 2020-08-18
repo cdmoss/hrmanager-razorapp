@@ -129,8 +129,8 @@ var DateTimePicker = function ($, moment) {
         disabledDates: false,
         enabledDates: false,
         icons: {
-            time: 'far fa-clock',
-            date: 'fas fa-calendar',
+            time: 'fa fa-clock-o',
+            date: 'fa fa-calendar',
             up: 'fa fa-arrow-up',
             down: 'fa fa-arrow-down',
             previous: 'fa fa-chevron-left',
@@ -561,9 +561,33 @@ var DateTimePicker = function ($, moment) {
         };
 
         DateTimePicker.prototype._notifyEvent = function _notifyEvent(e) {
-            if (e.type === DateTimePicker.Event.CHANGE && (e.date && e.date.isSame(e.oldDate)) || !e.date && !e.oldDate) {
-                return;
-            }
+            switch (e.type) {
+                case
+                    DateTimePicker.Event.SHOW:
+                    break;
+                case DateTimePicker.Event.HIDE:
+                    if (!e.date) { return; } break;
+                case DateTimePicker.Event.UPDATE:
+                    if (!e.change || !e.viewDate)
+                    {
+                        return;
+                    }
+                    break;
+                case DateTimePicker.Event.ERROR:
+                    if (!e.date || !e.oldDate)
+                    {
+                        return;
+                    }
+                    break;
+                case DateTimePicker.Event.CHANGE:
+                    if (!e.date || !e.oldDate || e.date.isSame(e.oldDate))
+                    {
+                        return;
+                    }
+                    break;
+                default:
+                    return;
+            };
             this._element.trigger(e);
         };
 

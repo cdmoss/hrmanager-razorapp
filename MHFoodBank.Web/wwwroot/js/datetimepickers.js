@@ -1,5 +1,11 @@
-﻿function updateDtps() {
-    $('.datetimepicker-time').datetimepicker(
+﻿
+function updateDtps() {
+    $('.datetimepicker-time-start').datetimepicker(
+    {
+        format: 'HH:mm',
+    });
+
+    $('.datetimepicker-time-end').datetimepicker(
     {
         format: 'HH:mm'
     });
@@ -58,6 +64,4 @@
     });
 };
 
-$('.dtp-notype').focus(function () {
-    $(this).blur();
-})
+updateDtps();
