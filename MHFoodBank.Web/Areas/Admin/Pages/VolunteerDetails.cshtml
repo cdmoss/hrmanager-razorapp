@@ -8,7 +8,6 @@
 
 @section Styles {
     <link href="~/css/volunteerdetails.css" rel="stylesheet" />
-    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
 }
 
 <form method="post">
@@ -35,7 +34,7 @@
         </div>
         <hr class="mt-4 mb-4" />
         <div style="border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 0.25rem;">
-            <button role="tab" id="personalInfoHeader" type="button" class="card-header w-100 text-left btn-lg btn btn-collapse" onclick="spinChevron('personal-chevron')" data-toggle="collapse" data-target="#personalInfoCollapse" aria-expanded="true" aria-controls="personalInfoCollapse">
+            <button role="tab" id="personalInfoHeader" type="button" class="card-header w-100 text-left btn-lg btn btn-collapse" onclick="spinChevron('personal-chevron', 'personalInfoCollapse')" data-toggle="collapse" data-target="#personalInfoCollapse" aria-expanded="true" aria-controls="personalInfoCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Personal Information</span>
                     <span class="chevron" id="personal-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -86,7 +85,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" role="tab" id="emergHeader" onclick="spinChevron('emerg-chevron')" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" data-toggle="collapse" data-target="#emergCollapse" aria-expanded="true" aria-controls="emergCollapse">
+            <button type="button" role="tab" id="emergHeader" onclick="spinChevron('emerg-chevron', 'emergCollapse')" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" data-toggle="collapse" data-target="#emergCollapse" aria-expanded="true" aria-controls="emergCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Emergency Contact Information</span>
                     <span class="chevron" id="emerg-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -116,7 +115,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="spinChevron('cert-chevron')" role="tab" id="certHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" data-toggle="collapse" data-target="#certCollapse" aria-expanded="true" aria-controls="certCollapse">
+            <button type="button" onclick="spinChevron('cert-chevron', 'certCollapse')" role="tab" id="certHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" data-toggle="collapse" data-target="#certCollapse" aria-expanded="true" aria-controls="certCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Certificates</span>
                     <span class="chevron" id="cert-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -180,7 +179,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" role="tab" id="expHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('exp-chevron')" data-toggle="collapse" data-target="#expCollapse" aria-expanded="true" aria-controls="expCollapse">
+            <button type="button" role="tab" id="expHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('exp-chevron', 'expCollapse')" data-toggle="collapse" data-target="#expCollapse" aria-expanded="true" aria-controls="expCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Experience</span>
                     <span class="chevron" id="exp-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -206,7 +205,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" role="tab" id="availHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('avail-chevron')" data-toggle="collapse" data-target="#availCollapse" aria-expanded="true" aria-controls="availCollapse">
+            <button type="button" role="tab" id="availHeader" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('avail-chevron', 'availCollapse')" data-toggle="collapse" data-target="#availCollapse" aria-expanded="true" aria-controls="availCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Availabilities</span>
                     <span class="chevron" id="avail-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -276,7 +275,7 @@
                                     </div>
                                 }
                             </div>
-                            <input id="sunday" type="button" onclick="addField(this, 'sunday')" value="Add Another Time" class="add-1field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                            <input id="sunday" type="button" onclick="addField(this, 'sunday')" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                         </div>
                         <div class="monday-container">
                             <h4>Monday</h4>
@@ -663,7 +662,7 @@
                     </div>
                 </div>
             </div>
-            <button id="positionsHeader" type="button" role="tab" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('position-chevron')" data-toggle="collapse" data-target="#positionsCollapse" aria-expanded="true" aria-controls="positionsCollapse">
+            <button id="positionsHeader" type="button" role="tab" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('position-chevron', 'positionsCollapse')" data-toggle="collapse" data-target="#positionsCollapse" aria-expanded="true" aria-controls="positionsCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Positions</span>
                     <span class="chevron" id="position-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -678,8 +677,8 @@
                             {
                                 <div class="form-check">
                                     @if (Model.DetailsModel.Positions.Any(p =>
-                     p.Position == position &&
-                     p.Association != PositionVolunteer.AssociationType.Assigned))
+p.Position == position &&
+p.Association != PositionVolunteer.AssociationType.Assigned))
                                     {
                                         <input class="mr-3" type="checkbox" name="preferred-@position.Name" checked />
                                     }
@@ -715,7 +714,7 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
                     </dl>
                 </div>
             </div>
-            <button role="tab" id="workExpHeader" type="button" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('workexp-chevron')" data-toggle="collapse" data-target="#workExpCollapse" aria-expanded="true" aria-controls="workExpCollapse">
+            <button role="tab" id="workExpHeader" type="button" class="card-header w-100 h-100 text-left btn btn-lg btn-collapse" onclick="spinChevron('workexp-chevron', 'workExpCollapse')" data-toggle="collapse" data-target="#workExpCollapse" aria-expanded="true" aria-controls="workExpCollapse">
                 <div class="d-flex justify-content-between">
                     <span>Work Experience</span>
                     <span class="chevron" id="workexp-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -751,7 +750,7 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
                     </dl>
                 }
             </div>
-            <button role="tab" id="refHeader" class="card-header w-100 h-100 text-left btn-lg btn btn-collapse" onclick="spinChevron('ref-chevron')" type="button" data-toggle="collapse" data-target="#refCollapse" aria-expanded="true" aria-controls="refCollapse">
+            <button role="tab" id="refHeader" class="card-header w-100 h-100 text-left btn-lg btn btn-collapse" onclick="spinChevron('ref-chevron', 'refCollapse')" type="button" data-toggle="collapse" data-target="#refCollapse" aria-expanded="true" aria-controls="refCollapse">
                 <div class="d-flex justify-content-between">
                     <span>References</span>
                     <span class="chevron" id="ref-chevron"><i class="fas fa-chevron-right"></i></span>
@@ -798,14 +797,15 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
 </script>
 
 <script>
+    function spinChevron(chevronId, accordianId) {
+        let chevron = document.getElementById(chevronId);
 
-    function spinChevron(chevronId) {
-        let chevron = document.getElementById(chevronId)
-        if (chevron.classList.contains('opened')) {
+        $('#' + accordianId).on('show.bs.collapse', function () {
+            chevron.classList.add('opened');
+        });
+
+        $('#' + accordianId).on('hide.bs.collapse', function () {
             chevron.classList.remove('opened');
-        }
-        else {
-            document.getElementById(chevronId).classList.add('opened');
-        }
+        });
     }
 </script>
