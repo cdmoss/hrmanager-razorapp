@@ -14,12 +14,16 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using MHFoodBank.Common.Dtos;
 using AutoMapper;
+using MHFoodBank.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
 {
     [Authorize(Roles = "Staff, Admin")]
     public class VolunteerDetailsModel : AdminPageModel
     {
+        [BindProperty]
+        public Dictionary<string, List<Availability>> OldAvailability { get; set; } = new Dictionary<string, List<Availability>>();
         [BindProperty]
         public VolunteerAdminReadEditDto DetailsModel { get; set; }
         [BindProperty]
@@ -68,7 +72,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             return RedirectToPage(new { id = id });
         }
 
-        public async Task<IActionResult> OnPostSaveChangesAsync(int id, string returnUrl = null)
+        public async Task<IActionResult> OnPostSaveChangesAsync(IFormCollection formData, int id, string returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
@@ -79,6 +83,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             }
             await UpdateUserProfile(id);
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
+
+            AvailabilityHandler availability = new AvailabilityHandler();
+            await availability.SetVolunteerAvailability(formData, volunteer, _context);
 
             return RedirectToPage(new { statusMessage = "Successfully updated the volunteer profile." });
         }
@@ -104,10 +111,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
                 case 4:
                     _context.Entry(VolunteerProfile).State = EntityState.Modified;
                     VolunteerProfile.ChildWelfareCheck = !VolunteerProfile.ChildWelfareCheck;
-                    break;
-                case 5:
-                    _context.Entry(VolunteerProfile).State = EntityState.Modified;
-                    VolunteerProfile.OfficiallyApproved = !VolunteerProfile.OfficiallyApproved;
                     break;
                 case 6:
                     _context.Entry(VolunteerProfile).State = EntityState.Modified;
@@ -227,20 +230,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
 
             Positions = _context.Positions.Where(p => p.Name != "All").ToList();
 
-            GetSortedAvailability(volunteerUserProfile.VolunteerProfile.Availabilities);
+            AvailabilityHandler availability = new AvailabilityHandler();
+            OldAvailability = availability.GetSortedAvailability(volunteerUserProfile.VolunteerProfile.Availabilities);
 
             CurrentPage = $"Volunteer Details for {volunteerUserProfile.VolunteerProfile.FirstName} {volunteerUserProfile.VolunteerProfile.LastName}";
-        }
-
-        private void GetSortedAvailability(IList<Availability> availabilities)
-        {
-            string[] daysInWeek = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
-
-            foreach (string day in daysInWeek)
-            {
-                List<Availability> currentDayAvailbilities = availabilities.Where(a => a.AvailableDay == day).OrderBy(a => a.StartTime).ToList();
-                Availability.Add(day, currentDayAvailbilities);
-            }
         }
     }
 }

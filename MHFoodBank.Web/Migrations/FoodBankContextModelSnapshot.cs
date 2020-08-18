@@ -328,6 +328,9 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<string>("AlternatePhone2")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Birthdate")
                         .HasColumnType("datetime(6)");
 
@@ -394,9 +397,6 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<string>("MainPhone")
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
-
-                    b.Property<bool>("OfficiallyApproved")
-                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("OtherBoards")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");

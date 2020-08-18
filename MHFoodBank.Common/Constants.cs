@@ -9,7 +9,7 @@ namespace MHFoodBank.Common
         public class Regex
         {
             public const string postalCode = @"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$";
-            public const string phone = @"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*";
+            public const string phone = @"^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$";
             public const string password = @"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$";
         }
         public class RoleNames

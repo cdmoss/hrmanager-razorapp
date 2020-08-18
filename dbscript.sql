@@ -1,7 +1,22 @@
-CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET utf8 */;
+-- --------------------------------------------------------
+-- Host:                         127.0.0.1
+-- Server version:               10.4.12-MariaDB - mariadb.org binary distribution
+-- Server OS:                    Win64
+-- HeidiSQL Version:             10.2.0.5599
+-- --------------------------------------------------------
 
-CREATE DATABASE IF NOT EXISTS `foodbankdb` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `foodbankdb`;
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET NAMES utf8 */;
+/*!50503 SET NAMES utf8mb4 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+
+
+-- Dumping database structure for foodbankhangfire
+CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET latin1 */;
+
+CREATE DATABASE IF NOT EXISTS foodbankdb /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE foodbankdb;
 
 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(95) NOT NULL,
@@ -106,10 +121,9 @@ CREATE TABLE `VolunteerProfiles` (
     `EmergencyRelationship` longtext CHARACTER SET utf8mb4 NOT NULL,
     `FoodSafe` tinyint(1) NOT NULL,
     `FoodSafeExpiry` datetime(6) NULL,
-    `FirstAid` tinyint(1) NOT NULL,
-    `FirstAidExpiry` datetime(6) NULL,
-    `Cpr` tinyint(1) NOT NULL,
-    `CprExpiry` datetime(6) NULL,
+    `FirstAidCprLevel` longtext CHARACTER SET utf8mb4 NULL,
+    `FirstAidCpr` tinyint(1) NOT NULL,
+    `FirstAidCprExpiry` datetime(6) NULL,
     `OtherCertificates` longtext CHARACTER SET utf8mb4 NULL,
     `EducationTraining` longtext CHARACTER SET utf8mb4 NULL,
     `SkillsInterestsHobbies` longtext CHARACTER SET utf8mb4 NULL,
@@ -121,7 +135,7 @@ CREATE TABLE `VolunteerProfiles` (
     `DrivingAbstract` tinyint(1) NOT NULL,
     `ConfirmationOfProfessionalDesignation` tinyint(1) NOT NULL,
     `ChildWelfareCheck` tinyint(1) NOT NULL,
-    `OfficiallyApproved` tinyint(1) NOT NULL,
+    `ApprovalStatus` int NOT NULL,
     `UserID` int NOT NULL,
     `Deleted` tinyint(1) NOT NULL,
     CONSTRAINT `PK_VolunteerProfiles` PRIMARY KEY (`Id`),
@@ -143,10 +157,10 @@ CREATE TABLE `ClockedTime` (
     `StartTime` datetime(6) NOT NULL,
     `EndTime` datetime(6) NULL,
     `PositionId` int NULL,
-    `VolunteerProfileId` int NULL,
+    `VolunteerId` int NULL,
     CONSTRAINT `PK_ClockedTime` PRIMARY KEY (`Id`),
     CONSTRAINT `FK_ClockedTime_Positions_PositionId` FOREIGN KEY (`PositionId`) REFERENCES `Positions` (`Id`) ON DELETE RESTRICT,
-    CONSTRAINT `FK_ClockedTime_VolunteerProfiles_VolunteerProfileId` FOREIGN KEY (`VolunteerProfileId`) REFERENCES `VolunteerProfiles` (`Id`) ON DELETE RESTRICT
+    CONSTRAINT `FK_ClockedTime_VolunteerProfiles_VolunteerId` FOREIGN KEY (`VolunteerId`) REFERENCES `VolunteerProfiles` (`Id`) ON DELETE RESTRICT
 );
 
 CREATE TABLE `PositionVolunteers` (
@@ -261,7 +275,7 @@ CREATE INDEX `IX_Availabilities_VolunteerId` ON `Availabilities` (`VolunteerId`)
 
 CREATE INDEX `IX_ClockedTime_PositionId` ON `ClockedTime` (`PositionId`);
 
-CREATE INDEX `IX_ClockedTime_VolunteerProfileId` ON `ClockedTime` (`VolunteerProfileId`);
+CREATE INDEX `IX_ClockedTime_VolunteerId` ON `ClockedTime` (`VolunteerId`);
 
 CREATE INDEX `IX_PositionVolunteers_PositionId` ON `PositionVolunteers` (`PositionId`);
 
@@ -286,5 +300,5 @@ CREATE UNIQUE INDEX `IX_VolunteerProfiles_UserID` ON `VolunteerProfiles` (`UserI
 CREATE INDEX `IX_WorkExperiences_VolunteerId` ON `WorkExperiences` (`VolunteerId`);
 
 INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20200716223837_current', '3.1.3');
+VALUES ('20200817152729_init', '3.1.3');
 
