@@ -75,3 +75,67 @@
     justify-content: center;
     align-items: center;
 }
+
+/* Current container for currently clocked in volunteers */
+
+@media (min-width: 1660px) {
+    #container-current {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr 2fr 2fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "search-name-current search-position-current search-button-current . . . .";
+        gap: .5rem;
+    }
+}
+
+@media (max-width: 1659px ) {
+    #container-current {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr 2fr 2fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "search-name-current search-position-current search-button-current . . . .";
+        gap: .5rem;
+    }
+}
+
+@media (max-width: 1414px) {
+    #container-current {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr 2fr 2fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "search-name-current search-position-current search-button-current . . . .";
+        gap: .5rem;
+    }
+}
+
+@media (max-width: 632px) {
+    body {
+        font-size: .7em;
+    }
+
+    #container-current {
+        display: grid;
+        grid-template-columns: 2fr 2fr 1fr 2fr 2fr 1fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "search-name-current search-position-current search-button-current . . . .";
+        gap: .5rem;
+    }
+}
+
+#search-name-current {
+    grid-area: search-name-current;
+}
+
+#search-position-current {
+    grid-area: search-position-current;
+}
+
+#search-button-current {
+    grid-area: search-button-current;
+}
+
+.centered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

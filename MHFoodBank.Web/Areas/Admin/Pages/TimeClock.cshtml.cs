@@ -9,6 +9,7 @@ using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
@@ -18,7 +19,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string StatusMessage { get; set; }
         [BindProperty]
-        public int SelectedClockedTimeId { get; set; }
+        public int DeleteClockedTimeId { get; set; }
+        [BindProperty]
+        public int ClockOutId { get; set; }
         [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
@@ -27,6 +30,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public Position DefaultPosition { get; set; }
         [BindProperty]
         public List<Position> Positions { get; set; }
+        [BindProperty]
+        public DateTime ManualClockOutTime { get; set; }
         [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
         [BindProperty]
@@ -38,7 +43,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public DateTime EntryEndDate { get; set; }
         [BindProperty]
-        public List<ClockedTimeReadDto> ClockedTimes { get; set; }
+        public List<ClockedTimeReadDto> CurrentClockedTimes { get; set; }
+        [BindProperty]
+        public List<ClockedTimeReadDto> CompletedClockedTimes { get; set; }
         [BindProperty]
         public int SelectedPositionId { get; set; }
         [BindProperty]
@@ -72,13 +79,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             var volunteerId = Convert.ToInt32(Request.Form["entry-volunteer-" + id]);
             var positionId = Convert.ToInt32(Request.Form["entry-position-" + id]);
-            var startTime = Convert.ToDateTime(Request.Form["entry-date-" + id]);
-            var endTime = Convert.ToDateTime(Request.Form["entry-date-" + id]);
-            var startTimeStringParts = Request.Form["entry-starttime-" + id].ToString().Split(':');
-            var endTimeStringParts = Request.Form["entry-endtime-" + id].ToString().Split(':');
+            var startTime = Convert.ToDateTime(Request.Form["entry-starttime-" + id]);
+            var endTime = Convert.ToDateTime(Request.Form["entry-endtime-" + id]);
 
-            startTime = startTime.Add(new TimeSpan(Convert.ToInt32(startTimeStringParts[0]), Convert.ToInt32(startTimeStringParts[1]), 0));
-            endTime = endTime.Add(new TimeSpan(Convert.ToInt32(endTimeStringParts[0]), Convert.ToInt32(endTimeStringParts[1]), 0));
+            startTime = startTime.Add(new TimeSpan(startTime.Hour, startTime.Minute, 0));
+            endTime = endTime.Add(new TimeSpan(endTime.Hour, endTime.Minute, 0));
 
             clockedTime.Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.Id == volunteerId);
             clockedTime.Position = await _context.Positions.FirstOrDefaultAsync(v => v.Id == positionId);
@@ -88,6 +93,17 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = $"Changes to the entry were successfully saved." }); ;
+        }
+
+        public async Task<IActionResult> OnPostClockOutVolunteer()
+        {
+            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Id == ClockOutId);
+            _context.Update(clockedTime);
+
+            clockedTime.EndTime = ManualClockOutTime;
+
+            await _context.SaveChangesAsync();
+            return RedirectToPage(new { statusMessage = $"Volunteer was successfully clocked out." }); ;
         }
 
         public async Task<IActionResult> OnPostAddEntry()
@@ -111,7 +127,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostDeleteTime()
         {
-            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(c => c.Id == SelectedClockedTimeId);
+            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(c => c.Id == DeleteClockedTimeId);
 
             _context.ClockedTime.Remove(clockedTime);
             await _context.SaveChangesAsync();
@@ -124,11 +140,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await PrepareModel();
 
             var searcher = new Searcher(_context);
-            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, SearchedPosition, SearchedStartDate, SearchedEndDate);
+            CurrentClockedTimes = searcher.FilterTimeSheetBySearch(CurrentClockedTimes, SearchedName, SearchedPosition, SearchedStartDate, SearchedEndDate);
         }
 
         private async Task PrepareModel()
         {
+            var clockedTimeDtos = new List<ClockedTimeReadDto>();
             var volunteerDomainModels = await _context.VolunteerProfiles.ToListAsync();
             var clockedTimeDomainModels = await _context.ClockedTime
                 .Include(p => p.Volunteer)
@@ -138,7 +155,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Positions = await _context.Positions.ToListAsync();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
             Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
-            ClockedTimes = _mapper.Map(clockedTimeDomainModels, ClockedTimes);
+            clockedTimeDtos = _mapper.Map(clockedTimeDomainModels, clockedTimeDtos);
+
+            CurrentClockedTimes = clockedTimeDtos.Where(c => c.EndTime == null).ToList();
+            CompletedClockedTimes = clockedTimeDtos.Where(c => c.EndTime != null).ToList();
         }
     }
 }

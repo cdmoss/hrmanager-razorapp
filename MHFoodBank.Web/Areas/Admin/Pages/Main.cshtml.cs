@@ -74,6 +74,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             foreach(Shift shift in Volunteer.Shifts)
             {
+                _context.Update(shift);
                 shift.Volunteer = null;
                 shift.CreateDescription();
             }

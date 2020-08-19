@@ -15,9 +15,14 @@ function updateDtps() {
         format: 'YYYY-MM-DD HH:mm'
     });
 
-    $('.datetimepicker-date').datetimepicker(
+    $('.datetimepicker-date-withdate').datetimepicker(
     {
         date: moment(),
+        format: 'YYYY-MM-DD'
+    });
+
+    $('.datetimepicker-date').datetimepicker(
+    {
         format: 'YYYY-MM-DD'
     });
 
@@ -25,15 +30,13 @@ function updateDtps() {
     {
         date: moment(),
         format: 'YYYY-MM-DD HH:mm'
-        });
+    });
 
-    $('.datetimepicker-datetime-link-start').datetimepicker({
-        maxDate: moment().add(1, 'days').startOf('day'),
+    $('.datetimepicker-datetime-link-start-entry').datetimepicker({
         format: 'YYYY-MM-DD HH:mm'
     });
 
-    $('.datetimepicker-datetime-link-end').datetimepicker({
-        minDate: moment(),
+    $('.datetimepicker-datetime-link-end-entry').datetimepicker({
         format: 'YYYY-MM-DD HH:mm'
     });
 
@@ -45,14 +48,6 @@ function updateDtps() {
     $('.datetimepicker-date-link-end').datetimepicker(
     {
         format: 'YYYY-MM-DD'
-    });
-
-    $(".datetimepicker-datetime-link-start").on("change.datetimepicker", function (e) {
-        $('.datetimepicker-datetime-link-end').datetimepicker('minDate', e.date);
-    });
-
-    $(".datetimepicker-datetime-link-end").on("change.datetimepicker", function (e) {
-        $('.datetimepicker-datetime-link-start').datetimepicker('maxDate', e.date);
     });
 
     $(".datetimepicker-date-link-start").on("change.datetimepicker", function (e) {
