@@ -638,7 +638,6 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcore
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.pdb
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.genruntimeconfig.cache
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\TimeClock.cshtml.g.cs
 C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\TimeClock.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.csprojAssemblyReference.cache
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.AssemblyInfoInputs.cache
@@ -854,3 +853,6 @@ C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHF
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\staticwebassets\MHFoodBank.Web.StaticWebAssets.Manifest.cache
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\staticwebassets\MHFoodBank.Web.StaticWebAssets.xml
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.genruntimeconfig.cache
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Completed.cshtml.g.cs
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Current.cshtml.g.cs
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Shared\_Layout.cshtml.g.cs

@@ -49,14 +49,14 @@ namespace MHFoodBank.Web.Data
             if (positionWasSearched && nameWasSearched)
             {
                 volunteers = volunteers.Where(v =>
-                    v.FullNameWithID.ToLower().Contains(name) &&
+                    v.FullNameWithID.ToLower().Contains(name.ToLower()) &&
                     v.Positions.Any(p => p.Position == searchedPosition)).ToList();
             }
 
             if (!positionWasSearched && nameWasSearched)
             {
                 volunteers = volunteers.Where(v =>
-                    v.FullNameWithID.ToLower().Contains(name)).ToList();
+                    v.FullNameWithID.ToLower().Contains(name.ToLower())).ToList();
             }
 
             if (positionWasSearched && !nameWasSearched)
@@ -79,7 +79,7 @@ namespace MHFoodBank.Web.Data
                 shifts = shifts.Where(s => s.Volunteer != null).ToList();
 
                 shifts = shifts.Where(s =>
-                    s.Volunteer.FullNameWithID.ToLower().Contains(name) &&
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower()) &&
                     s.PositionWorked == searchedPosition).ToList();
             }
 
@@ -89,7 +89,7 @@ namespace MHFoodBank.Web.Data
                 shifts = shifts.Where(s => s.Volunteer != null).ToList();
 
                 shifts = shifts.Where(s =>
-                    s.Volunteer.FullNameWithID.ToLower().Contains(name)).ToList();
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower())).ToList();
             }
 
             if (positionWasSearched && !nameWasSearched)
@@ -118,14 +118,14 @@ namespace MHFoodBank.Web.Data
             if (positionWasSearched && nameWasSearched)
             {
                 clockedTimes = clockedTimes.Where(s =>
-                    s.Volunteer.FullNameWithID.ToLower().Contains(name) &&
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower()) &&
                     s.Position.Id == searchedPosition.Id).ToList();
             }
 
             if (!positionWasSearched && nameWasSearched)
             {
                 clockedTimes = clockedTimes.Where(s =>
-                    s.Volunteer.FullNameWithID.ToLower().Contains(name)).ToList();
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower())).ToList();
             }
 
             if (positionWasSearched && !nameWasSearched)

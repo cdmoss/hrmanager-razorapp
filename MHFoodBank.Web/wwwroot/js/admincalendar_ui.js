@@ -70,16 +70,16 @@ function toggleEditRecurringShiftControls() {
     var startDateLabel = document.getElementById('edit-recshift-startdate-label');
     if (markedAsSelectedShift) {
         $('#edit-recshift-container').prop('style', 'display: none');
-        $('#edit-recshift-single-final-startdate').prop('style', 'display: block');
-        $('#edit-recshift-all-startdate').prop('style', 'display: none');
+        $('#dtp-admincalendar-edit-recshift-single-date').prop('style', 'display: inline-flex');
+        $('#dtp-admincalendar-edit-recshift-all-date').prop('style', 'display: none');
         $('#edit-recshift-enddate').prop('required', false);
 
         startDateLabel.innerHTML = "Selected Shift Date"
     }
     else if (markedAsSelectedShift == false) {
         $('#edit-recshift-container').prop('style', 'display: block');
-        $('#edit-recshift-single-final-startdate').prop('style', 'display: none');
-        $('#edit-recshift-all-startdate').prop('style', 'display: block');
+        $('#dtp-admincalendar-edit-recshift-single-date').prop('style', 'display: none');
+        $('#dtp-admincalendar-edit-recshift-all-date').prop('style', 'display: inline-flex');
         $('#edit-recshift-enddate').prop('required', true);
 
         startDateLabel.innerHTML = "Recurring Shift Start Date"

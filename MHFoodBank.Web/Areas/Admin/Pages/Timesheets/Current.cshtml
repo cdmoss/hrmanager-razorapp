@@ -1,0 +1,271 @@
+﻿@page
+@model MHFoodBank.Web.Areas.Admin.Pages.TimeClock.CurrentModel
+@{
+}
+@{
+    Layout = "Shared/_Layout";
+    ViewData["Title"] = "Time Sheets";
+}
+<form>
+<partial name="_AdminStatusMessage" for="StatusMessage" />
+<div id="container-current">
+    @if (String.IsNullOrWhiteSpace(Model.SearchedName))
+    {
+        <input id="search-name-current" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
+    }
+    else
+    {
+        <input id="search-name-current" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+    }
+
+    @if (@Model.SearchedPosition == null)
+    {
+        <select id="search-position-current" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+        </select>
+    }
+    else
+    {
+        <select id="search-position-current" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
+        </select>
+    }
+    <button id="search-button-current" class="btn btn-primary" asp-route-viewType="current" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+</div>
+<br />
+<table class="table">
+    <colgroup>
+        <col style="width: 20%; vertical-align: middle" />
+        <col style="width: 20%; vertical-align: middle" />
+        <col style="width: 20%; vertical-align: middle" />
+        <col style="width: 20%; vertical-align: middle" />
+        <col style="width: 20%; vertical-align: middle; text-align: right" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th>Volunteer</th>
+            <th>Position</th>
+            <th>Start Date/Time</th>
+            <th>Duration</th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var ct in Model.ClockedTimes)
+    {
+        <tr>
+            <td>
+                <!--this is for the delete modal-->
+                <input id="clockout-id-@ct.Id" type="hidden" value="@ct.Id" />
+                <input class="form-control"
+                       name="entry-volunteer-@ct.Id"
+                       type="text"
+                       asp-for="@Model.VolunteerNameForAdd"
+                       id="entry-volunteer-@ct.Id"
+                       value="@ct.Volunteer.FullNameWithID"
+                       list="volunteers"
+                       required>
+            </td>
+            <td>
+                <input class="form-control"
+                       name="entry-position-@ct.Id"
+                       type="text"
+                       asp-for="@Model.PositionNameForAdd"
+                       id="entry-position-@ct.Id"
+                       value="@ct.Position.Name"
+                       list="positions"
+                       required>
+            </td>
+            <td>
+                @*<input name="entry-date-@ct.Id" id="entry-date-@ct.Id" class="form-control" type="date" value="@ct.StartTime.ToString("yyyy-MM-dd")" readonly />*@
+
+                <div>
+                    <div class="input-group date datetimepicker-datetime-link-start-entry" id="dtp-timeclock-entry-start-@ct.Id" data-target-input="nearest">
+                        <input name="entry-starttime-@ct.Id" id="entry-starttime-@ct.Id" class="form-control datetimepicker-input" type="text" asp-for="@ct.StartTime" value="@ct.StartTime.ToString("yyyy-MM-dd HH:mm")" data-target="#dtp-timeclock-entry-start-@ct.Id" readonly />
+                        <div class="input-group-append" data-target="#dtp-timeclock-entry-start-@ct.Id" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            <td>
+                <span>
+                    @{
+                        string durationString = "";
+                        if (ct.EndTime.HasValue)
+                        {
+                            TimeSpan? duration = ct.EndTime.Value.Subtract(ct.StartTime);
+                            int? days = duration?.Days;
+                            int? hours = duration?.Hours;
+                            int? minutes = duration?.Minutes;
+                            int? seconds = duration?.Seconds;
+                            durationString = $"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds";
+                        }
+                    }
+                    @durationString
+                </span>
+            </td>
+            <td style="text-align: right;">
+                <div class="btn-group unselected-buttons">
+                    <button type="button" class="btn btn-sm entry-edit-button btn-primary" onclick="makeEntryEditable(@ct.Id);validateTimePickers(this.parentElement.parentElement.parentElement)">Edit</button>
+                    <button type="button" onclick="openClockOutModal(@ct.Id)" class="btn btn-sm entry-edit-button btn-secondary">Clock out</button>
+                    <button type="button" class="btn btn-sm entry-delete-button btn-danger" onclick="openDeleteModal(@ct.Id)">Delete</button>
+                </div>
+                <div class="btn-group" style="display: none;" id="entry-selected-@ct.Id">
+                    <button class="btn btn-sm btn-primary" asp-route-id="@ct.Id" asp-page-handler="SaveChanges">Save Changes</button>
+                    <button type="button" onclick="cancelEntryEdit(@ct.Id)" class="btn btn-sm btn-danger">Cancel</button>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+</form>
+<script src="~/js/clockedtime_edit_entries.js"></script>
+<script>
+
+    document.getElementById('completed-tab').classList.remove('active');
+    document.getElementById('current-tab').classList.add('active');
+
+    let volunteers = new Array();
+    @foreach (var volunteer in Model.Volunteers)
+    {
+        <text>volunteers.push('</text>@volunteer.FullNameWithID<text>');</text>
+    }
+
+    let options = '';
+
+    for (var i = 0; i < volunteers.length; i++) {
+        options += '<option value="' + volunteers[i] + '">';
+    }
+
+    document.getElementById('volunteers').innerHTML = options;
+
+    let positions = new Array();
+    @foreach (var position in Model.Positions.Where(p => p.Name != "All"))
+    {
+        <text>positions.push('</text>@position.Name<text>');</text>
+    }
+
+    options = '';
+
+    for (var i = 0; i < positions.length; i++) {
+        options += '<option value="' + positions[i] + '">';
+    }
+
+    document.getElementById('positions').innerHTML = options;
+
+    const entries = document.getElementsByTagName('TR');
+
+    function validateTimePickers(row) {
+        if (row.getElementsByTagName('TH').length === 0) {
+            const endTimeDiv = row.getElementsByClassName('datetimepicker-datetime-end-entry')[0];
+            const endTimeStr = endTimeDiv.getElementsByTagName('INPUT')[0].value;
+            const endTime = moment(endTimeStr, "YYYY-MM-DD HH:mm");
+
+            const startTimeDiv = row.parentElement.getElementsByClassName('datetimepicker-datetime-start-entry')[0]
+            const startTimeStr = startTimeDiv.getElementsByTagName('INPUT')[0].value;
+            const startTime = moment(startTimeStr, "YYYY-MM-DD HH:mm");
+
+            $(endTimeDiv).datetimepicker('minDate', moment({ d: startTime.date(), h: startTime.hour(), m: startTime.minutes() }));
+            $(startTimeDiv).datetimepicker('maxDate', moment({ d: endTime.date(), h: endTime.hour(), m: endTime.minutes() }));
+
+            $(startTimeDiv).on("change.datetimepicker", function (e) {
+                $(endTimeDiv).datetimepicker('minDate', e.date);
+            });
+
+            $(endTimeDiv).on("change.datetimepicker", function (e) {
+                $(startTimeDiv).datetimepicker('maxDate', e.date);
+            });
+        }
+    }
+
+    function openClockOutModal(id) {
+        $('#clockout-volunteer-prompt').modal();
+        document.getElementById("clockout-id-modal").value = document.getElementById("clockout-id-" + id).value;
+    }
+
+    function openDeleteModal(id) {
+        $('#delete-entry-prompt').modal();
+        document.getElementById("entry-id-modal").value = document.getElementById("entry-id-" + id).value;
+    }
+
+    const searchStart = document.getElementById('search-date-range-start').value;
+    const searchEnd = document.getElementById('search-date-range-end').value;
+
+    const entryStart = document.getElementById('timeclock-entry-start').value;
+    const entryEnd = document.getElementById('timeclock-entry-end').value;
+
+    $('.datetimepicker-datetime-start-entry').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm'
+    });
+
+    $('.datetimepicker-datetime-end-entry').datetimepicker({
+        format: 'YYYY-MM-DD HH:mm'
+    });
+
+    $('#dtp-clockout-volunteer-endtime').datetimepicker({
+        date: moment(),
+        format: 'YYYY-MM-DD HH:mm'
+    });
+
+    $('#dtp-timeclock-search-start').datetimepicker({
+        date: moment().startOf('day'),
+        format: 'YYYY-MM-DD HH:mm',
+        ignoreReadonly: true,
+        maxDate: searchEnd
+    });
+
+    $('#dtp-timeclock-search-end').datetimepicker({
+        date: moment().add(1, 'days').startOf('day'),
+        format: 'YYYY-MM-DD HH:mm',
+        ignoreReadonly: true,
+        minDate: searchStart
+    });
+
+    $("#dtp-timeclock-search-start").on("change.datetimepicker", function (e) {
+        $('#dtp-timeclock-search-end').datetimepicker('minDate', e.date);
+    });
+
+    $("#dtp-timeclock-search-end").on("change.datetimepicker", function (e) {
+        $('#dtp-timeclock-search-start').datetimepicker('maxDate', e.date);
+    });
+
+    $('#dtp-timeclock-entry-start').datetimepicker({
+        ignoreReadonly: true,
+        date: moment(),
+        maxDate: entryEnd,
+        format: 'YYYY-MM-DD HH:mm'
+    });
+
+    $('#dtp-timeclock-entry-end').datetimepicker({
+        ignoreReadonly: true,
+        date: moment().add(5, 'hours'),
+        minDate: entryStart,
+        format: 'YYYY-MM-DD HH:mm'
+    });
+
+    $("#dtp-timeclock-entry-start").on("change.datetimepicker", function (e) {
+        $('#dtp-timeclock-entry-end').datetimepicker('minDate', e.date);
+    });
+
+    $("#dtp-timeclock-entry-end").on("change.datetimepicker", function (e) {
+        $('#dtp-timeclock-entry-start').datetimepicker('maxDate', e.date);
+    });
+
+    $('.datetimepicker-time-start').datetimepicker(
+        {
+            format: 'HH:mm',
+        });
+
+    $('.datetimepicker-time-end').datetimepicker(
+        {
+            format: 'HH:mm'
+        });
+
+    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
+        const endTimeDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
+        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+
+    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
+        const startTimeDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
+        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+</script>

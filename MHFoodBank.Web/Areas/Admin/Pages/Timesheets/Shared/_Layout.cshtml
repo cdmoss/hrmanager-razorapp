@@ -1,0 +1,30 @@
+﻿
+@{
+    Layout = "/Areas/Admin/Pages/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href="~/css/timeclock_main.css" rel="stylesheet" />
+    <link href="~/css/timeclock_modal.css" rel="stylesheet" />
+    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
+}
+
+
+    <div class="ml-5 mr-5">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a id="current-tab" class="nav-link active" asp-page="./Current">Currently Clocked In</a>
+            </li>
+            <li class="nav-item">
+                <a id="completed-tab" class="nav-link" asp-page="./Completed">Completed Shifts</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <br/>
+            @RenderBody()
+        </div>
+    </div>
+
+<datalist id="volunteers"></datalist>
+<datalist id="positions"></datalist>
