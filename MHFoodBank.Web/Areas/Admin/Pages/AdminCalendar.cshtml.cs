@@ -42,9 +42,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public List<Position> Positions { get; set; }
         [BindProperty]
-        public int SelectedVolunteerId { get; set; }
+        public string SelectedShiftPosition { get; set; }
         [BindProperty]
-        public int SelectedPositionId { get; set; }
+        public string SelectedShiftVolunteer{ get; set; }
         [BindProperty]
         public DateTime OriginalStartDate { get; set; }
         // Created this property to grab the original start date for the whole recurring set.
@@ -152,7 +152,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
             }
 
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == SelectedPositionId);
+            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == Convert.ToInt32(SelectedShiftPosition[0]));
 
             string resultStatus = await EditPosition(SelectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
@@ -160,7 +160,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostRemovePosition()
         {
-            var selectedPos = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SelectedPositionId);
+            var selectedPos = await _context.Positions.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(SelectedShiftPosition[0]));
             SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == selectedPos.Name);
             string resultStatus = await RemovePosition(SelectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
@@ -172,6 +172,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             bool isStaff = await _userManager.IsInRoleAsync(user, "staff");
 
             var shift = await MapShiftData(SelectedShift, new Shift());
+
+            if (shift.Description == "vol")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+            }
+
+            if (shift.Description == "pos")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+            }
 
             if (shift.StartDate < DateTime.Now.AddDays(-1))
             {
@@ -218,6 +228,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 return await OnGet("Error: The start date must be before the end date.");
             }
             var shift = (RecurringShift)(await MapShiftData(SelectedShift, new RecurringShift()));
+
+            if (shift.Description == "vol")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+            }
+
+            if (shift.Description == "pos")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+            }
 
             if (string.IsNullOrEmpty(shift.Weekdays))
             {
@@ -275,6 +295,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             shift = await MapShiftData(SelectedShift, shift);
 
+            if (shift.Description == "vol")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+            }
+
+            if (shift.Description == "pos")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+            }
+
             await _context.SaveChangesAsync();
 
             // check if shift has volunteer after edit
@@ -306,6 +336,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _context.Update(recurringShift);
 
             recurringShift = await EditRecurringShift(recurringShift);
+
+            if (recurringShift.Description == "vol")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+            }
+
+            if (recurringShift.Description == "pos")
+            {
+                return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+            }
 
             await _context.SaveChangesAsync();
 
@@ -501,8 +541,40 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task<Shift> MapShiftData(ShiftReadEditDto dto, Shift shift)
         {
-            VolunteerProfile volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(x => x.Id == SelectedVolunteerId);
-            Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Id == SelectedPositionId);
+            VolunteerProfile volunteer = null;
+            if (SelectedShiftVolunteer != null)
+            {
+                if (int.TryParse(SelectedShiftVolunteer.Split(' ')[0], out int volunteerId))
+                {
+                    volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(x => x.Id == volunteerId);
+                }
+                else
+                {
+                    if (shift is RecurringShift)
+                    {
+                        return new RecurringShift { Description = "vol" };
+                    }
+                    else
+                    {
+                        return new Shift { Description = "vol" };
+                    }
+                }
+                
+            }
+
+            Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Name == SelectedShiftPosition);
+
+            if (pos == null)
+            {
+                if (shift is RecurringShift)
+                {
+                    return new RecurringShift { Description = "pos" };
+                }
+                else
+                {
+                    return new Shift { Description = "pos" };
+                }
+            }
 
             if (shift is RecurringShift recurringShift)
             {
@@ -780,6 +852,17 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             excludedShift = await MapShiftData(SelectedShift, excludedShift);
             // set the excluded shift's id to 0 and it's parent recurring shift to the currently selected
             // recurring shift
+
+            if (excludedShift.Description == "vol")
+            {
+                return new RecurringShift() { Description = "vol" };
+            }
+
+            if (excludedShift.Description == "pos")
+            {
+                return new RecurringShift() { Description = "pos" };
+            }
+
             excludedShift.Id = 0;
             excludedShift.ParentRecurringShift = _context.RecurringShifts
                 .FirstOrDefault(s => s.Id == SelectedShift.Id);

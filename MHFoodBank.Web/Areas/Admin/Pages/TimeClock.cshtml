@@ -162,22 +162,18 @@
                 <div class="modal-body">
                     <div id="add-time-container">
                         <label id="add-time-position-label">Position</label>
-                        <select class="form-control"
-                                asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
-                                id="add-time-position"
-                                asp-for="@Model.SelectedPositionId"
-                                required>
-                        </select>
+                        <input class="form-control"
+                               type="text"
+                               asp-for="@Model.PositionNameForAdd"
+                               list="positions"
+                               required>
                         <label id="add-time-volunteer-label">Volunteer</label>
-                        <select class="form-control"
-                                id="add-time-volunteer"
-                                asp-items="@(new SelectList(Model.Volunteers, "Id", "FullNameWithID"))"
-                                asp-for="@Model.AddVolunteerId"
-                                required>
-                        </select>
-
+                        <input class="form-control"
+                               type="text"
+                               asp-for="@Model.VolunteerNameForAdd"
+                               list="volunteers"
+                               required>
                         <label id="add-time-start-label">Start</label>
-
                         <div id="add-time-start">
                             <div class="input-group date datetimepicker-datetime-link-start" id="dtp-timeclock-entry-start" data-target-input="nearest">
                                 <input id="timeclock-entry-start" type="text" class="form-control datetimepicker-input datetime-readonly" value="@Model.EntryStartDate" asp-for="@Model.EntryStartDate" data-target="#dtp-timeclock-entry-start" readonly="readonly" />
@@ -231,6 +227,9 @@
         </div>
     </div>
 </div>
+
+<datalist id="volunteers"></datalist>
+<datalist id="positions"></datalist>
 
 <script src="~/js/clockedtime_edit_entries.js"></script>
 <script>

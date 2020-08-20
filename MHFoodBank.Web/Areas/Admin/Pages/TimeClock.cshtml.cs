@@ -40,11 +40,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public List<ClockedTimeReadDto> ClockedTimes { get; set; }
         [BindProperty]
-        public int SelectedPositionId { get; set; }
+        public string SelectedPositionName { get; set; }
         [BindProperty]
-        public int AddVolunteerId { get; set; }
+        public string VolunteerNameForAdd { get; set; }
         [BindProperty]
-        public int EditVolunteerId { get; set; }
+        public string PositionNameForAdd { get; set; }
 
         private readonly IMapper _mapper;
 
@@ -70,8 +70,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Id == id);
             _context.Update(clockedTime);
 
-            var volunteerId = Convert.ToInt32(Request.Form["entry-volunteer-" + id]);
-            var positionId = Convert.ToInt32(Request.Form["entry-position-" + id]);
+            var volunteerName = Request.Form["entry-volunteer-" + id];
+            var positionName = Request.Form["entry-position-" + id];
             var startTime = Convert.ToDateTime(Request.Form["entry-date-" + id]);
             var endTime = Convert.ToDateTime(Request.Form["entry-date-" + id]);
             var startTimeStringParts = Request.Form["entry-starttime-" + id].ToString().Split(':');
@@ -80,8 +80,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             startTime = startTime.Add(new TimeSpan(Convert.ToInt32(startTimeStringParts[0]), Convert.ToInt32(startTimeStringParts[1]), 0));
             endTime = endTime.Add(new TimeSpan(Convert.ToInt32(endTimeStringParts[0]), Convert.ToInt32(endTimeStringParts[1]), 0));
 
-            clockedTime.Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.Id == volunteerId);
-            clockedTime.Position = await _context.Positions.FirstOrDefaultAsync(v => v.Id == positionId);
+            clockedTime.Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.FullNameWithID == volunteerName);
+            clockedTime.Position = await _context.Positions.FirstOrDefaultAsync(v => v.Name == positionName);
             clockedTime.StartTime = startTime;
             clockedTime.EndTime = endTime;
 
@@ -92,8 +92,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddEntry()
         {
-            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == AddVolunteerId);
-            var position = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SelectedPositionId);
+            var volunteerName = VolunteerNameForAdd;
+            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.FullNameWithID == VolunteerNameForAdd);
+            var position = await _context.Positions.FirstOrDefaultAsync(p => p.Name == PositionNameForAdd);
 
             ClockedTime clock = new ClockedTime()
             {
