@@ -81,7 +81,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             int volunteerId = 0;
             if (int.TryParse(volunteerIdStr, out int volIdParsed))
             {
-
                 volunteerId = volIdParsed;
             }
             else
@@ -119,8 +118,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddEntry()
         {
-            var volunteerName = VolunteerNameForAdd;
-            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.FullNameWithID == VolunteerNameForAdd);
+            string volunteerIdStr = VolunteerNameForAdd.Substring(0, 1);
+            int volunteerId = 0;
+            if (int.TryParse(volunteerIdStr, out int volIdParsed))
+            {
+                volunteerId = volIdParsed;
+            }
+            else
+            {
+                // return error
+            }
+            if (!Positions.Any(p => p.Name == PositionNameForAdd))
+            {
+                // return error
+            }
+
+            var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == volunteerId);
             var position = await _context.Positions.FirstOrDefaultAsync(p => p.Name == PositionNameForAdd);
 
             ClockedTime clock = new ClockedTime()

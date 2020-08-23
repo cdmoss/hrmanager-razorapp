@@ -85,7 +85,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
 
             AvailabilityHandler availability = new AvailabilityHandler();
-            await availability.SetVolunteerAvailability(formData, volunteer, _context);
+            bool successfullySetAvailabilities = await availability.UpdateVolunteerAvailability(formData, volunteer, _context);
+
+            if (!successfullySetAvailabilities)
+            {
+                return RedirectToPage(new { statusMessage = "Error: One of the availabilities you entered was invalid. Make sure you enter a value for both the start and end time." });
+            }
 
             return RedirectToPage(new { statusMessage = "Successfully updated the volunteer profile." });
         }

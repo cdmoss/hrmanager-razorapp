@@ -27,7 +27,7 @@ namespace MHFoodBank.Web.Services
             return OldAvailability;
         }
 
-        public async Task SetVolunteerAvailability(IFormCollection formData, VolunteerProfile vol, FoodBankContext _context)
+        public async Task<bool> UpdateVolunteerAvailability(IFormCollection formData, VolunteerProfile vol, FoodBankContext _context)
         {
             await _context.Entry(vol).Collection(p => p.Availabilities).LoadAsync();
 
@@ -41,17 +41,19 @@ namespace MHFoodBank.Web.Services
             if (newAvailabilites != null)
             {
                 await _context.Availabilities.AddRangeAsync(newAvailabilites);
+                await _context.SaveChangesAsync();
+                return true;
             }
             else
             {
                 await _context.Availabilities.AddRangeAsync(oldAvailabilities);
                 await _context.SaveChangesAsync();
+                return false;
             }
 
-            await _context.SaveChangesAsync();
         }
 
-        private List<Availability> GetAvailabilitiesFromFormData(IFormCollection formData, VolunteerProfile volunteer)
+        public List<Availability> GetAvailabilitiesFromFormData(IFormCollection formData, VolunteerProfile volunteer)
         {
             try
             {
@@ -70,7 +72,6 @@ namespace MHFoodBank.Web.Services
 
                         if (string.IsNullOrWhiteSpace(startTimeString) ^ string.IsNullOrWhiteSpace(endTimeString))
                         {
-                            //ModelState.AddModelError("TimeError", "One or more of the entered times are not valid.");
                             return null;
                         }
 

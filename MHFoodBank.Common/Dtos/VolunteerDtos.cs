@@ -66,7 +66,6 @@ namespace MHFoodBank.Common.Dtos
         [Phone]
         public string AlternatePhone2 { get; set; }
         [Required]
-        [AgeOver14(ErrorMessage = "You must be over 14 years of age.")]
         [Display(Name = "Birth date (Required)")]
         [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
@@ -88,7 +87,7 @@ namespace MHFoodBank.Common.Dtos
         [DataType(DataType.Date)]
         public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "Level")]
-        public int FirstAidCprLevel { get; set; }
+        public string FirstAidCprLevel { get; set; }
         [Display(Name = "First aid/Cpr")]
         public bool FirstAidCpr { get; set; }
         [DataType(DataType.Date)]
@@ -140,25 +139,24 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "postal code")]
         public string PostalCode { get; set; }
         [Required]
-        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number Main.")]
         [Display(Name = "phone number")]
         public string MainPhone { get; set; }
-        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number for Alternate Phone 1.")]
         public string AlternatePhone1 { get; set; }
-        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number for Alternate Phone 2.")]
         public string AlternatePhone2 { get; set; }
         [Required]
         [Display(Name = "birth date")]
-        [AgeOver14(ErrorMessage = "The volunteer must be over 14 years of age.")]
         public DateTime Birthdate { get; set; }
         [Required]
         [Display(Name = "emergency full name")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number for Emergency Phone 1.")]
         [Display(Name = "emergency phone number")]
         public string EmergencyPhone1 { get; set; }
-        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
+        [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number Emergency Phone 2.")]
         public string EmergencyPhone2 { get; set; }
         [Required]
         [Display(Name = "relationship with this emergency contact")]
@@ -167,7 +165,7 @@ namespace MHFoodBank.Common.Dtos
         [DataType(DataType.Date)]
         public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "Level")]
-        public int FirstAidCprLevel { get; set; }
+        public string FirstAidCprLevel { get; set; }
         public bool FirstAidCpr { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FirstAidCprExpiry { get; set; }

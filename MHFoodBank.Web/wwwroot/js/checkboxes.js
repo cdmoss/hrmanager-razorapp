@@ -1,7 +1,4 @@
 ﻿
-toggleCertificates('foodsafe-check', 'foodsafe-date');
-toggleCertificates('cpr-check', 'cpr-date');
-toggleCertificates('firstaid-check', 'firstaid-date');
 initializeWorkExperiences();
 
 function initializeWorkExperiences() {

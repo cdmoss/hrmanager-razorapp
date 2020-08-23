@@ -1,114 +1,72 @@
 ﻿@page
 @using MHFoodBank.Common
-@using MHFoodBank.Common.Dtos 
+@using MHFoodBank.Common.Dtos
 @inject Microsoft.AspNetCore.Identity.UserManager<MHFoodBank.Common.AppUser> userManager
 @model MHFoodBank.Web.Areas.Admin.Pages.MainModel
 @{ Layout = "Shared/_Layout";
-                ViewData["Title"] = "Volunteers"; }
+    ViewData["Title"] = "Volunteers"; }
 
-    <style>
-        #container {
-            display: grid;
-            grid-template-columns: 2fr 2fr 1fr 5fr;
-            grid-template-rows: auto;
-            grid-template-areas: "search-name search-position search-button .";
-            gap: .5rem;
-        }
+@section Styles {
+    <link href="~/css/volunteerlist.css" rel="stylesheet" />
+}
 
-        @@media (min-width: 1800px) {
-            
-        }
-
-        @@media (min-width: 1370px) {
-            .volunteer-table {
-                width: 75%;
-            }
-        }
-
-        @@media (max-width: 1369px) {
-            .volunteer-table {
-                width: 100%
-            }
-
-            #container {
-                display: grid;
-                grid-template-columns: 2fr 2fr 1fr;
-                grid-template-rows: auto;
-                grid-template-areas: "search-name search-position search-button";
-                gap: .5rem;
-            }
-        }
-
-        #search-name {
-            grid-area: search-name;
-        }
-
-        #search-position {
-            grid-area: search-position;
-        }
-
-        #search-button {
-            grid-area: search-button;
-        }
-    </style>
-
-    <div class="ml-5 mr-5">
-        <partial name="_AdminStatusMessage" for="StatusMessage" />
-        <form id="container" class="mb-3" method="post">
-            @if (String.IsNullOrWhiteSpace(Model.SearchedName))
-            {
-                <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-            }
-            else
-            {
-                <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-            }
-
-            @if (@Model.SearchedPosition == null)
-            {
-                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-                </select>
-            }
-            else
-            {
-                <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-                </select>
-            }
-            <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
-        </form>
-        @if (@Model.Volunteers.Count() > 0)
+<div class="ml-5 mr-5">
+    <partial name="_AdminStatusMessage" for="StatusMessage" />
+    <form id="container" class="mb-3" method="post">
+        @if (String.IsNullOrWhiteSpace(Model.SearchedName))
         {
-            <table class="table volunteer-table">
-                <colgroup>
-                    <col />
-                    <col />
-                    <col style="text-align: right;" />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
-                {
-            <tr>
-                <td >@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
-                <td >@volunteer.LastName</td>
-                
-                <td class="btn-group" style="text-align: right;">
-                    <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
-                    @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
-                    {
-                        <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
-                    }
-                </td>
-            </tr>
-                }
-            </table>
+            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
         }
-    </div>
+        else
+        {
+            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
+        }
+
+        @if (@Model.SearchedPositionId == null)
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPositionId" required>
+            </select>
+        }
+        else
+        {
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
+            </select>
+        }
+        <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
+    </form>
+    @if (@Model.Volunteers.Count() > 0)
+    {
+        <table class="table volunteer-table">
+            <colgroup>
+                <col />
+                <col />
+                <col style="text-align: right;" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
+            {
+                <tr>
+                    <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
+                    <td>@volunteer.LastName</td>
+
+                    <td class="btn-group" style="text-align: right;">
+                        <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
+                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                        {
+                            <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
+                        }
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+</div>
 
 <script>
     function openDeleteModal(id) {

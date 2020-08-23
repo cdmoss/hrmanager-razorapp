@@ -74,7 +74,7 @@
                 <tr>
                     <td>
                         <!--this is for the delete modal-->
-                        <input id="clockout-id-@ct.Id" type="hidden" value="@ct.Id" />
+                        <input id="entry-id-@ct.Id" type="hidden" value="@ct.Id" />
                         <input class="form-control"
                                name="entry-volunteer-@ct.Id"
                                type="text"
@@ -339,6 +339,8 @@
 
     function openDeleteModal(id) {
         $('#delete-entry-prompt').modal();
+        let test = document.getElementById("entry-id-modal");
+        let test1 = document.getElementById("entry-id-" + id);
         document.getElementById("entry-id-modal").value = document.getElementById("entry-id-" + id).value;
     }
 

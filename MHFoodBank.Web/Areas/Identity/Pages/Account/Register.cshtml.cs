@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using MHFoodBank.Web.Data;
+using MHFoodBank.Web.Services;
 using MHFoodBank.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -93,8 +94,8 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                 Email = Volunteer.Email,
                 VolunteerProfile = domainVolunteerProfile
             };
-
-            user.VolunteerProfile.Availabilities = GetAvailabilitiesFromFormData(formData);
+            var availHandler = new AvailabilityHandler();
+            user.VolunteerProfile.Availabilities = availHandler.GetAvailabilitiesFromFormData(formData, user.VolunteerProfile);
             user.VolunteerProfile.Alerts = new List<Alert>() { new ApplicationAlert { Date = DateTime.Now, Volunteer = user.VolunteerProfile, Read = false } };
             user.VolunteerProfile.Positions = AssignPreferredPositions(user.VolunteerProfile);
 
@@ -169,55 +170,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
         //         return "Failed to send confirmation email.";
         //     }
         // }
-
-
-        // parses the availability form data into Availability objects
-        private List<Availability> GetAvailabilitiesFromFormData(IFormCollection formData)
-        {
-            try
-            {
-                List<Availability> availabilities = new List<Availability>();
-                string[] daysInWeek = { "sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday" };
-                for (int i = 0; i < daysInWeek.Length; i++)
-                {
-                    string currentDay = daysInWeek[i];
-                    int fieldCountForCurrentDay = formData.Keys.Count(k => k.Contains($"{currentDay}-1"));
-
-                    for (int j = 1; j <= fieldCountForCurrentDay; j++)
-                    {
-                        string startTimeString = formData[$"{currentDay}-1-{j}"];
-                        string endTimeString = formData[$"{currentDay}-2-{j}"];
-
-                        if (string.IsNullOrWhiteSpace(startTimeString) || string.IsNullOrWhiteSpace(endTimeString))
-                        {
-                            continue;
-                        }
-
-                        string[] startTimeParts = startTimeString.Split(':');
-                        string[] endTimeParts = endTimeString.Split(':');
-
-                        TimeSpan startTime = new TimeSpan(int.Parse(startTimeParts[0]), int.Parse(startTimeParts[1]), 0);
-                        TimeSpan endTime = new TimeSpan(int.Parse(endTimeParts[0]), int.Parse(endTimeParts[1]), 0);
-
-                        Availability a = new Availability()
-                        {
-                            AvailableDay = daysInWeek[i],
-                            StartTime = startTime,
-                            EndTime = endTime,
-                        };
-
-                        availabilities.Add(a);
-                    }
-                }
-
-                return availabilities;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return null;
-            }
-        }
 
         private List<PositionVolunteer> AssignPreferredPositions(VolunteerProfile volunteer)
         {

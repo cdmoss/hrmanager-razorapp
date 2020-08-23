@@ -45,8 +45,11 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             await _context.Entry(currentUser.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
 
             AvailabilityHandler availability = new AvailabilityHandler();
-            await availability.SetVolunteerAvailability(formData, currentUser.VolunteerProfile, _context);
-
+            bool updateWasSuccessful = await availability.UpdateVolunteerAvailability(formData, currentUser.VolunteerProfile, _context);
+            if (!updateWasSuccessful)
+            {
+                return RedirectToPage(new { statusMessage = "Error: One or more of the availabilities you entered was missing either a start time or end time." });
+            }
             return RedirectToPage(new { statusMessage = "You have successfully changed your availability" });
         }
     }

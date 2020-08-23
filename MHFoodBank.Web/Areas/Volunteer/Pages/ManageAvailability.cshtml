@@ -44,7 +44,6 @@
         grid-area: saturday;
     }
 </style>
-<script src="~/js/datetimepickers.js"></script>
 <div class="mr-5 ml-5">
 
     <h1>Manage Availability</h1>
@@ -63,7 +62,7 @@
                     <div class="row ml-1 sunday-field">
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-sunday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-sunday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="sunday-1-@(i + 1)" type="text" value="@Model.OldAvailability["sunday"][i].StartTime" class="form-control
                                        start-time" data-target="#dtp-sunday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-sunday-1-@(i + 1)" data-toggle="datetimepicker">
@@ -75,7 +74,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-sunday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-sunday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="sunday-2-@(i+1)" type="text" value="@Model.OldAvailability["sunday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-sunday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -93,7 +92,7 @@
                     {
                         <div class="row ml-1 sunday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-sunday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-sunday-1-1" data-target-input="nearest">
                                     <input name="sunday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-sunday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-sunday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -104,7 +103,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-sunday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-sunday-2-1" data-target-input="nearest">
                                     <input name="sunday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-sunday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -127,7 +126,7 @@
                     <div class="row ml-1 monday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-monday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-monday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="monday-1-@(i + 1)" type="text" value="@Model.OldAvailability["monday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-monday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-monday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -138,7 +137,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-monday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-monday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="monday-2-@(i+1)" type="text" value="@Model.OldAvailability["monday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-monday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-monday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -156,7 +155,7 @@
                     {
                         <div class="row ml-1 monday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-monday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-monday-1-1" data-target-input="nearest">
                                     <input name="monday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-monday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-monday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -167,7 +166,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-monday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-monday-2-1" data-target-input="nearest">
                                     <input name="monday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-monday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-monday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -191,7 +190,7 @@
                     <div class="row ml-1 tuesday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-tuesday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-tuesday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="tuesday-1-@(i + 1)" type="text" value="@Model.OldAvailability["tuesday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-tuesday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-tuesday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -202,7 +201,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-tuesday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-tuesday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="tuesday-2-@(i+1)" type="text" value="@Model.OldAvailability["tuesday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-tuesday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-tuesday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -220,7 +219,7 @@
                     {
                         <div class="row ml-1 tuesday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-tuesday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-tuesday-1-1" data-target-input="nearest">
                                     <input name="tuesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-tuesday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-tuesday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -231,7 +230,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-tuesday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-tuesday-2-1" data-target-input="nearest">
                                     <input name="tuesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-tuesday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-tuesday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -254,7 +253,7 @@
                     <div class="row ml-1 wednesday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-wednesday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-wednesday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="wednesday-1-@(i + 1)" type="text" value="@Model.OldAvailability["wednesday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-wednesday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -265,7 +264,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-wednesday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-wednesday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="wednesday-2-@(i+1)" type="text" value="@Model.OldAvailability["wednesday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-wednesday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-wednesday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -283,7 +282,7 @@
                     {
                         <div class="row ml-1 wednesday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-wednesday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-wednesday-1-1" data-target-input="nearest">
                                     <input name="wednesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-wednesday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -294,7 +293,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-wednesday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-wednesday-2-1" data-target-input="nearest">
                                     <input name="wednesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-wednesday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-wednesday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -318,7 +317,7 @@
                     <div class="row ml-1 thursday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-thursday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-thursday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="thursday-1-@(i + 1)" type="text" value="@Model.OldAvailability["thursday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-thursday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -329,7 +328,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-thursday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-thursday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="thursday-2-@(i+1)" type="text" value="@Model.OldAvailability["thursday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-thursday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-thursday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -347,7 +346,7 @@
                     {
                         <div class="row ml-1 thursday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-thursday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-thursday-1-1" data-target-input="nearest">
                                     <input name="thursday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-thursday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -358,7 +357,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-thursday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-thursday-2-1" data-target-input="nearest">
                                     <input name="thursday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-thursday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-thursday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -381,7 +380,7 @@
                     <div class="row ml-1 friday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-friday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-friday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="friday-1-@(i + 1)" type="text" value="@Model.OldAvailability["friday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-friday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -392,7 +391,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-friday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-friday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="friday-2-@(i+1)" type="text" value="@Model.OldAvailability["friday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-friday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-friday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -410,7 +409,7 @@
                     {
                         <div class="row ml-1 friday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-friday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-friday-1-1" data-target-input="nearest">
                                     <input name="friday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-friday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -421,7 +420,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-friday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-friday-2-1" data-target-input="nearest">
                                     <input name="friday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-friday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-friday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -445,7 +444,7 @@
                     <div class="row ml-1 saturday-field">
 
                         <div class="form-group col=">
-                            <div class="input-group date datetimepicker-time" id="dtp-saturday-1-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-start" id="dtp-saturday-1-@(i + 1)" data-target-input="nearest">
                                 <input name="saturday-1-@(i + 1)" type="text" value="@Model.OldAvailability["saturday"][i].StartTime" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-saturday-1-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -456,7 +455,7 @@
                         <span class="col-md-1 justify-content-center">to</span>
 
                         <div class="form-group">
-                            <div class="input-group date datetimepicker-time" id="dtp-saturday-2-@(i + 1)" data-target-input="nearest">
+                            <div class="input-group date datetimepicker-time-end" id="dtp-saturday-2-@(i + 1)" data-target-input="nearest">
                                 <input name="saturday-2-@(i+1)" type="text" value="@Model.OldAvailability["saturday"][i].EndTime" class="form-control datetimepicker-input end-time" data-target="#dtp-saturday-2-@(i + 1)" />
                                 <div class="input-group-append" data-target="#dtp-saturday-2-@(i + 1)" data-toggle="datetimepicker">
                                     <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -474,7 +473,7 @@
                     {
                         <div class="row ml-1 saturday-field">
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-saturday-1-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-start" id="dtp-saturday-1-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-saturday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -485,7 +484,7 @@
                             <span class="col-md-1 justify-content-center">to</span>
 
                             <div class="form-group">
-                                <div class="input-group date datetimepicker-time" id="dtp-saturday-2-1" data-target-input="nearest">
+                                <div class="input-group date datetimepicker-time-end" id="dtp-saturday-2-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="saturday-2-1" type="text" class="form-control
                                    end-time" data-target="#dtp-saturday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-saturday-2-1" data-toggle="datetimepicker">
@@ -506,3 +505,22 @@
 </div>
 
 <script src="~/js/availability.js"></script>
+<script>
+    $(".datetimepicker-time-start").datetimepicker({
+        format: "HH:mm"
+    });
+
+    $(".datetimepicker-time-end").datetimepicker({
+        format: "HH:mm"
+    });
+
+    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
+        const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
+        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+
+    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
+        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
+        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    });
+</script>

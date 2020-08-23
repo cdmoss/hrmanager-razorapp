@@ -34,7 +34,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public Position DefaultPosition { get; set; }
         // make supportsget = true for this will result in it not being null
         [BindProperty] 
-        public Position SearchedPosition { get; set; }
+        public int SearchedPositionId { get; set; }
         [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
@@ -58,9 +58,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnPostSearch()
         {
+            var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SearchedPositionId);
             var volunteerDomainModels = await PrepareModel();
             Searcher searcher = new Searcher(_context);
-            Position searchedPosition = searcher.GetSearchedPosition(Request);
             volunteerDomainModels = searcher.FilterVolunteersBySearch(volunteerDomainModels, SearchedName, searchedPosition);
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
         }
