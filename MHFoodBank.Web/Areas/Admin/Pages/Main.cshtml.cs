@@ -30,8 +30,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public VolunteerProfile Volunteer { get; set; }
         [BindProperty(SupportsGet = true)]
         public List<Position> Positions { get; set; }
-        [BindProperty(SupportsGet = true)]
-        public Position DefaultPosition { get; set; }
         // make supportsget = true for this will result in it not being null
         [BindProperty] 
         public int SearchedPositionId { get; set; }
@@ -90,7 +88,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             // get only volunteers
             var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && v.Deleted == false).ToListAsync();
             Positions = await _context.Positions.ToListAsync();
-            DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
+            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 
             return volunteersDomainProfiles;
         }

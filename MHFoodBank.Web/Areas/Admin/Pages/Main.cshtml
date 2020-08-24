@@ -22,9 +22,9 @@
             <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
         }
 
-        @if (@Model.SearchedPositionId == null)
+        @if (@Model.SearchedPositionId == 0)
         {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPositionId" required>
+            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
             </select>
         }
         else

@@ -1,12 +1,15 @@
 ﻿let originalEntryValues;
 
-function makeEntryEditable(id) {
+function makeEntryEditable(id, isCurrent) {
 
     originalEntryValues = {
         volunteer: document.getElementById("entry-volunteer-" + id).value,
         position: document.getElementById("entry-position-" + id).value,
         start: document.getElementById("entry-starttime-" + id).value,
-        end: document.getElementById("entry-endtime-" + id).value
+    }
+
+    if (!isCurrent) {
+        originalEntryValues.end = document.getElementById("entry-endtime-" + id).value
     }
 
     let volunteerField = document.getElementById("entry-volunteer-" + id);
@@ -19,7 +22,9 @@ function makeEntryEditable(id) {
     entryFields.push(volunteerField);
     entryFields.push(positionField);
     entryFields.push(startField);
-    entryFields.push(endField);
+    if (!isCurrent) {
+        entryFields.push(endField);
+    }
 
     entryFields.forEach(function (field) {
         if (field.nodeName == "INPUT") {

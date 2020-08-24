@@ -21,7 +21,6 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     public class RequestChangeModel : VolunteerPageModel
     {
         private readonly IMapper _mapper;
-
         public List<ShiftReadEditDto> AssignedShifts { get; set; }
         public List<ShiftReadEditDto> OpenShifts { get; set; }
         public ShiftReadEditDto OriginalShift { get; set; }
@@ -60,7 +59,8 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
         public async Task<IActionResult> OnPostRemove()
         {
-            var volunteer = (await _userManager.GetUserAsync(User)).VolunteerProfile;
+            var volunteer = await _userManager.GetUserAsync(User);
+            await _context.Entry(volunteer).Reference(p => p.VolunteerProfile).LoadAsync();
             var originalShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == OriginalShiftId);
 
             ShiftRequestAlert requestAlert = new ShiftRequestAlert()
@@ -68,7 +68,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                 Date = DateTime.Now,
                 OriginalShift = originalShift,
                 Reason = Reason,
-                Volunteer = volunteer,
+                Volunteer = volunteer.VolunteerProfile,
                 Status = ShiftRequestAlert.RequestStatus.Pending
             };
             _context.ShiftAlerts.Add(requestAlert);

@@ -137,6 +137,36 @@ namespace MHFoodBank.Web.Data
             return clockedTimes;
         }
 
+        public List<ClockedTimeReadDto> FilterTimeSheetBySearch(
+        List<ClockedTimeReadDto> clockedTimes,
+        string name,
+        Position searchedPosition)
+        {
+            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
+            bool nameWasSearched = CheckIfNameWasSearched(name);
+
+            if (positionWasSearched && nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower()) &&
+                    s.Position.Id == searchedPosition.Id).ToList();
+            }
+
+            if (!positionWasSearched && nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Volunteer.FullNameWithID.ToLower().Contains(name.ToLower())).ToList();
+            }
+
+            if (positionWasSearched && !nameWasSearched)
+            {
+                clockedTimes = clockedTimes.Where(s =>
+                    s.Position.Id == searchedPosition.Id).ToList();
+            }
+
+            return clockedTimes;
+        }
+
         public Position GetSearchedPosition(HttpRequest request)
         {
             int searchedPositionId = -1;

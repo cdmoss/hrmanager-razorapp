@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using MHFoodBank.Common;
+using MHFoodBank.Web.Migrations;
 
 namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -66,6 +68,9 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             currentUser.VolunteerProfile.City = PersonalInfo.City;
             currentUser.VolunteerProfile.PostalCode = PersonalInfo.PostalCode;
             currentUser.Email = PersonalInfo.Email;
+            currentUser.UserName = PersonalInfo.Email;
+            currentUser.NormalizedUserName = PersonalInfo.Email.ToUpper();
+            currentUser.NormalizedEmail = PersonalInfo.Email.ToUpper();
             currentUser.VolunteerProfile.MainPhone = PersonalInfo.MainPhone;
             currentUser.VolunteerProfile.AlternatePhone1 = PersonalInfo.AlternatePhone1;
             currentUser.VolunteerProfile.AlternatePhone2 = PersonalInfo.AlternatePhone2;
@@ -125,26 +130,26 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             [Required]
             public string City { get; set; }
             [Required]
-            [RegularExpression(@"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$", ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+            [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
             public string PostalCode { get; set; }
             [Required]
             [EmailAddress]
             public string Email { get; set; }
             [Required]
-            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+            [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string MainPhone { get; set; }
-            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+            [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string AlternatePhone1 { get; set; }
-            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+            [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string AlternatePhone2 { get; set; }
             [Required]
             public string EmergencyName { get; set; }
             [Required]
             public string EmergencyRelationship { get; set; }
             [Required]
-            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+            [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string EmergencyPhone1 { get; set; }
-            [RegularExpression(@"\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*", ErrorMessage = "Please enter a valid phone number.")]
+            [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string EmergencyPhone2 { get; set; }
             public List<PositionVolunteer> Positions { get; set; }
         }

@@ -56,6 +56,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
         public List<WorkExperienceDto> WorkExperiences { get; set; }
         public List<Position> Positions { get; set; }
         public string AvailabilityError { get; set; }
+        public string EmailError { get; set; }
 
         public string ReturnUrl { get; set; }
 
@@ -82,6 +83,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             {
                 return OnGet();
             }
+
             Volunteer.WorkExperiences = WorkExperiences;
             Volunteer.References = References;
             Volunteer.ApprovalStatus = ApprovalStatus.Pending;
@@ -123,6 +125,11 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
 
             if (!accountCreationResult.Succeeded)
             {
+                if(_context.Users.Any(e => e.Email == Volunteer.Email))
+                {
+                    ModelState.AddModelError("EmailError", "This email is already in use.");
+                }
+
                 AddIdentityErrors(accountCreationResult);
             }
             if (!addToRoleResult.Succeeded)

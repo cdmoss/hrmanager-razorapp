@@ -7,6 +7,7 @@ using MHFoodBank.Common;
 using MHFoodBank.Common.Dtos;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -54,10 +55,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public string SelectedTab { get; set; }
 
         private readonly IMapper _mapper;
-
-        public CompletedModel(IMapper mapper, FoodBankContext context, string currentPage = "Time Sheets") : base(context, currentPage)
+        private readonly UserManager<AppUser> _userManager;
+        public CompletedModel(IMapper mapper, FoodBankContext context, UserManager<AppUser> userManager, string currentPage = "Time Sheets") : base(context, currentPage)
         {
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public async Task OnGet(string statusMessage)

@@ -251,7 +251,7 @@
                     <input class="form-control"
                            type="text"
                            id="edit-position-original"
-                           asp-for="@Model.SelectedShiftPosition"
+                           asp-for="@Model.SelectedPositionName"
                            list="positions"
                            placeholder="Select a position..."
                            required>
@@ -744,5 +744,21 @@
         let originalDate = moment(startTimeInput.value, 'HH:mm');
         $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
         startTimeInput.value = originalDate.format('HH:mm');
+    });
+
+    $(".datetimepicker-date-start").on("change.datetimepicker", function (e) {
+        const endDateDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-date-end')[0];
+        const endDateInput = endDateDiv.getElementsByTagName('INPUT')[0];
+        let originalDate = moment(endDateInput.value, 'YYYY-MM-DD');
+        $(endDateDiv).datetimepicker('minDate', moment(e.date, 'YYYY-MM-DD'));
+        endDateInput.value = originalDate.format('YYYY-MM-DD');
+    });
+
+    $(".datetimepicker-date-end").on("change.datetimepicker", function (e) {
+        const startDateDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-date-start')[0];
+        const startDateInput = startDateDiv.getElementsByTagName('INPUT')[0];
+        let originalDate = moment(startDateInput.value, 'YYYY-MM-DD');
+        $(startDateDiv).datetimepicker('maxDate', moment(e.date, 'YYYY-MM-DD'));
+        startDateInput.value = originalDate.format('YYYY-MM-DD');
     });
 </script>

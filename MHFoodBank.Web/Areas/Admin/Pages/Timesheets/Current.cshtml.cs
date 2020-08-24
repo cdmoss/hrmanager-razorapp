@@ -19,7 +19,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
         [BindProperty]
         public string StatusMessage { get; set; }
         [BindProperty]
-        public int DeleteClockedTimeId { get; set; }
+        public int SelectedClockedTimeId { get; set; }
         [BindProperty]
         public int ClockOutId { get; set; }
         [BindProperty]
@@ -79,34 +79,32 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
             int volunteerId = 0;
             if (int.TryParse(volunteerIdStr, out int volIdParsed))
             {
-
                 volunteerId = volIdParsed;
             }
             else
             {
-                // return error
+                return RedirectToPage(new { statusMessage = $"Error: Volunteer not found." });
             }
             string positionName = Request.Form["entry-position-" + id][0];
+            Positions = await _context.Positions.ToListAsync();
             if (!Positions.Any(p => p.Name == positionName))
             {
-                // return error
+                return RedirectToPage(new { statusMessage = $"Error: Position not found." });
             }
             var startTime = Convert.ToDateTime(Request.Form["entry-starttime-" + id]);
-            var endTime = Convert.ToDateTime(Request.Form["entry-endtime-" + id]);
 
             clockedTime.Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.Id == volunteerId);
             clockedTime.Position = await _context.Positions.FirstOrDefaultAsync(v => v.Name == positionName);
             clockedTime.StartTime = startTime;
-            clockedTime.EndTime = endTime;
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { statusMessage = $"Changes to the entry were successfully saved." }); ;
+            return RedirectToPage(new { statusMessage = $"Changes to the entry were successfully saved." });
         }
 
         public async Task<IActionResult> OnPostClockOutVolunteer()
         {
-            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Id == ClockOutId);
+            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Id == SelectedClockedTimeId);
             _context.Update(clockedTime);
 
             clockedTime.EndTime = ManualClockOutTime;
@@ -137,7 +135,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
 
         public async Task<IActionResult> OnPostDeleteTime()
         {
-            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(c => c.Id == DeleteClockedTimeId);
+            var clockedTime = await _context.ClockedTime.FirstOrDefaultAsync(c => c.Id == SelectedClockedTimeId);
 
             _context.ClockedTime.Remove(clockedTime);
             await _context.SaveChangesAsync();
@@ -150,7 +148,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
             await PrepareModel();
 
             var searcher = new Searcher(_context);
-            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, SearchedPosition, SearchedStartDate, SearchedEndDate);
+            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, SearchedPosition);
         }
 
         private async Task PrepareModel()

@@ -24,8 +24,8 @@ function populateRecurringShiftModal(selectedShift) {
     let endTimeStr = recurringShiftStrings.endTime.split(':');
     let endTime = moment({ h: endTimeStr[0], m: endTimeStr[1] });
 
-    //$('#dtp-recshift-edit-endtime').datetimepicker('minDate', startTime);
-    //$('#dtp-recshift-edit-starttime').datetimepicker('maxDate', endTime);
+    $('#dtp-recshift-edit-endtime').datetimepicker('minDate', startTime);
+    $('#dtp-recshift-edit-starttime').datetimepicker('maxDate', endTime);
 
     let startDate = recurringShiftStrings.recurringStartDate;
     let endDate = recurringShiftStrings.recurringEndDate;

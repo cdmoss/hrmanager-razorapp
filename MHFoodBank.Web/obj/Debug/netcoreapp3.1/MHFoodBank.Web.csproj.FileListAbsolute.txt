@@ -809,7 +809,6 @@ C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Raz
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Main.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\ResolveShiftRequest.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Shared\_Layout.cshtml.g.cs
-C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\TimeClock.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\VolunteerDetails.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\_AdminStatusMessage.cshtml.g.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\_ViewImports.cshtml.g.cs
@@ -856,3 +855,6 @@ C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHF
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Completed.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Current.cshtml.g.cs
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Shared\_Layout.cshtml.g.cs
+C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Completed.cshtml.g.cs
+C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Current.cshtml.g.cs
+C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Admin\Pages\Timesheets\Shared\_Layout.cshtml.g.cs

@@ -26,7 +26,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
-    [Authorize(Roles = "Staff, Admin" )]
+    [Authorize(Roles = "Staff, Admin")]
     public class AdminCalendar : AdminPageModel
     {
         private readonly IReminderManager _reminderManager;
@@ -44,7 +44,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string SelectedShiftPosition { get; set; }
         [BindProperty]
-        public string SelectedShiftVolunteer{ get; set; }
+        public string SelectedShiftVolunteer { get; set; }
         [BindProperty]
         public DateTime OriginalStartDate { get; set; }
         // Created this property to grab the original start date for the whole recurring set.
@@ -66,7 +66,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public Position SearchedPosition { get; set; }
         [BindProperty]
         // position that was selected in the edit/delete position window
-        public Position SelectedPosition { get; set; }
+        public string SelectedPositionName { get; set; }
         [BindProperty]
         public string NewPositionName { get; set; }
         // give user feedback after action
@@ -152,17 +152,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
             }
 
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Id == Convert.ToInt32(SelectedShiftPosition[0]));
+            var selectedPosition = _context.Positions.FirstOrDefault(p => p.Name == SelectedPositionName);
 
-            string resultStatus = await EditPosition(SelectedPosition);
+            string resultStatus = await EditPosition(selectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
         }
 
         public async Task<IActionResult> OnPostRemovePosition()
         {
-            var selectedPos = await _context.Positions.FirstOrDefaultAsync(p => p.Id == Convert.ToInt32(SelectedShiftPosition[0]));
-            SelectedPosition = _context.Positions.FirstOrDefault(p => p.Name == selectedPos.Name);
-            string resultStatus = await RemovePosition(SelectedPosition);
+            var selectedPosition = _context.Positions.FirstOrDefault(p => p.Name == SelectedPositionName);
+            string resultStatus = await RemovePosition(selectedPosition);
             return RedirectToPage(new { statusMessage = resultStatus });
         }
 
@@ -185,7 +184,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             if (shift.StartDate < DateTime.Now.AddDays(-1))
             {
-                if(isStaff)
+                if (isStaff)
                     return RedirectToPage(new { statusMessage = "Error: Only administrators are able to add shifts that are before today's date." });
             }
 
@@ -223,7 +222,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddRecurringShift()
         {
-            if(SelectedShift.StartDate > SelectedShift.EndDate)
+            if (SelectedShift.StartDate > SelectedShift.EndDate)
             {
                 return await OnGet("Error: The start date must be before the end date.");
             }
@@ -241,7 +240,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             if (string.IsNullOrEmpty(shift.Weekdays))
             {
-                return RedirectToPage(new { statusMessage = "Error: You must select weekdays on which the shift should repeat."});
+                return RedirectToPage(new { statusMessage = "Error: You must select weekdays on which the shift should repeat." });
             }
 
             _context.RecurringShifts.Add(shift);
@@ -423,7 +422,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 }
             }
 
-            return RedirectToPage( new { statusMessage = "You succesfully deleted the chosen shift from the recurring set."});
+            return RedirectToPage(new { statusMessage = "You succesfully deleted the chosen shift from the recurring set." });
         }
 
 
@@ -431,25 +430,25 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public async Task<IActionResult> OnPostDeleteRecurringShift()
         {
             RecurringShift recurringShift = _context.RecurringShifts.Include(y => y.Volunteer).Include(v => v.ExcludedShifts).FirstOrDefault(x => x.Id == SelectedShift.Id);
-            
+
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.RequestedShift)
                 .Include(p => p.OriginalShift)
                 .Where(a => a.RequestedShift == recurringShift || a.OriginalShift == recurringShift)
                 .ToListAsync();
-            
+
             if (alertsWithChosenShift.Any())
             {
                 return RedirectToPage(new { statusMessage = $"Error: The shift you tried to delete is part of an existing shift request. The shift request must be addressed before the shift can be deleted." });
             }
-            
+
             _context.Update(recurringShift);
 
             recurringShift = DeleteRecurringShift(recurringShift);
 
             await _context.SaveChangesAsync();
 
-            return RedirectToPage( new { statusMessage = "You succesfully deleted the chosen recurring set of shifts."});
+            return RedirectToPage(new { statusMessage = "You succesfully deleted the chosen recurring set of shifts." });
         }
 
         public async Task<IActionResult> OnPostRestoreShiftPropertiesToOriginal()
@@ -520,7 +519,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 }
             }
 
-            return RedirectToPage(new { statusMessage = "You have successfully returned the chosen shift's properties to their original state."});
+            return RedirectToPage(new { statusMessage = "You have successfully returned the chosen shift's properties to their original state." });
         }
 
         public async Task OnPostSearch()
@@ -528,7 +527,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await PrepareModel(null);
 
             var searcher = new Searcher(_context);
-            SearchedPosition = searcher.GetSearchedPosition(Request);
+            SearchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SearchedPosition.Id);
             Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, SearchedPosition);
         }
 
@@ -559,7 +558,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                         return new Shift { Description = "vol" };
                     }
                 }
-                
+
             }
 
             Position pos = await _context.Positions.FirstOrDefaultAsync(x => x.Name == SelectedShiftPosition);
@@ -772,35 +771,35 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private async Task<string> EditPosition(Position selectedPosition)
         {
-            if (SelectedPosition != null)
+            if (selectedPosition != null)
             {
-                string originalName = SelectedPosition.Name;
+                string originalName = selectedPosition.Name;
 
-                _context.Update(SelectedPosition);
+                _context.Update(selectedPosition);
 
-                SelectedPosition.Name = NewPositionName;
+                selectedPosition.Name = NewPositionName;
                 await _context.SaveChangesAsync();
-                return $"You successfully updated {originalName} to {SelectedPosition.Name}.";
+                return $"You successfully updated {originalName} to {selectedPosition.Name}.";
             }
             return $"Error: You must select a position.";
         }
 
         private async Task<string> RemovePosition(Position selectedPosition)
         {
-            if (SelectedPosition != null)
+            if (selectedPosition != null)
             {
-                if (_context.Shifts.Any(s => s.PositionWorked == SelectedPosition))
+                if (_context.Shifts.Any(s => s.PositionWorked == selectedPosition))
                 {
                     return $"Error: This position cannot be deleted because it is included in some of the currently scheduled shifts.";
                 }
                 else
                 {
-                    _context.Remove(SelectedPosition);
+                    _context.Remove(selectedPosition);
                     await _context.SaveChangesAsync();
-                    return $"You successfully removed {SelectedPosition.Name} from the list of positions.";
+                    return $"You successfully removed {selectedPosition.Name} from the list of positions.";
                 }
             }
-            return $"You must select a position.";
+            return $"Error: You must select a position.";
         }
 
         private async Task<RecurringShift> EditRecurringShift(RecurringShift recShift)

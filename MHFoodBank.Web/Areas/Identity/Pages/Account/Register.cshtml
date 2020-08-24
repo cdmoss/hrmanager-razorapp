@@ -6,8 +6,6 @@
     ViewData["Title"] = "Apply as a volunteer";
 }
 
-<script src="~/js/datetimepickers.js"></script>
-
 <div class="mt-5">
     <div style="height: 20vh" class="text-center">
         <img class="h-100" src="~/MHFB.png" alt="MHFB Logo" />
@@ -25,6 +23,7 @@
                         <label asp-for="Volunteer.Email">Email (Required)</label>
                         <input asp-for="Volunteer.Email" class="form-control" />
                         <span asp-validation-for="Volunteer.Email" class="text-danger"></span>
+                        <span class="text-danger" asp-validation-for="EmailError"></span>
                     </div>
                     <div class="col-md-6 form-group text-left">
                         <label asp-for="Volunteer.ConfirmEmail">Confirm Email (Required)</label>
@@ -191,7 +190,7 @@
                 <div id="availability">
                     <label>Monday</label>
                     <div class="monday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 monday-field">
 
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-monday-1-1" data-target-input="nearest">
@@ -215,12 +214,12 @@
 
                         </div>
                     </div>
-                    <input id="monday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="monday" type="button" value="Add Another Time" onclick="addField('monday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                     <br />
                     <br />
                     <label>Tuesday</label>
                     <div class="tuesday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 tuesday-field">
 
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-tuesday-1-1" data-target-input="nearest">
@@ -243,12 +242,12 @@
                             </div>
                         </div>
                     </div>
-                    <input id="tuesday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="tuesday" type="button" value="Add Another Time" onclick="addField('tuesday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                     <br />
                     <br />
                     <label>Wednesday</label>
                     <div class="wednesday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 wednesday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-wednesday-1-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="wednesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-1" />
@@ -270,12 +269,12 @@
                             </div>
                         </div>
                     </div>
-                    <input id="wednesday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="wednesday" type="button" value="Add Another Time" onclick="addField('wednesday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                     <br />
                     <br />
                     <label>Thursday</label>
                     <div class="thursday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 thursday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-thursday-1-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="thursday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-1" />
@@ -297,12 +296,12 @@
                             </div>
                         </div>
                     </div>
-                    <input id="thursday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="thursday" type="button" value="Add Another Time" onclick="addField('thursday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                     <br />
                     <br />
                     <label>Friday</label>
                     <div class="friday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 friday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-friday-1-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="friday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-1" />
@@ -324,12 +323,12 @@
                             </div>
                         </div>
                     </div>
-                    <input id="friday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="friday" type="button" value="Add Another Time" onclick="addField('friday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                     <br />
                     <br />
                     <label>Saturday</label>
                     <div class="saturday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 saturday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-saturday-1-1" data-target-input="nearest">
                                     <input id="edit-recshift-endtime" name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
@@ -343,7 +342,7 @@
 
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-end" id="dtp-saturday-2-1" data-target-input="nearest">
-                                    <input id="edit-recshift-endtime" name="saturday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-saturday-2-1" />
+                                    <input name="saturday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-saturday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-saturday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
                                     </div>
@@ -351,15 +350,15 @@
                             </div>
                         </div>
                     </div>
-                    <input id="saturday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" /><br />
+                    <input id="saturday" type="button" value="Add Another Time" onclick="addField('saturday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" /><br />
                     <br />
                     <br />
                     <label>Sunday</label>
                     <div class="sunday-fields">
-                        <div class="row ml-1">
+                        <div class="row ml-1 sunday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-sunday-1-1" data-target-input="nearest">
-                                    <input id="edit-recshift-endtime" name="sunday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-sunday-1-1" />
+                                    <input name="sunday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-sunday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-sunday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
                                     </div>
@@ -370,7 +369,7 @@
 
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-end" id="dtp-sunday-2-1" data-target-input="nearest">
-                                    <input id="edit-recshift-endtime" name="sunday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-1" />
+                                    <input name="sunday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-sunday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
                                     </div>
@@ -378,7 +377,7 @@
                             </div>
                         </div>
                     </div>
-                    <input id="sunday" type="button" value="Add Another Time" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
+                    <input id="sunday" type="button" value="Add Another Time" onclick="addField('sunday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
                 </div>
                 <!--Qualifications-->
                 <hr class="mt-4 mb-4" />
