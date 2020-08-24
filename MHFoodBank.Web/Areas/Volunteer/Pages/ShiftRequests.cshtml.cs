@@ -18,8 +18,8 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     {
         private readonly IMapper _mapper;
         public List<ShiftRequestReadDto> Alerts { get; set; }
-        public ShiftRequestsModel(FoodBankContext context, IMapper mapper, UserManager<AppUser> userManager) : base(userManager,
-            context)
+        public ShiftRequestsModel(FoodBankContext context, IMapper mapper, UserManager<AppUser> userManager, string currentPage = "Shift Requests") : base(userManager,
+            context, currentPage)
         {
             _mapper = mapper;
         }
@@ -75,7 +75,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             var alertDomainModels = await _context.ShiftAlerts
                 .Include(p => p.OriginalShift)
                 .Include(p => p.RequestedShift)
-                .Where(sa => sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
+                .Where(sa => sa.Deleted == false && sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
 
             Alerts = _mapper.Map<List<ShiftRequestReadDto>>(alertDomainModels);
 

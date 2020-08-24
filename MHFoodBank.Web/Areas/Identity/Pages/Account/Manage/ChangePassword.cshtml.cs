@@ -21,7 +21,8 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             FoodBankContext context,
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
-            ILogger<ChangePasswordModel> logger) : base(userManager, context)
+            ILogger<ChangePasswordModel> logger,
+            string currentPage = "Change Password") : base(userManager, context, currentPage)
         {
             _signInManager = signInManager;
             _logger = logger;

@@ -23,7 +23,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
         public List<Position> Positions { get; set; }
         [BindProperty] public string StatusMessage { get; set; }
 
-        public PersonalInformationModel(FoodBankContext context, UserManager<AppUser> userManager) : base(userManager, context)
+        public PersonalInformationModel(FoodBankContext context, UserManager<AppUser> userManager, string currentPage = "Personal Information") : base(userManager, context, currentPage)
         {
         }
 

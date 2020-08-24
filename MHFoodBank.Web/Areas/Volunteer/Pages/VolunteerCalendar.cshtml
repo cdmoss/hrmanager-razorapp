@@ -133,10 +133,8 @@
 <div class="ml-5 mr-5">
     @if (Model.Approved == ApprovalStatus.Approved)
     {
-        <div class="row">
-            <h1 class="col-md-4">Schedule</h1>
-            <div class="col-md-5"></div>
-            <h5 class="col-md-3">Click on a shift to make a shift change request.</h5>
+        <div class="row justify-content-start">
+            <h5 class="col-md-5 ">Click on a shift to make a shift change request.</h5>
         </div>
         <partial name="_VolunteerStatusMessage" for="StatusMessage" />
         <hr />

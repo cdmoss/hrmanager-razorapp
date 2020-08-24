@@ -14,11 +14,8 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
     [BindProperties]
     public class WelcomeModel : VolunteerPageModel
     {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
-        public WelcomeModel(UserManager<AppUser> userManager, FoodBankContext context) : base(userManager,
-            context)
+        public WelcomeModel(UserManager<AppUser> userManager, FoodBankContext context, string currentPage = "") : base(userManager,
+            context, currentPage)
         {
             
         }
@@ -28,8 +25,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             AppUser currentUser = _userManager.GetUserAsync(User).Result;
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             LoggedInUser = currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;
-            FirstName = currentUser.VolunteerProfile.FirstName;
-            LastName = currentUser.VolunteerProfile.LastName;
+            CurrentPage = "Welcome " + currentUser.VolunteerProfile.FirstName + " " + currentUser.VolunteerProfile.LastName;
         }
     }
 }

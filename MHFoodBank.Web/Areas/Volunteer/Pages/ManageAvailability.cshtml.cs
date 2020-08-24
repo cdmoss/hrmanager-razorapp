@@ -21,7 +21,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         [BindProperty]
         public string StatusMessage { get; set; }
 
-        public ManageAvailabilityModel(FoodBankContext context, UserManager<AppUser> userManager) : base(userManager, context)
+        public ManageAvailabilityModel(FoodBankContext context, UserManager<AppUser> userManager, string currentPage = "Manage Availability") : base(userManager, context, currentPage)
         {
         }
 

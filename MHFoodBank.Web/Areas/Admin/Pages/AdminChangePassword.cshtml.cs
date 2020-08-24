@@ -105,7 +105,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("User changed their password successfully.");
-                StatusMessage = "Your password has been changed.";
                 return RedirectToPage("VolunteerDetails", new { id = domainVolunteer.VolunteerProfile.Id, statusMessage = "You have successfully changed this volunteer's password." });
             }
 

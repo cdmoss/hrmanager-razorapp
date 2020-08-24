@@ -15,11 +15,13 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages.Shared
         protected readonly UserManager<AppUser> _userManager;
         protected readonly FoodBankContext _context;
         public string LoggedInUser { get; set; }
+        public string CurrentPage { get; set; }
 
-        public VolunteerPageModel(UserManager<AppUser> userManager, FoodBankContext context)
+        public VolunteerPageModel(UserManager<AppUser> userManager, FoodBankContext context, string currentPage)
         {
             _userManager = userManager;
             _context = context;
+            CurrentPage = currentPage;
         }
     }
 }

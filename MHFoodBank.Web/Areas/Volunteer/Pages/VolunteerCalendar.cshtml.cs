@@ -37,7 +37,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         [BindProperty]
         public ApprovalStatus Approved { get; set; }
 
-        public VolunteerCalendarModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper) : base(userManager, context)
+        public VolunteerCalendarModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper, string currentPage = "Schedule") : base(userManager, context, currentPage)
         {
             _mapper = mapper;
         }

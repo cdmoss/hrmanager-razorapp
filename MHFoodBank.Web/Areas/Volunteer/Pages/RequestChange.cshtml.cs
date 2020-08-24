@@ -36,7 +36,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         public int OriginalShiftId { get; set; }
         public int RequestedShiftId { get; set; }
 
-        public RequestChangeModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper) : base(userManager, context)
+        public RequestChangeModel(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper, string currentPage = "Request Shift Change") : base(userManager, context, currentPage)
         {
             _mapper = mapper;
         }
