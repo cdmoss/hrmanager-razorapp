@@ -9,29 +9,13 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Medicine Hat Food Bank</title>
-    <link href="~/css/site.css" rel="stylesheet" />
     <link href="~/lib/sb-admin/css/styles.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
     <link href='~/fullcalendar/packages/core/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/daygrid/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
     <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://momentjs.com/downloads/moment.js"></script>
-    <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
-    <script src="~/lib/sb-admin/js/scripts.js"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
-    <script src="~/lib/jquery-validate/additional-methods.js"></script>
-    <script src='~/fullcalendar/packages/core/main.js'></script>
-    <script src='~/fullcalendar/packages/interaction/main.js'></script>
-    <script src='~/fullcalendar/packages/daygrid/main.js'></script>
-    <script src='~/fullcalendar/packages/timegrid/main.js'></script>
-    <script src='~/fullcalendar/packages/list/main.js'></script>
-    <script src="~/fullcalendar/vendor/rrule.js"></script>
-    <script src="~/fullcalendar/packages/rrule/main.js"></script>
 
     <style>
         body {
@@ -43,10 +27,26 @@
     </style>
 </head>
 <body class="sb-nav-fixed">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="~/lib/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validate/additional-methods.js"></script>
+    <script src='~/fullcalendar/packages/core/main.js'></script>
+    <script src='~/fullcalendar/packages/interaction/main.js'></script>
+    <script src='~/fullcalendar/packages/daygrid/main.js'></script>
+    <script src='~/fullcalendar/packages/timegrid/main.js'></script>
+    <script src='~/fullcalendar/packages/list/main.js'></script>
+    <script src="~/fullcalendar/vendor/rrule.js"></script>
+    <script src="~/fullcalendar/packages/rrule/main.js"></script>
+
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand" style="font-size: 1.3em;" asp-page="/Main"><img style="height: 50px; width: 50px; margin-right: 10px;" src="~/MHFB.png" alt="MHFB Logo" />MH Food Bank</a><button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
+        <button class="btn btn-link btn-sm order-1 order-lg-0 ml-3" id="sidebarToggle" href="#">
             <i class="fas fa-bars"></i>
         </button>
+        <a class="navbar-brand" style="font-size: 1.3em;" asp-page="/Main"><img style="height: 50px; width: 50px; margin-right: 10px;" src="~/MHFB.png" alt="MHFB Logo" /><span class="site-title"><strong>MH Food Bank</strong></span></a>
         <div class="ml-3" style="font-size: 1.3em; color: #fff;">@Model.CurrentPage</div>
         <ul class="navbar-nav ml-auto ml-md-12">
             <li class="nav-item dropdown">
@@ -57,23 +57,24 @@
             </li>
         </ul>
     </nav>
+
+
     <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+            <nav class="sb-sidenav accordion sb-sidenav-pri" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
+
                         <div class="sb-sidenav-menu-heading">Menu</div>
                         <a class="nav-link" asp-page="/Account/Manage/PersonalInformation" asp-area="Identity">
                             <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
                             My Information
                         </a>
-                        <!--<a class="nav-link" asp-page="/ShiftRequests">
-                        <div class="sb-nav-link-icon"><i class="fas fa-user-circle"></i></div>
-                        </a>-->
                         <a class="nav-link" asp-page="/VolunteerCalendar" asp-area="Volunteer">
-                            <div class="sb-nav-link-icon"><i class="fa fa-calendar" aria-hidden="true"></i></div>
+                            <div class="sb-nav-link-icon"><i class="fa fa-calendar"></i></div>
                             Schedule
                         </a>
+
                         <a class="nav-link" asp-page="/ShiftRequests" asp-area="Volunteer">
                             <div class="sb-nav-link-icon"><i class="fas fa-exchange-alt"></i></div>
                             Shift Change Requests
@@ -90,19 +91,23 @@
                 </div>
             </nav>
         </div>
-        <div id="layoutSidenav_content">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted"><a href="https://www.mhfoodbank.com/">Medicine Hat Food Bank</a> &bull; <a href="mailto:info@mhfoodbank.com">info@mhfoodbank.com</a></div>
+  
+            <div id="layoutSidenav_content">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted"><a href="https://www.mhfoodbank.com/">Medicine Hat Food Bank</a> &bull; <a href="mailto:info@mhfoodbank.com">info@mhfoodbank.com</a></div>
+                        </div>
                     </div>
-                </div>
-            </footer>
+                </footer>
+            </div>
         </div>
-    </div>
 
 </body>
 </html>
+
+
+<script src="~/lib/sb-admin/js/scripts.js"></script>

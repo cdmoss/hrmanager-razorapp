@@ -29,7 +29,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Input.Password"></label>
-                            <input id="pass" asp-for="Input.Password" class="form-control" />
+                            <input onclick="checkCapsLock()" id="pass" asp-for="Input.Password" class="form-control" />
                             <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
@@ -72,4 +72,13 @@
             text.style.display = "none"
         }
     });
+
+    function checkCapsLock() {
+        // If "caps lock" is pressed, display the warning text
+        if (event.getModifierState("CapsLock")) {
+            text.style.display = "inline";
+        } else {
+            text.style.display = "none"
+        }
+    }
 </script>
