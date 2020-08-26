@@ -12,6 +12,13 @@ namespace MHFoodBank.Common
         NotApproved
     }
 
+    public enum UserRole
+    {
+        Admin,
+        Staff,
+        Volunteer
+    }
+
     [Serializable]
     public class VolunteerProfile
     {

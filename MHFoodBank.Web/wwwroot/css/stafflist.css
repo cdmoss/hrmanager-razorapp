@@ -1,0 +1,33 @@
+﻿#container {
+    display: grid;
+    grid-template-columns: 2fr 1fr 4fr 1fr;
+    grid-template-rows: auto;
+    grid-template-areas: "search-name search-button . add-staff";
+    gap: .5rem;
+}
+
+@media (min-width: 1800px) {
+}
+
+@media (max-width: 1369px) {
+
+    #container {
+        display: grid;
+        grid-template-columns: 2fr 1fr 4fr 1fr;
+        grid-template-rows: auto;
+        grid-template-areas: "search-name search-button . add-staff";
+        gap: .5rem;
+    }
+}
+
+#add-staff {
+    grid-area: add-staff;
+}
+
+#search-name {
+    grid-area: search-name;
+}
+
+#search-button {
+    grid-area: search-button;
+}
