@@ -112,7 +112,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                 }
                 else
                 {
-                    return RedirectToPage("/Main", new { area = "Admin" });
+                    return RedirectToPage("/Team/Volunteers", new { area = "Admin" });
                 }
 
             }

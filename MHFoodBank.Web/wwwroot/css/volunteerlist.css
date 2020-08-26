@@ -9,16 +9,7 @@
 @media (min-width: 1800px) {
 }
 
-@media (min-width: 1370px) {
-    .volunteer-table {
-        width: 75%;
-    }
-}
-
 @media (max-width: 1369px) {
-    .volunteer-table {
-        width: 100%
-    }
 
     #container {
         display: grid;
