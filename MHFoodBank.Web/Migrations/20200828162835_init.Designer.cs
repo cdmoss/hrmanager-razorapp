@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200827183331_changed_delete_behavior")]
-    partial class changed_delete_behavior
+    [Migration("20200828162835_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -160,6 +160,9 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
@@ -806,7 +809,8 @@ namespace MHFoodBank.Web.Migrations
                 {
                     b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
                         .WithMany()
-                        .HasForeignKey("OriginalShiftId");
+                        .HasForeignKey("OriginalShiftId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("MHFoodBank.Common.Shift", "RequestedShift")
                         .WithMany()

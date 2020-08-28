@@ -19,7 +19,7 @@ namespace MHFoodBank.Common.Services
 
                 for (int i = 0; i < recurringShift.ConstituentShifts.Count(); i++)
                 {
-                    if (recurringShift.ConstituentShifts[i].StartDate >= currentDate)
+                    if (recurringShift.ConstituentShifts[i].StartDate >= currentDate || recurringShift.ConstituentShifts[i].StartDate <= currentDate)
                     {
                         for (int j = 0; j < i; j++)
                         {
@@ -44,7 +44,7 @@ namespace MHFoodBank.Common.Services
             }
             else
             {
-                if (shift.StartDate >= currentDate)
+                if (shift.StartDate >= currentDate || shift.StartDate <= currentDate)
                 {
                     return true;
                 }
