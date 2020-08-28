@@ -60,7 +60,7 @@ namespace MHFoodBank.Api.Repositories
 
         public async Task<List<Position>> GetAllPositions()
         {
-            return await _context.Positions.Where(x => x.Name != "All").ToListAsync();
+            return await _context.Positions.Where(x => x.Name != "All" && !x.Deleted).ToListAsync();
         }
 
         public Task<Position> UpdatePosition(Position position)

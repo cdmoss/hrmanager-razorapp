@@ -60,7 +60,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             {
                 return await OnGet(statusMessage: "Error: One or more of the fields was not filled in properly.");
             }
-            Positions = await _context.Positions.Where(p => p.Name != "All").ToListAsync();
+            Positions = await _context.Positions.Where(p => p.Name != "All" && !p.Deleted).ToListAsync();
             var currentUser = await _userManager.GetUserAsync(User);
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             _context.Update(currentUser);

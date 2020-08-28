@@ -256,7 +256,7 @@
     document.getElementById('volunteers').innerHTML = options;
 
     let positions = new Array();
-    @foreach (var position in Model.Positions.Where(p => p.Name != "All"))
+    @foreach (var position in Model.Positions.Where(p => p.Name != "All" && !p.Deleted))
     {
         <text>positions.push('</text>@position.Name<text>');</text>
     }

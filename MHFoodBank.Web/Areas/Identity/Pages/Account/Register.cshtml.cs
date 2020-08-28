@@ -67,7 +67,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             // if we want to add external logins later on
             //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            Positions = _context.Positions.Where(p => p.Name != "All").ToList();
+            Positions = _context.Positions.Where(p => p.Name != "All" && !p.Deleted).ToList();
 
             return Page();
         }

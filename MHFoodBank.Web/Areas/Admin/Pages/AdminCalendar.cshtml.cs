@@ -1,4 +1,4 @@
-using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -365,7 +365,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 if (alertsWithChosenShift.Any())
                 {
                     StatusMessage =
-                        "Error: The shift you tried to delete is part of an existing shift request. The shift request must be addressed before the shift can be deleted.";
+                        $"Error: The shift you tried to delete is part of an existing shift request. The shift request must be addressed before the shift can be deleted.          <form method=\"post\"><button class=\"btn btn-primary btn-sm\" asp-page-handler=\"ViewRequest\" asp-route-id\"{alertsWithChosenShift.FirstOrDefault().Id}\">See Request</button></form>";
                 }
                 else
                 {
@@ -723,7 +723,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
 
             // get positions
-            Positions = _context.Positions.ToList();
+            Positions = _context.Positions.Where(p => !p.Deleted).ToList();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
 
             // update status message
@@ -788,16 +788,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             if (selectedPosition != null)
             {
-                if (_context.Shifts.Any(s => s.PositionWorked == selectedPosition))
+                var positionVolunteers = await _context.PositionVolunteers.Where(s => s.Position == selectedPosition).ToListAsync();
+                var shiftsWithPosition = await _context.Shifts.Where(s => s.PositionWorked == selectedPosition).ToListAsync();
+
+                foreach (var pv in positionVolunteers)
                 {
-                    return $"Error: This position cannot be deleted because it is included in some of the currently scheduled shifts.";
+                    pv.Position = null;
                 }
-                else
+
+                foreach (var shift in shiftsWithPosition)
                 {
-                    _context.Remove(selectedPosition);
+                    shift.PositionWorked = null;
+                }
+
+                    selectedPosition.Deleted = true;
                     await _context.SaveChangesAsync();
                     return $"You successfully removed {selectedPosition.Name} from the list of positions.";
-                }
             }
             return $"Error: You must select a position.";
         }

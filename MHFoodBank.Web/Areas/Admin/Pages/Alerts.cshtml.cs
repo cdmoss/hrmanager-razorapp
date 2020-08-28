@@ -69,7 +69,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
                 if (shiftAlert.DismissedByVolunteer)
                 {
-                    shiftAlert.Deleted = true;
+                    _context.Remove(shiftAlert);
                 }
                 else
                 {
@@ -78,7 +78,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
             else
             {
-                selectedAlert.Deleted = true;
+                _context.Remove(selectedAlert);
             }
 
             await _context.SaveChangesAsync();
@@ -90,7 +90,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             var shiftRequests = await _context.ShiftAlerts
                 .Include(p => p.Volunteer)
-                .Where(a => !a.DismissedByAdmin && !a.Deleted )
+                .Where(a => !a.DismissedByAdmin)
                 .ToListAsync();
 
             PendingRequests = _mapper.Map<List<AdminAlertListDto>>(shiftRequests
@@ -102,7 +102,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             var applicationAlerts = await _context.ApplicationAlerts
                 .Include(p => p.Volunteer)
-                .Where(a => !a.Deleted)
                 .ToListAsync();
 
             ApplicationAlerts = _mapper.Map<List<AdminAlertListDto>>(applicationAlerts).ToList();

@@ -233,7 +233,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             DetailsModel = _mapper.Map<VolunteerAdminReadEditDto>(volunteerUserProfile.VolunteerProfile);
             DetailsModel.Email = volunteerUserProfile.Email;
 
-            Positions = _context.Positions.Where(p => p.Name != "All").ToList();
+            Positions = _context.Positions.Where(p => p.Name != "All" && !p.Deleted).ToList();
 
             AvailabilityHandler availability = new AvailabilityHandler();
             OldAvailability = availability.GetSortedAvailability(volunteerUserProfile.VolunteerProfile.Availabilities);

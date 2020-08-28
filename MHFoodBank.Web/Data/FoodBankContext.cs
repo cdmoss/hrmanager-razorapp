@@ -5,6 +5,7 @@ using MHFoodBank.Common;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc;
 
 namespace MHFoodBank.Web.Data
 {
@@ -48,8 +49,10 @@ namespace MHFoodBank.Web.Data
             modelBuilder.Entity<Availability>().HasOne(p => p.Volunteer).WithMany(b => b.Availabilities).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<Shift>().HasOne(p => p.Volunteer).WithMany(b => b.Shifts).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Alert>().HasOne(p => p.Volunteer).WithMany(b => b.Alerts).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<ShiftRequestAlert>().HasOne(p => p.OriginalShift).WithMany().OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Shift>().HasOne(p => p.ParentRecurringShift).WithMany(b => b.ExcludedShifts).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<PositionVolunteer>().HasOne(p => p.Volunteer).WithMany(b => b.Positions).OnDelete(DeleteBehavior.Cascade);
+            modelBuilder.Entity<PositionVolunteer>().HasOne(p => p.Position).WithMany().OnDelete(DeleteBehavior.SetNull);
 
             modelBuilder.Entity<AppUser>()
                 .HasOne(l => l.VolunteerProfile)

@@ -159,6 +159,9 @@ namespace MHFoodBank.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -683,7 +686,8 @@ namespace MHFoodBank.Web.Migrations
                 {
                     b.HasOne("MHFoodBank.Common.Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionId");
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Positions")
@@ -803,7 +807,8 @@ namespace MHFoodBank.Web.Migrations
                 {
                     b.HasOne("MHFoodBank.Common.Shift", "OriginalShift")
                         .WithMany()
-                        .HasForeignKey("OriginalShiftId");
+                        .HasForeignKey("OriginalShiftId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("MHFoodBank.Common.Shift", "RequestedShift")
                         .WithMany()

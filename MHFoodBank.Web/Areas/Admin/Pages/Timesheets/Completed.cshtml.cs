@@ -180,7 +180,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.Position)
                 .ToListAsync();
 
-            Positions = await _context.Positions.ToListAsync();
+            Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
             DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
             Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
             clockedTimeDtos = _mapper.Map(clockedTimeDomainModels, clockedTimeDtos);

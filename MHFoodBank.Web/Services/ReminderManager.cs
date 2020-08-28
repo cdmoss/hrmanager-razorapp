@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using MailKit.Net.Smtp;
 using MHFoodBank.Common;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using System;
 using System.Collections.Generic;
@@ -21,10 +22,12 @@ namespace MHFoodBank.Web.Data
     public class ReminderManager : IReminderManager
     {
         private readonly FoodBankContext _context;
+        private readonly ILogger<ReminderManager> _logger;
 
-        public ReminderManager(FoodBankContext context)
+        public ReminderManager(FoodBankContext context, ILogger<ReminderManager> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         // in the instance that a single shift from a recurring set needs to have its reminder scheduled
@@ -85,29 +88,45 @@ namespace MHFoodBank.Web.Data
         // the datetime of the selected shift will be passed in
         public void CancelReminder(Shift shift, DateTime? shiftDate = null)
         {
-            if (shift is RecurringShift recurringShift)
+            try
             {
-                if (shiftDate == null)
+                if (shift is RecurringShift recurringShift)
                 {
-                    List<Reminder> remindersForRecurringShift = _context.Reminders.Where(r => r.ShiftId == recurringShift.Id).ToList();
-                    foreach (var reminder in remindersForRecurringShift)
+                    if (shiftDate == null)
                     {
-                        BackgroundJob.Delete(reminder.HangfireJobId);
-                        _context.Reminders.Remove(reminder);
+                        List<Reminder> remindersForRecurringShift = _context.Reminders.Where(r => r.ShiftId == recurringShift.Id).ToList();
+                        foreach (var reminder in remindersForRecurringShift)
+                        {
+                            BackgroundJob.Delete(reminder.HangfireJobId);
+                            _context.Reminders.Remove(reminder);
+                        }
+                    }
+                    else
+                    {
+                        Reminder reminderForSelectedShift = _context.Reminders.FirstOrDefault(r => r.ShiftId == recurringShift.Id && r.ShiftDate == shiftDate);
+                        BackgroundJob.Delete(reminderForSelectedShift.HangfireJobId);
+                        _context.Reminders.Remove(reminderForSelectedShift);
                     }
                 }
                 else
                 {
-                    Reminder reminderForSelectedShift = _context.Reminders.FirstOrDefault(r => r.ShiftId == recurringShift.Id && r.ShiftDate == shiftDate);
-                    BackgroundJob.Delete(reminderForSelectedShift.HangfireJobId);
-                    _context.Reminders.Remove(reminderForSelectedShift);
+                    var reminder = _context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shift.StartDate);
+                    if (reminder != null)
+                    {
+                        BackgroundJob.Delete(reminder.HangfireJobId);
+                        _context.Reminders.Remove(reminder);
+                    }
+                    else
+                    {
+                        int shiftId = shift.Id;
+                        _logger.LogWarning($"A reminder for that shift (ShiftID = {shiftId}) was not found");
+                    }
                 }
             }
-            else
+            catch (Exception ex)
             {
-                var reminder = _context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shift.StartDate);
-                BackgroundJob.Delete(reminder.HangfireJobId);
-                _context.Reminders.Remove(reminder);
+                int shiftId = shift.Id;
+                _logger.LogError($"There was an error when attempting to cancel a shift reminder. \n\n Shift ID = {shiftId} \n\n {ex.Message}");
             }
         }
 

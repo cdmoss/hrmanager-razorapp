@@ -131,12 +131,12 @@
 
 </script>
 <div class="ml-5 mr-5">
+    <partial name="_VolunteerStatusMessage" for="StatusMessage" />
     @if (Model.Approved == ApprovalStatus.Approved)
     {
         <div class="row justify-content-start">
             <h5 class="col-md-5 ">Click on a shift to make a shift change request.</h5>
         </div>
-        <partial name="_VolunteerStatusMessage" for="StatusMessage" />
         <hr />
         <form method="post">
             <div id="shift-modal-assigned" class="modal fade">

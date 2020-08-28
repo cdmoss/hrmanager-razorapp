@@ -87,7 +87,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             // get only volunteers
             var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && v.Deleted == false).ToListAsync();
-            Positions = await _context.Positions.ToListAsync();
+            Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 
             return volunteersDomainProfiles;

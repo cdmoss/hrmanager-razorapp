@@ -39,7 +39,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
 
             if (selectedRequestAlert.DismissedByAdmin)
             {
-                selectedRequestAlert.Deleted = true;
+                _context.Remove(selectedRequestAlert);
             }
             else
             {
@@ -75,7 +75,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             var alertDomainModels = await _context.ShiftAlerts
                 .Include(p => p.OriginalShift)
                 .Include(p => p.RequestedShift)
-                .Where(sa => sa.Deleted == false && sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
+                .Where(sa => sa.DismissedByVolunteer == false && sa.Volunteer.Id == currentUser.VolunteerProfile.Id).ToListAsync();
 
             Alerts = _mapper.Map<List<ShiftRequestReadDto>>(alertDomainModels);
 
