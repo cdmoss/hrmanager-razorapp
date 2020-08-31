@@ -56,6 +56,16 @@ function addField(day) {
                 format: "HH:mm"
             });
 
+            $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
+                const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
+                $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
+            });
+
+            $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
+                const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
+                $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+            });
+
             let newRemove = document.getElementById(removeButton);
             newRemove.onclick = removeField.bind(this, newRemove, day);
         }

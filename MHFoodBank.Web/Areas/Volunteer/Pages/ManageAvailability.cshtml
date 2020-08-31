@@ -470,7 +470,7 @@
                         <div class="row ml-1 saturday-field">
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-start" id="dtp-saturday-1-1" data-target-input="nearest">
-                                    <input id="edit-recshift-endtime" name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
+                                    <input name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
                                     <div class="input-group-append" data-target="#dtp-saturday-1-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
                                     </div>
@@ -481,7 +481,7 @@
 
                             <div class="form-group">
                                 <div class="input-group date datetimepicker-time-end" id="dtp-saturday-2-1" data-target-input="nearest">
-                                    <input id="edit-recshift-endtime" name="saturday-2-1" type="text" class="form-control
+                                    <input name="saturday-2-1" type="text" class="form-control
                                    end-time" data-target="#dtp-saturday-2-1" />
                                     <div class="input-group-append" data-target="#dtp-saturday-2-1" data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="far fa-clock"></i></div>
@@ -501,6 +501,7 @@
 </div>
 
 <script src="~/js/availability.js"></script>
+
 <script>
     $(".datetimepicker-time-start").datetimepicker({
         format: "HH:mm"
@@ -512,11 +513,11 @@
 
     $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
         const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
     });
 
     $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
-        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
+        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0];
         $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
     });
 </script>
