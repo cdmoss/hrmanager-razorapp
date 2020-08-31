@@ -18,6 +18,83 @@ namespace MHFoodBank.Common.Dtos
         public string Password { get; set; }
     }
 
+    public class StaffRegisterDto
+    {
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email (Required)")]
+        [Compare("ConfirmEmail", ErrorMessage = "The email and confirmation email do not match.")]
+        public string Email { get; set; }
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Confirm Email (Required)")]
+        public string ConfirmEmail { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [MinLength(8, ErrorMessage = "Your password must be at least 8 characters long")]
+        [RegularExpression(Constants.Regex.password, ErrorMessage = "Your password must contain at least one letter, one number and one special character (@$!%*#?&)")]
+        [Compare("ConfirmPassword", ErrorMessage = "The password and confirmation password do not match.")]
+        public string Password { get; set; }
+        [Required]
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
+        public string ConfirmPassword { get; set; }
+        [Required]
+        [Display(Name = "First name (Required)")]
+        public string FirstName { get; set; }
+        [Required]
+        [Display(Name = "Last name (Required)")]
+        public string LastName { get; set; }
+        [Required]
+        [Display(Name = "Address (Required)")]
+        public string Address { get; set; }
+        [Required]
+        [Display(Name = "City (Required)")]
+        public string City { get; set; }
+        [Required]
+        [Display(Name = "Postal code (Required)")]
+        [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
+        public string PostalCode { get; set; }
+        [Required]
+        [Display(Name = "Main phone (Required)")]
+        [Phone]
+        public string MainPhone { get; set; }
+        [Display(Name = "Alternate phone 1 (Optional)")]
+        [Phone]
+        public string AlternatePhone1 { get; set; }
+        [Display(Name = "Alternate phone 2 (Optional)")]
+        [Phone]
+        public string AlternatePhone2 { get; set; }
+        [Required]
+        [Display(Name = "Birth date (Required)")]
+        [DataType(DataType.Date)]
+        public DateTime Birthdate { get; set; }
+        [Required]
+        [Display(Name = "Full name of emergency contact (Required)")]
+        public string EmergencyFullName { get; set; }
+        [Required]
+        [Display(Name = "Emergency contact phone 1 (Required)")]
+        [Phone]
+        public string EmergencyPhone1 { get; set; }
+        [Display(Name = "Emergency contact phone 2 (Optional)")]
+        [Phone]
+        public string EmergencyPhone2 { get; set; }
+        [Required]
+        [Display(Name = "Relationship to emergency contact (Required)")]
+        public string EmergencyRelationship { get; set; }
+        [Display(Name = "Food safe")]
+        public bool FoodSafe { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? FoodSafeExpiry { get; set; }
+        [Display(Name = "Level")]
+        public string FirstAidCprLevel { get; set; }
+        [Display(Name = "First aid/Cpr")]
+        public bool FirstAidCpr { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime? FirstAidCprExpiry { get; set; }
+        [Display(Name = "Other Certificates")]
+        public string OtherCertificates { get; set; }
+    }
     public class RegisterDto
     {
         [Required]
@@ -185,6 +262,7 @@ namespace MHFoodBank.Common.Dtos
         public IList<WorkExperienceDto> WorkExperiences { get; set; }
         public IList<AvailabilityDto> Availabilities { get; set; }
         public IList<PositionVolunteer> Positions { get; set; }
+        public bool IsStaff { get; set; }
     }
 
     public class VolunteerMinimalDto

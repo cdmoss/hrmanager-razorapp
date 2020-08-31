@@ -3,14 +3,16 @@ using System;
 using MHFoodBank.Web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    partial class FoodBankContextModelSnapshot : ModelSnapshot
+    [Migration("20200828193045_added_isstaff")]
+    partial class added_isstaff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

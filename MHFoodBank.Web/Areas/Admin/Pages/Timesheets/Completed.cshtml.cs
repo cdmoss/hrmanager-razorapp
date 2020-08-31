@@ -174,7 +174,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private async Task PrepareModel()
         {
             var clockedTimeDtos = new List<ClockedTimeReadDto>();
-            var volunteerDomainModels = await _context.VolunteerProfiles.ToListAsync();
+            var volunteerDomainModels = await _context.VolunteerProfiles.Where(v => !v.IsStaff && !v.Deleted).ToListAsync();
             var clockedTimeDomainModels = await _context.ClockedTime
                 .Include(p => p.Volunteer)
                 .Include(p => p.Position)

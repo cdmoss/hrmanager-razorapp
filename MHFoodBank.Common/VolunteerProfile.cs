@@ -102,6 +102,7 @@ namespace MHFoodBank.Common
         public IList<Availability> Availabilities { get; set; }
         public IList<PositionVolunteer> Positions { get; set; }
         public IList<Alert> Alerts { get; set; }
+        public bool IsStaff { get; set; }
         public int UserID { get; set; }
         public AppUser User { get; set; }
 

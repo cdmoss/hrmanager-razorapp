@@ -38,6 +38,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
         public int SelectedVolunteerId { get; set; }
         [BindProperty]
         public string StatusMessage { get; set; }
+        [BindProperty]
+        public StaffRegisterDto NewStaff { get; set; }
 
         public StaffModel(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMapper mapper, FoodBankContext context, string currentPage = "Volunteers") : base(context, currentPage)
         {
@@ -78,13 +80,37 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
             Volunteer.Deleted = true;
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { statusMessage = "You have successfully deleted the selected volunteer." });
+            return RedirectToPage(new { statusMessage = $"You have successfully deleted {Volunteer.FirstName} {Volunteer.LastName} volunteer." });
+        }
+
+        public async Task<IActionResult> OnPostAddNewStaff()
+        {
+            var newStaffProfile = _mapper.Map<VolunteerProfile>(NewStaff);
+            newStaffProfile.IsStaff = true;
+
+            var user = new AppUser
+            {
+                UserName = NewStaff.Email,
+                Email = NewStaff.Email,
+                VolunteerProfile = newStaffProfile
+            };
+
+            var accountCreationResult = await _userManager.CreateAsync(user, NewStaff.Password);
+
+            if (accountCreationResult.Succeeded)
+            {
+                return RedirectToPage(new { statusMessage = $"You have successfully added {newStaffProfile.FirstName} {newStaffProfile.LastName}" });
+            }
+            else
+            {
+                return RedirectToPage(new { statusMessage = $"Something went wrong when adding a the new staff member. Please try again or consult the admin." });
+            }
         }
 
         private async Task<List<VolunteerProfile>> PrepareModel()
         {
             // get only volunteers
-            var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && v.Deleted == false).ToListAsync();
+            var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && v.Deleted == false && v.IsStaff).ToListAsync();
             Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 

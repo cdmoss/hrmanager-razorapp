@@ -357,7 +357,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             List<ShiftRequestAlert> alertsWithChosenShift = await _context.ShiftAlerts
                 .Include(p => p.RequestedShift)
                 .Include(p => p.OriginalShift)
-                .Where(a => a.RequestedShift == shift || a.OriginalShift == shift)
+                .Where(a => (a.RequestedShift == shift || a.OriginalShift == shift) && a.Status == ShiftRequestAlert.RequestStatus.Pending)
                 .ToListAsync();
 
             if (shift != null)
@@ -711,11 +711,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private async Task PrepareModel(string statusMessage)
         {
             // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
-            var volunteerDomainModels = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null).ToListAsync();
-            var shiftDomainModels = _context.Shifts
+            var volunteerDomainModels = await _context.VolunteerProfiles
+                .Include(p => p.Positions)
+                .Where(v => !v.Deleted && v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
+            var shiftDomainModels = await _context.Shifts
                 .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
                 .Include(p => p.PositionWorked)
-                .Where(s => s.Hidden == false).ToList();
+                .Where(s => s.Hidden == false).ToListAsync();
 
             ShiftMapper map = new ShiftMapper(_mapper);
             Shifts = map.MapShiftsToDtos(shiftDomainModels);

@@ -33,6 +33,14 @@ namespace MHFoodBank.Web.Repositories
             try
             {
                 var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.UserID == userId);
+                if (volunteer.ApprovalStatus != ApprovalStatus.Approved)
+                {
+                    return new PunchClockResult
+                    {
+                        Message = $"Your application must be approved before you can clock in.",
+                        Success = false
+                    };
+                }
 
                 var existingClockIn = await _context.ClockedTime.FirstOrDefaultAsync(ct => ct.Volunteer.UserID == userId &&
                                                                              ct.EndTime == null);

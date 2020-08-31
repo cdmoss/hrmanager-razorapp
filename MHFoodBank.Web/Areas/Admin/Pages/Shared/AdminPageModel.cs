@@ -20,7 +20,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
         public AdminPageModel(FoodBankContext context, string currentPage)
         {
             _context = context;
-            NotifcationCount = context.Alerts.Count(a => a.Read == false);
+            NotifcationCount = context.Alerts.Count(a => !a.Read);
             CurrentPage = currentPage;
         }
     }

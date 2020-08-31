@@ -75,7 +75,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
             else
             {
-                // the calendars only display shifts whose archived property == false so this alert won't be displayed
+                // the calendar only displays shifts whose hidden property == false so this alert won't be displayed
                 // this is so the shift will be preserved and the alert can still be viewed in the volunteer's and admin's request archive
                 // a better system may be worth creating to solve this problem
                 requestAlert.OriginalShift.Hidden = true;
@@ -83,6 +83,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 var removedShift = requestAlert.OriginalShift;
 
                 _reminderManager.CancelReminder(removedShift);
+            }
+
+            var alertsThatShareOriginalShift = _context.ShiftAlerts.Where(sa => sa.OriginalShift.Id == requestAlert.OriginalShift.Id);
+            // decline each request that shares the same original shift
+            foreach (var request in alertsThatShareOriginalShift)
+            {
+                _context.Update(request);
+                request.Status = ShiftRequestAlert.RequestStatus.Declined;
+                request.AddressedBy = User.Identity.Name;
+                request.Read = true;
             }
 
             // this is to control the displayed status of the alert in the volunteer inbox
@@ -99,6 +109,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _context.Update(requestAlert);
             // no changes to the requestalert's contents are made upon decline
             requestAlert.Status = ShiftRequestAlert.RequestStatus.Declined;
+            requestAlert.AddressedBy = User.Identity.Name;
             await _context.SaveChangesAsync();
             return RedirectToPage("Alerts", new { statusMessage = "You declined the shift change request" });
         }
@@ -177,6 +188,26 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             requestAlert.RequestedShift.Hidden = true;
 
             requestAlert.AddressedBy = User.Identity.Name;
+
+            await _context.SaveChangesAsync();
+
+            // these are requests whose requested shift was the original shift of the request being changed. Their requested shift must be changed to 
+            // the now updated request's updated original shift
+            var requestsWithOrigAsRequested = _context.ShiftAlerts.Where(sa => sa.RequestedShift.Id == requestAlert.OriginalShift.Id);
+            foreach (var request in requestsWithOrigAsRequested)
+            {
+                _context.Update(request);
+                request.RequestedShift = updatedOriginalShift;
+            }
+
+            // these are requests whose requested shift was the requested shift of the request being changed. Their requested shift must be changed to 
+            // the now updated request's updated requested shift
+            var requestsWithRequestedAsRequested = _context.ShiftAlerts.Where(sa => sa.RequestedShift.Id == requestAlert.RequestedShift.Id);
+            foreach (var request in requestsWithRequestedAsRequested)
+            {
+                _context.Update(request);
+                request.RequestedShift = updatedRequestedShift;
+            }
 
             await _context.SaveChangesAsync();
 

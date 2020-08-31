@@ -20,6 +20,7 @@ namespace MHFoodBank.Api.Profiles
             CreateMap<VolunteerProfile, VolunteerAdminReadEditDto>();
             CreateMap<VolunteerAdminReadEditDto, VolunteerProfile>();
             CreateMap<RegisterDto, VolunteerProfile>();
+            CreateMap<StaffRegisterDto, VolunteerProfile>();
         }
     }
 }
