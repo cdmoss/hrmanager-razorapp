@@ -51,9 +51,10 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             _mapper = mapper;
         }
 
-        public RegisterDto Volunteer { get; set; }
-        public List<ReferenceDto> References { get; set; }
-        public List<WorkExperienceDto> WorkExperiences { get; set; }
+        [BindProperty]
+        public RegisterDto Volunteer { get; set; } = new RegisterDto();
+        public List<ReferenceDto> References { get; set; } = new List<ReferenceDto>() { new ReferenceDto(), new ReferenceDto() };
+        public List<WorkExperienceDto> WorkExperiences { get; set; } = new List<WorkExperienceDto>() { new WorkExperienceDto(), new WorkExperienceDto() };
         public List<Position> Positions { get; set; }
         public string AvailabilityError { get; set; }
         public string EmailError { get; set; }

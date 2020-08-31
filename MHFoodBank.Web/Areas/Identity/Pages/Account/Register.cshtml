@@ -547,14 +547,11 @@
 
     $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
         const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-<<<<<<< HEAD
         $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-=======
         const endTimeInput = endTimeDiv.getElementsByTagName('INPUT')[0];
         let originalDate = moment(endTimeInput.value, 'HH:mm');
         $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
         endTimeInput.value = originalDate.format('HH:mm');
->>>>>>> origin/VolunteerRegisterFix
     });
 
     $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {

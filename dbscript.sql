@@ -15,9 +15,6 @@
 -- Dumping database structure for foodbankhangfire
 CREATE DATABASE IF NOT EXISTS `foodbankhangfire` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
-CREATE DATABASE IF NOT EXISTS foodbankdb /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE foodbankdb;
-
 CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(95) NOT NULL,
     `ProductVersion` varchar(32) NOT NULL,
@@ -49,6 +46,7 @@ CREATE TABLE `AspNetUsers` (
 CREATE TABLE `Positions` (
     `Id` int NOT NULL AUTO_INCREMENT,
     `Name` longtext CHARACTER SET utf8mb4 NULL,
+    `Deleted` tinyint(1) NOT NULL,
     CONSTRAINT `PK_Positions` PRIMARY KEY (`Id`)
 );
 
@@ -136,6 +134,7 @@ CREATE TABLE `VolunteerProfiles` (
     `ConfirmationOfProfessionalDesignation` tinyint(1) NOT NULL,
     `ChildWelfareCheck` tinyint(1) NOT NULL,
     `ApprovalStatus` int NOT NULL,
+    `IsStaff` tinyint(1) NOT NULL,
     `UserID` int NOT NULL,
     `Deleted` tinyint(1) NOT NULL,
     CONSTRAINT `PK_VolunteerProfiles` PRIMARY KEY (`Id`),
@@ -169,7 +168,7 @@ CREATE TABLE `PositionVolunteers` (
     `PositionId` int NULL,
     `Association` int NOT NULL,
     CONSTRAINT `PK_PositionVolunteers` PRIMARY KEY (`Id`),
-    CONSTRAINT `FK_PositionVolunteers_Positions_PositionId` FOREIGN KEY (`PositionId`) REFERENCES `Positions` (`Id`) ON DELETE RESTRICT,
+    CONSTRAINT `FK_PositionVolunteers_Positions_PositionId` FOREIGN KEY (`PositionId`) REFERENCES `Positions` (`Id`) ON DELETE SET NULL,
     CONSTRAINT `FK_PositionVolunteers_VolunteerProfiles_VolunteerId` FOREIGN KEY (`VolunteerId`) REFERENCES `VolunteerProfiles` (`Id`) ON DELETE CASCADE
 );
 
@@ -236,7 +235,7 @@ CREATE TABLE `Alerts` (
     `AddressedBy` longtext CHARACTER SET utf8mb4 NULL,
     CONSTRAINT `PK_Alerts` PRIMARY KEY (`Id`),
     CONSTRAINT `FK_Alerts_VolunteerProfiles_VolunteerId` FOREIGN KEY (`VolunteerId`) REFERENCES `VolunteerProfiles` (`Id`) ON DELETE CASCADE,
-    CONSTRAINT `FK_Alerts_Shifts_OriginalShiftId` FOREIGN KEY (`OriginalShiftId`) REFERENCES `Shifts` (`Id`) ON DELETE RESTRICT,
+    CONSTRAINT `FK_Alerts_Shifts_OriginalShiftId` FOREIGN KEY (`OriginalShiftId`) REFERENCES `Shifts` (`Id`) ON DELETE SET NULL,
     CONSTRAINT `FK_Alerts_Shifts_RequestedShiftId` FOREIGN KEY (`RequestedShiftId`) REFERENCES `Shifts` (`Id`) ON DELETE RESTRICT
 );
 
@@ -300,5 +299,5 @@ CREATE UNIQUE INDEX `IX_VolunteerProfiles_UserID` ON `VolunteerProfiles` (`UserI
 CREATE INDEX `IX_WorkExperiences_VolunteerId` ON `WorkExperiences` (`VolunteerId`);
 
 INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-VALUES ('20200817152729_init', '3.1.3');
+VALUES ('20200831221624_current', '3.1.3');
 

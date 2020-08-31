@@ -26,7 +26,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
-        public Position SearchedPosition { get; set; }
+        public Position SearchedPosition { get; set; } = new Position();
         [BindProperty]
         public Position DefaultPosition { get; set; }
         [BindProperty]

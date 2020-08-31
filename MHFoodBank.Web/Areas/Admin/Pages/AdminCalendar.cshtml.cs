@@ -53,7 +53,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public DateTime RecurrenceSetStartDate { get; set; }
         [BindProperty]
-        public ShiftReadEditDto SelectedShift { get; set; }
+        public ShiftReadEditDto SelectedShift { get; set; } = new ShiftReadEditDto();
         // for choosing a volunteer when editing/adding a shift
         [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
@@ -63,7 +63,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
-        public Position SearchedPosition { get; set; }
+        public Position SearchedPosition { get; set; } = new Position();
         [BindProperty]
         // position that was selected in the edit/delete position window
         public string SelectedPositionName { get; set; }

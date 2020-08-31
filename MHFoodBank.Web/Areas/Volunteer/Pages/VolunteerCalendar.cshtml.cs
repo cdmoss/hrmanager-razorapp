@@ -33,7 +33,7 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
         [BindProperty]
         public DateTime ClickedShiftDate { get; set; }
         [BindProperty]
-        public ShiftReadEditDto SelectedShift { get; set; }
+        public ShiftReadEditDto SelectedShift { get; set; } = new ShiftReadEditDto();
         [BindProperty]
         public ApprovalStatus Approved { get; set; }
 
