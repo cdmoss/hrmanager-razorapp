@@ -1,23 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj": {}
+    "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+    "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
         "projectName": "MHFoodBank.Common",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
-        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\obj\\",
+        "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "D:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -70,25 +71,25 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj": {
+    "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj",
+        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj",
         "projectName": "MHFoodBank.TimeClock.Android",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj",
-        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\obj\\",
+        "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\MHFoodBank.TimeClock.Android.csproj",
+        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.Android\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "D:\\Microsoft\\Xamarin\\NuGet\\"
         ],
         "configFilePaths": [
-          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -102,8 +103,8 @@
         "frameworks": {
           "monoandroid10.0": {
             "projectReferences": {
-              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
-                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
+              "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
+                "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
               }
             }
           }
@@ -128,20 +129,21 @@
         }
       }
     },
-    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
+    "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+        "projectUniqueName": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
         "projectName": "MHFoodBank.TimeClock",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
-        "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
+        "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+        "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\"
+          "D:\\Microsoft\\Xamarin\\NuGet\\",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
         ],
@@ -155,8 +157,8 @@
         "frameworks": {
           "netstandard2.1": {
             "projectReferences": {
-              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
-                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
+              "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+                "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
               }
             }
           }
@@ -202,7 +204,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

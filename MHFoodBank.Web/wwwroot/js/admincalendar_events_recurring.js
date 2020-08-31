@@ -47,7 +47,7 @@ function populateRecurringShiftModal(selectedShift) {
         startDateInput.value = originalDate.format('YYYY-MM-DD');
     });
 
-    $("dtp-recshift-edit-starttime").on("change.datetimepicker", function (e) {
+    $("#dtp-recshift-edit-starttime").on("change.datetimepicker", function (e) {
         const endTimeInput = document.getElementsById('edit-recshift-endtime');
         let originalDate = moment(endTimeInput.value, 'HH:mm');
         $('dtp-recshift-edit-endtime').datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));

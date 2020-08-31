@@ -10,8 +10,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using MHFoodBank.Common;
-using MHFoodBank.Web.Migrations;
 
 namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
 {
