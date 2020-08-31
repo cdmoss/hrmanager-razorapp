@@ -31,6 +31,7 @@
                     var arrDate = new Date(shiftinfo.event.start);
                     var arrEndDate = new Date(shiftinfo.event.end);
                     var isShiftOpen = shiftinfo.event.extendedProps.vol === 'Open';
+                    var isBeforeToday = arrDate < moment();
                     var selectedShiftStartDate = shiftinfo.event.start;
 
                     $('#shift-modal-assigned').modal();
@@ -41,7 +42,11 @@
                     document.getElementById("assigned-shift-endtime").value = moment(arrEndDate).format('HH:mm');
                     document.getElementById("assigned-shift-position").value = shiftinfo.event.extendedProps.posWorked;
 
-                    if (!isShiftOpen) {
+                    if(isBeforeToday) {
+                        $('#btn-requestShiftChange').prop('style', 'display: none');
+                        $('#btn-workThisShift').prop('style', 'display: none');
+                    }
+                    else if (!isShiftOpen) {
                         $('#btn-requestShiftChange').prop('style', 'display: block');
                         $('#btn-workThisShift').prop('style', 'display: none');
                     }
@@ -187,4 +192,3 @@
         <h3>We will email you once your application has been approved, then you will you be able to view the calendar and sign up for shifts.</h3>
     }
 </div>
-

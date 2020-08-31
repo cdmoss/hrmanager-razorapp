@@ -45,7 +45,13 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
                 EmergencyRelationship = currentUser.VolunteerProfile.EmergencyRelationship,
                 EmergencyPhone1 = currentUser.VolunteerProfile.EmergencyPhone1,
                 EmergencyPhone2 = currentUser.VolunteerProfile.EmergencyPhone2,
-                Positions = currentUser.VolunteerProfile.Positions.ToList()
+                Positions = currentUser.VolunteerProfile.Positions.ToList(),
+                FirstAidCpr = currentUser.VolunteerProfile.FirstAidCpr,
+                FirstAidCprExpiry = currentUser.VolunteerProfile.FirstAidCprExpiry,
+                FirstAidCprLevel = currentUser.VolunteerProfile.FirstAidCprLevel,
+                FoodSafe = currentUser.VolunteerProfile.FoodSafe,
+                FoodSafeExpiry = currentUser.VolunteerProfile.FoodSafeExpiry,
+                OtherCertificates = currentUser.VolunteerProfile.OtherCertificates
             };
             StatusMessage = statusMessage;
 
@@ -149,6 +155,18 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             public string EmergencyPhone1 { get; set; }
             [RegularExpression(Constants.Regex.phone, ErrorMessage = "Please enter a valid phone number.")]
             public string EmergencyPhone2 { get; set; }
+            [Display(Name = "Food safe")]
+            public bool FoodSafe { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime? FoodSafeExpiry { get; set; }
+            [Display(Name = "Level")]
+            public string FirstAidCprLevel { get; set; }
+            [Display(Name = "First aid")]
+            public bool FirstAidCpr { get; set; }
+            [DataType(DataType.Date)]
+            public DateTime? FirstAidCprExpiry { get; set; }
+            [Display(Name = "Other Certificates")]
+            public string OtherCertificates { get; set; }
             public List<PositionVolunteer> Positions { get; set; }
         }
     }
