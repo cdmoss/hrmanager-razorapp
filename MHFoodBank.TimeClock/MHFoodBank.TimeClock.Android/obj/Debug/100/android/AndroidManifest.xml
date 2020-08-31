@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.appname">
-  <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.appname" android:installLocation="auto">
+  <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="26" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-  <application android:label="MHFoodBank.TimeClock.Android" android:icon="@mipmap/ic_launcher" android:name="android.app.Application" android:allowBackup="true" android:debuggable="true">
+  <application android:label="MHFoodBank.TimeClock.Android" android:icon="@drawable/mhfb" android:name="android.app.Application" android:allowBackup="true" android:debuggable="true">
     <activity android:configChanges="orientation|screenSize" android:icon="@mipmap/ic_launcher" android:label="MHFoodBank.TimeClock" android:theme="@style/MainTheme" android:name="crc64e565374ed14d8961.MainActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />

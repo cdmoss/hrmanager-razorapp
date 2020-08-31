@@ -5,14 +5,21 @@
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="MHFoodBank.TimeClock.Views.MainPage"
              Title="{Binding Title}">
-
-    <Grid x:Name="mainGrid">
-        <Image x:Name="imgLogo" Source="MHFB.png" />
-        <Label x:Name="lblResult" Text="{Binding Result}" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" TextColor="Black" Margin="20, 0, 20, 0" />
-        <Entry x:Name="txtEmail" Placeholder="Email" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Email}" />
-        <Entry x:Name="txtPass" IsPassword="True" Placeholder="Password" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Password}" />
-        <Picker x:Name="cmbPositions" Title="Select a position" VerticalOptions="Center" Margin="20, 0, 20, 0" ItemsSource="{Binding Positions.Result}" SelectedItem="{Binding Position}" ItemDisplayBinding="{Binding Name}" />
-        <Button x:Name="btnPunch" Text="Punch Clock" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding ClockCommand}" />
+    <Grid>
+        <Grid x:Name="authGrid" BackgroundColor="#FFFFFF" IsVisible="{Binding IsNotAuthenticated}" >
+            <Image x:Name="authImgLogo" Source="MHFB.png" Aspect="AspectFit" />
+            <Label x:Name="authLblResult" Text="{Binding Result}" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" TextColor="Black" Margin="20, 0, 20, 0" />
+            <Entry x:Name="txtEmail" Placeholder="Email" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Email}"/>
+            <Entry x:Name="txtPass" IsPassword="True" Placeholder="Password" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Password}"/>
+            <Button x:Name="btnSignIn" Text="Sign In" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding AuthCommand}"/>
+        </Grid>
+        <Grid x:Name="clockGrid" BackgroundColor="#FFFFFF" IsVisible="{Binding IsAuthenticated}"  >
+            <Image x:Name="clockImgLogo" Source="MHFB.png" Aspect="AspectFit"/>
+            <Label x:Name="clockLblResult" Text="{Binding Result}" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" TextColor="Black" Margin="20, 0, 20, 0" />
+            <Picker x:Name="cmbPositions" Title="Select a position" VerticalOptions="Center" Margin="20, 0, 20, 0" ItemsSource="{Binding Positions.Result}" SelectedItem="{Binding Position}" ItemDisplayBinding="{Binding Name}" />
+            <Button x:Name="btnSignOut" Text="Sign Out" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding SignOutCommand}" />
+            <Button x:Name="btnPunch" Text="Clock In" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding ClockCommand}" />
+        </Grid>
     </Grid>
 
 </ContentPage>

@@ -38,8 +38,15 @@ namespace MHFoodBank.Web.Controllers
             var clockInResult = new PunchClockResult() { Success = false, Message = "Error: Invalid credentials" };
 
             if (userIsAuthenticated)
-            {
-                clockInResult = await _clockedTimeRepo.PunchClock(user.Id, dto.Position);
+            { 
+                if (dto.Position == 0)
+                {
+                    clockInResult = await _clockedTimeRepo.SignInUser(user.Id);
+                }
+                else
+                {
+                    clockInResult = await _clockedTimeRepo.PunchClock(user.Id, dto.Position);
+                }
             }
 
             return Ok(clockInResult);

@@ -654,7 +654,6 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\layout\tabbar.xml
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\layout\toolbar.xml
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\values\styles.xml
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\drawable\mhfb.png
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\uploadflags.txt
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\resolvedassemblies.hash
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\DryIoc.dll
@@ -1801,3 +1800,5 @@ C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_GenerateJavaStubs.stamp
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_GeneratePackageManagerJava.stamp
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\stamp\_ResolveLibraryProjectImports.stamp
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\drawable\mhfb.jpg
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\res\drawable\mhfb.png

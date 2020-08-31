@@ -28,42 +28,69 @@ namespace MHFoodBank.TimeClock.Views
                 _height = height;
                 if (width < height)
                 {
-                    mainGrid.RowDefinitions.Clear();
-                    mainGrid.ColumnDefinitions.Clear();
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.Children.Clear();
-                    mainGrid.Children.Add(imgLogo, 0, 1);
-                    mainGrid.Children.Add(lblResult, 0, 2);
-                    mainGrid.Children.Add(txtEmail, 0, 3);
-                    mainGrid.Children.Add(txtPass, 0, 4);
-                    mainGrid.Children.Add(cmbPositions, 0, 5);
-                    mainGrid.Children.Add(btnPunch, 0, 6);
+                    authGrid.RowDefinitions.Clear();
+                    authGrid.ColumnDefinitions.Clear();
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.Children.Clear();
+                    authGrid.Children.Add(authImgLogo, 0, 1);
+                    authGrid.Children.Add(authLblResult, 0, 2);
+                    authGrid.Children.Add(txtEmail, 0, 3);
+                    authGrid.Children.Add(txtPass, 0, 4);
+                    authGrid.Children.Add(btnSignIn, 0, 5);
+
+                    clockGrid.RowDefinitions.Clear();
+                    clockGrid.ColumnDefinitions.Clear();
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(4, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    clockGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    clockGrid.Children.Clear();
+                    clockGrid.Children.Add(clockImgLogo, 0, 1);
+                    clockGrid.Children.Add(clockLblResult, 0, 2);
+                    clockGrid.Children.Add(cmbPositions, 0, 3);
+                    clockGrid.Children.Add(btnPunch, 0, 4);
+                    clockGrid.Children.Add(btnSignOut, 0, 5);
                 }
                 else
                 {
-                    mainGrid.RowDefinitions.Clear();
-                    mainGrid.ColumnDefinitions.Clear();
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(3, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
-                    mainGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
-                    mainGrid.Children.Clear();
-                    mainGrid.Children.Add(imgLogo, 0, 1);
-                    mainGrid.Children.Add(lblResult, 0, 2);
-                    mainGrid.Children.Add(txtEmail, 0, 3);
-                    mainGrid.Children.Add(txtPass, 0, 4);
-                    mainGrid.Children.Add(cmbPositions, 0, 5);
-                    mainGrid.Children.Add(btnPunch, 0, 6);
+                    authGrid.RowDefinitions.Clear();
+                    authGrid.ColumnDefinitions.Clear();
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(3, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.Children.Clear();
+                    authGrid.Children.Add(authImgLogo, 0, 1);
+                    authGrid.Children.Add(authLblResult, 0, 2);
+                    authGrid.Children.Add(txtEmail, 0, 3);
+                    authGrid.Children.Add(txtPass, 0, 4);
+                    authGrid.Children.Add(btnSignIn, 0, 5);
+
+                    clockGrid.RowDefinitions.Clear();
+                    clockGrid.ColumnDefinitions.Clear();
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(3, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    authGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(2, GridUnitType.Star) });
+                    clockGrid.Children.Clear();
+                    clockGrid.Children.Add(clockImgLogo, 0, 1);
+                    clockGrid.Children.Add(clockLblResult, 0, 2);
+                    clockGrid.Children.Add(cmbPositions, 0, 3);
+                    clockGrid.Children.Add(btnPunch, 0, 4);
+                    clockGrid.Children.Add(btnSignOut, 0, 5);
                 }
             }
         }

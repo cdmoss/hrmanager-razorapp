@@ -15,6 +15,7 @@ namespace MHFoodBank.Web.Repositories
         Task<List<ClockedTime>> GetClockedTimesByVolunteer(int volunteerId);
         Task<ClockedTime> GetClockedTimeById(int id);
         Task<PunchClockResult> PunchClock(int userId, int position);
+        Task<PunchClockResult> SignInUser(int userId);
         Task<bool> UpdateClockedTime(int id);
         Task<bool> DeleteClockedTime(int id);
     }
@@ -73,6 +74,45 @@ namespace MHFoodBank.Web.Repositories
                         Success = true
                     };
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new PunchClockResult
+                {
+                    Message = $"Something went wrong, please try again.",
+                    Success = false
+                };
+            }
+        }
+
+        public async Task<PunchClockResult> SignInUser(int userId)
+        {
+            try
+            {
+                var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.UserID == userId);
+                if (volunteer.ApprovalStatus != ApprovalStatus.Approved)
+                {
+                    return new PunchClockResult
+                    {
+                        Message = $"Your application must be approved before you can clock in.",
+                        Success = false
+                    };
+                }
+
+                var existingClockIn = await _context.ClockedTime.Include(p => p.Position).FirstOrDefaultAsync(ct => ct.Volunteer.UserID == userId &&
+                                                                             ct.EndTime == null);
+
+                if (existingClockIn != null)
+                {
+                    return await PunchClock(userId, existingClockIn.Position.Id);
+                }
+
+                return new PunchClockResult
+                {
+                    Message = $"Welcome {volunteer.FirstName}! You can select the position you want to clock in for, or sign out.",
+                    Success = true
+                };
             }
             catch (Exception ex)
             {
