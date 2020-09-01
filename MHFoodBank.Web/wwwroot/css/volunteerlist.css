@@ -1,8 +1,8 @@
 ﻿#container {
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr 5fr;
+    grid-template-columns: 2fr 2fr 1fr 2fr 3fr;
     grid-template-rows: auto;
-    grid-template-areas: "search-name search-position search-button .";
+    grid-template-areas: "search-name search-position search-button . status-radios";
     gap: .5rem;
 }
 
@@ -13,9 +13,9 @@
 
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr 1fr;
+        grid-template-columns: 2fr 2fr 1fr 3fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button";
+        grid-template-areas: "search-name search-position search-button status-radios";
         gap: .5rem;
     }
 }
@@ -30,4 +30,8 @@
 
 #search-button {
     grid-area: search-button;
+}
+
+#status-radios {
+    grid-area: status-radios;
 }

@@ -43,6 +43,9 @@
                 <label id="not-approved" class="btn btn-reverse-primary">
                     <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="2" /> Not Approved
                 </label>
+                <label id="deleted" class="btn btn-reverse-danger">
+                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="3" /> Deleted
+                </label>
             </div>
             }
 
@@ -816,6 +819,9 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
             break;
         case 2:
             $("#not-approved").addClass("active");
+            break;
+        case 3:
+            $("#deleted").addClass("active");
             break;
     }
 </script>

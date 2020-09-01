@@ -271,6 +271,7 @@ namespace MHFoodBank.Common.Dtos
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string FullNameWithID { get { return Id + " " + FirstName + " " + LastName; } }
+        public bool Deleted { get; set; }
     }
 
     public class VolunteerReadEditDto

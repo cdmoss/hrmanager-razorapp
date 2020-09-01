@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MHFoodBank.Web.Migrations
 {
     [DbContext(typeof(FoodBankContext))]
-    [Migration("20200831221624_current")]
+    [Migration("20200901193002_current")]
     partial class current
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -350,9 +350,6 @@ namespace MHFoodBank.Web.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("CriminalRecordCheck")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("Deleted")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("DrivingAbstract")

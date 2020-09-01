@@ -5,20 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MHFoodBank.Common
 {
-
-    public enum ApprovalStatus { 
-        Approved,
-        Pending,
-        NotApproved
-    }
-
-    public enum UserRole
-    {
-        Admin,
-        Staff,
-        Volunteer
-    }
-
     [Serializable]
     public class VolunteerProfile
     {
@@ -108,6 +94,5 @@ namespace MHFoodBank.Common
 
         [NotMapped]
         public string FullNameWithID { get { return Id + " " + FirstName + " " + LastName; } }
-        public bool Deleted { get; set; }
     }
 }

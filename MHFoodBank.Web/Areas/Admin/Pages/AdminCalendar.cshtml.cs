@@ -713,7 +713,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
             var volunteerDomainModels = await _context.VolunteerProfiles
                 .Include(p => p.Positions)
-                .Where(v => !v.Deleted && v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
+                .Where(v => v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
             var shiftDomainModels = await _context.Shifts
                 .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
                 .Include(p => p.PositionWorked)

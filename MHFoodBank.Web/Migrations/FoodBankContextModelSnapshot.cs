@@ -350,9 +350,6 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<bool>("CriminalRecordCheck")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("DrivingAbstract")
                         .HasColumnType("tinyint(1)");
 

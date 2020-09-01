@@ -216,8 +216,7 @@ namespace MHFoodBank.Web.Migrations
                     ChildWelfareCheck = table.Column<bool>(nullable: false),
                     ApprovalStatus = table.Column<int>(nullable: false),
                     IsStaff = table.Column<bool>(nullable: false),
-                    UserID = table.Column<int>(nullable: false),
-                    Deleted = table.Column<bool>(nullable: false)
+                    UserID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

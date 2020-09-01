@@ -11,6 +11,7 @@
 using System;
 using System.Reflection;
 
+[assembly: Microsoft.AspNetCore.Identity.UI.UIFrameworkAttribute("Bootstrap4")]
 [assembly: Microsoft.Extensions.Configuration.UserSecrets.UserSecretsIdAttribute("aspnet-FoodBankAdmin-834D6734-6028-4CB6-B9CB-396D0F3EBA42")]
 [assembly: System.Reflection.AssemblyCompanyAttribute("MHFoodBank.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]

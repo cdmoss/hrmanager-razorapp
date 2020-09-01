@@ -23,6 +23,20 @@
 
     <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
     <button id="add-staff" type="button" class="btn btn-sm btn-primary" onclick="$('#add-staff-modal').modal();">Add Staff Member</button>
+    <div id="status-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label id="approved" class="btn btn-reverse-primary">
+            <input type="checkbox" asp-for="ApprovedFilter" onchange="changeStatus(this)" value="@Model.ApprovedFilter" /> Approved
+        </label>
+        <label id="pending" class="btn btn-reverse-primary">
+            <input type="checkbox" asp-for="PendingFilter" onchange="changeStatus(this)" value="@Model.PendingFilter" /> Pending
+        </label>
+        <label id="notapproved" class="btn btn-reverse-primary">
+            <input type="checkbox" asp-for="NotApprovedFilter" onchange="changeStatus(this)" value="@Model.NotApprovedFilter" /> Not Approved
+        </label>
+        <label id="deleted" class="btn btn-reverse-primary">
+            <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Deleted
+        </label>
+    </div>
 </form>
 <br/>
 @if (@Model.Volunteers.Count() > 0)
@@ -43,7 +57,7 @@
         @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
         {
             <tr>
-                <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="NewStaff-id-@volunteer.Id" /></td>
+                <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
                 <td>@volunteer.LastName</td>
 
                 <td>
@@ -59,17 +73,6 @@
         }
     </table>
 }
-
-<script>
-
-    document.getElementById('staff-tab').classList.add('active');
-    document.getElementById('volunteer-tab').classList.remove('active');
-
-    function openDeleteModal(id) {
-        $('#delete-volunteer-prompt').modal();
-        document.getElementById("volunteer-id-modal").value = document.getElementById("volunteer-id-" + id).value;
-    }
-</script>
 
 <form method="post">
     <div id="delete-volunteer-prompt" class="modal fade">
@@ -266,4 +269,25 @@
     </div>
 </form>
 
+<script>
+    if (@Model.ApprovedFilter) {
+        $("#approved").addClass("active");
+    }
+    if (@Model.PendingFilter) {
+        $("#pending").addClass("active");
+    }
+    if (@Model.NotApprovedFilter) {
+        $("#notapproved").addClass("active");
+    }
+    if (@Model.DeletedFilter) {
+        $("#deleted").addClass("active");
+    }
 
+    document.getElementById('volunteer-tab').classList.remove('active');
+    document.getElementById('staff-tab').classList.add('active');
+
+    function openDeleteModal(id) {
+        $('#delete-volunteer-prompt').modal();
+        document.getElementById("volunteer-id-modal").value = document.getElementById("volunteer-id-" + id).value;
+    }
+</script>

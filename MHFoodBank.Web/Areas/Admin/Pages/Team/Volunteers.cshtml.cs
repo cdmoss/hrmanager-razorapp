@@ -25,6 +25,14 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
 
+        [BindProperty]
+        public bool ApprovedFilter { get; set; }
+        [BindProperty]
+        public bool PendingFilter { get; set; }
+        [BindProperty]
+        public bool NotApprovedFilter { get; set; }
+        [BindProperty]
+        public bool DeletedFilter { get; set; }
         [BindProperty(SupportsGet = true)] 
         public List<VolunteerMinimalDto> Volunteers { get; set; }
         public VolunteerProfile Volunteer { get; set; }
@@ -47,11 +55,41 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _mapper = mapper;
         }
 
-        public async Task OnGet(string statusMessage)
+        public async Task OnGet(
+            string statusMessage, 
+            bool approvedFilter = true, 
+            bool pendingFilter = true, 
+            bool notApprovedFilter = true, 
+            bool deletedFilter = true)
         {
             StatusMessage = statusMessage;
             var volunteerDomainModels = await PrepareModel();
-            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
+
+            var newList = new List<VolunteerProfile>();
+
+            foreach (var volunteer in volunteerDomainModels)
+            {
+                bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter;
+                bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter;
+                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Deleted) == DeletedFilter;
+
+                if (passedapproved || passedpending || passednotapproved || passeddeleted)
+                {
+                    newList.Add(volunteer);
+                }
+            }
+
+            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(newList);
+            ApprovedFilter = approvedFilter;
+            PendingFilter = pendingFilter;
+            NotApprovedFilter = notApprovedFilter;
+            DeletedFilter = deletedFilter;
+        }
+
+        public async Task OnPost()
+        {
+            await OnGet("", ApprovedFilter, PendingFilter, NotApprovedFilter, DeletedFilter);
         }
 
         public async Task OnPostSearch()
@@ -77,7 +115,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 shift.CreateDescription();
             }
 
-            Volunteer.Deleted = true;
+            Volunteer.ApprovalStatus = ApprovalStatus.Deleted;
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = "You have successfully deleted the selected volunteer." });
@@ -86,7 +124,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private async Task<List<VolunteerProfile>> PrepareModel()
         {
             // get only volunteers
-            var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && v.Deleted == false && !v.IsStaff).ToListAsync();
+            var volunteersDomainProfiles = await _context.VolunteerProfiles.Include(p => p.Positions).Where(v => v != null && !v.IsStaff).ToListAsync();
             Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 
