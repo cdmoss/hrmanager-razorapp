@@ -1,7 +1,16 @@
 ﻿@page
 @model ConfirmEmailModel
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = "Email confirmation - Medicine Hat Food Bank";
 }
 
-<h1>@ViewData["Title"]</h1>
+    <div class="text-center">
+        <div style="height: 20vh" class="text-center">
+            <img class="h-100 mt-2 mb-2" src="~/MHFB.png" alt="MHFB Logo" />
+        </div>
+        <p>@Model.StatusMessage</p>
+        <br />
+        <form method="post">
+            <button class="btn btn-primary" asp-route-id="@Model.UserId" asp-page-handler="ResendEmail">Resend Email</button>
+        </form>
+    </div>

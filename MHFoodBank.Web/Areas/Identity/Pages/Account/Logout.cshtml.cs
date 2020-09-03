@@ -15,6 +15,9 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
     [AllowAnonymous]
     public class LogoutModel : PageModel
     {
+        public string ErrorMessage { get; set; }
+
+
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
@@ -24,11 +27,20 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             _logger = logger;
         }
 
-        public async Task<IActionResult> OnGet(string returnUrl = null)
+        public async Task<IActionResult> OnGet()
         {
-            await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
-            return RedirectToPage("/Account/Login");
+            try
+            {
+                await _signInManager.SignOutAsync();
+                _logger.LogInformation("User logged out.");
+                return RedirectToPage("/Account/Login");
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "There was an error logging you out, please contact an administrator if this problem persists.";
+                _logger.LogError("User failed to log out. Error: " + ex.Message);
+                return Page();
+            }
         }
     }
 }

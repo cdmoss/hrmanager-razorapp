@@ -5,11 +5,12 @@
     ViewData["Title"] = "Member Sign In";
 }
     <div class="mt-5">
-        @if (Model.NewUser)
+        @if (!String.IsNullOrEmpty(Model.StatusMessage))
         {
-            <div class="text-center alert alert-success alert-dismissible">
-                <a href="#" class="close" data-dismiss="requestAlert" aria-label="close">&times;</a>
-                Thanks for applying! We will review your information and email you to tell you whether you've been approved.
+            var statusMessageClass = Model.StatusMessage.StartsWith("Error") ? "danger" : "success";
+            <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                @Model.StatusMessage
             </div>
         }
         <div style="height: 20vh" class="text-center">
@@ -31,7 +32,7 @@
                         </div>
                         <div class="form-group">
                             <label asp-for="Input.Password"></label>
-                            <input onclick="checkCapsLock()" id="pass" asp-for="Input.Password" class="form-control" />
+                            <input onclick="checkCapsLock()" asp-for="Input.Password" class="form-control pass" />
                             <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
@@ -48,7 +49,7 @@
                         <hr />
                         <div class="form-group text-center">
                             <h3 class="mb-4">Don't have an account?</h3>
-                            <a asp-page="./Register" class="btn btn-light w-100" asp-route-returnUrl="@Model.ReturnUrl">Apply for a volunteer position</a>
+                            <a asp-page="./Register" class="btn btn-light w-100">Apply for a volunteer position</a>
                         </div>
                     </form>
                 </section>
@@ -56,30 +57,4 @@
         </div>
     </div>
 
-<script>
-    // Get the input field
-    var input = document.getElementById("pass");
-
-    // Get the warning text
-    var text = document.getElementById("text");
-
-    // When the user presses any key on the keyboard, run the function
-    input.addEventListener("keyup", function (event) {
-
-        // If "caps lock" is pressed, display the warning text
-        if (event.getModifierState("CapsLock")) {
-            text.style.display = "block";
-        } else {
-            text.style.display = "none"
-        }
-    });
-
-    function checkCapsLock() {
-        // If "caps lock" is pressed, display the warning text
-        if (event.getModifierState("CapsLock")) {
-            text.style.display = "inline";
-        } else {
-            text.style.display = "none"
-        }
-    }
-</script>
+    <script src="~/js/caplock_check.js"></script>

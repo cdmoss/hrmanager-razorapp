@@ -26,7 +26,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
 
-        public LoginModel(SignInManager<AppUser> signInManager, 
+        public LoginModel(SignInManager<AppUser> signInManager,
             RoleManager<IdentityRole<int>> roleManager,
             ILogger<LoginModel> logger,
             UserManager<AppUser> userManager)
@@ -39,15 +39,9 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
-
-        public IList<AuthenticationScheme> ExternalLogins { get; set; }
-
-        public string ReturnUrl { get; set; }
-
-        [TempData]
-        public string ErrorMessage { get; set; }
+        public string LoginError { get; set; }
         [BindProperty]
-        public bool NewUser { get; set; }
+        public string StatusMessage { get; set; }
 
         public class InputModel
         {
@@ -59,83 +53,67 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             public string Password { get; set; }
         }
 
-        public async Task OnGetAsync(bool newUser, string returnUrl = null)
+        public async Task OnGetAsync(string statusMessage = null)
         {
-            AddErrorsOnGet();
-
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            //ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-
-            ReturnUrl = returnUrl;
-            NewUser = newUser;
+            StatusMessage = statusMessage;
         }
 
-        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostAsync()
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
-
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                return await TryLogin();
+                try
+                {
+                    return await TryLogin();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    ModelState.AddModelError(string.Empty, "Something went wrong with the login process, please try again or contact an administrator.");
+                }
             }
 
             // If we got this far, something failed, redisplay form
             return Page();
         }
 
-        private void AddErrorsOnGet()
+        private async Task<IActionResult> TryLogin()
         {
-            if (!string.IsNullOrEmpty(ErrorMessage))
-            {
-                ModelState.AddModelError(string.Empty, ErrorMessage);
-            }
-        }
-
-        private async Task<IActionResult> TryLogin(string returnUrl = null)
-        {
-            var user = await _userManager.FindByNameAsync(Input.Email);
-
             var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, false, lockoutOnFailure: false);
+
             if (result.Succeeded)
             {
-                bool UserIsVolunteer = await CheckIfUserIsVolunteer(user);
-
-                if (UserIsVolunteer)
-                {
-                    return RedirectToPage("/Welcome", new {area = "Volunteer"});
-                }
-                else
-                {
-                    return RedirectToPage("/Team/Volunteers", new { area = "Admin" });
-                }
-
-            }
-            if (result.RequiresTwoFactor)
-            {
-                return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = false });
+                return await RedirectUserBasedOnRole();
             }
 
-            if (result.IsLockedOut)
-            {
-                _logger.LogWarning("User account locked out.");
-                return RedirectToPage("./Lockout");
-            }
-            else
-            {
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                return Page();
-            }
+            ModelState.AddModelError(String.Empty, "Invalid login attempt. Make sure you've confirmed your email. (Check your spam/junk folder)");
+            return Page();
         }
         private async Task<bool> CheckIfUserIsVolunteer(AppUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
             return roles.Any(r => r == "Volunteer");
         }
+
+        private async Task<IActionResult> RedirectUserBasedOnRole()
+        {
+            var user = await _userManager.FindByNameAsync(Input.Email);
+            bool UserIsVolunteer = await CheckIfUserIsVolunteer(user);
+
+            if (UserIsVolunteer)
+            {
+                return RedirectToPage("/Welcome", new { area = "Volunteer" });
+            }
+            else
+            {
+                return RedirectToPage("/Team/Volunteers", new { area = "Admin" });
+            }
+        }
+
     }
 }

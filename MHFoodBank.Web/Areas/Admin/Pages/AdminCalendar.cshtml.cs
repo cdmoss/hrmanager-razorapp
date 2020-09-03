@@ -7,13 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using MimeKit;
 using MHFoodBank.Web.Areas.Admin.Pages.Shared;
 using MHFoodBank.Web.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using MimeKit;
 using Hangfire.AspNetCore;
 using Hangfire;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +31,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
     {
         private readonly IReminderManager _reminderManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly IEmailSender _emailSender;
         public enum RecurringShiftEditType
         {
             Single,
@@ -98,11 +99,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         private readonly IMapper _mapper;
 
-        public AdminCalendar(FoodBankContext context, UserManager<AppUser> userManager, IMapper mapper, IReminderManager reminderManager, string currentPage = "Scheduling") : base(context, currentPage)
+        public AdminCalendar(FoodBankContext context, IEmailSender emailSender, UserManager<AppUser> userManager, IMapper mapper, IReminderManager reminderManager, string currentPage = "Scheduling") : base(context, currentPage)
         {
             _mapper = mapper;
             _reminderManager = reminderManager;
             _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         public async Task<IActionResult> OnGet(string statusMessage = null)
@@ -530,12 +532,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, searchedPosition);
         }
 
-        //public async Task<IActionResult> OnPostSendNotifications()
-        //{
-        //    await PrepareModel(null);
-        //
-        //    return await SendNotifications();
-        //}
+        public async Task<IActionResult> OnPostSendNotifications()
+        {
+            await PrepareModel(null);
+
+            return await SendNotifications();
+        }
 
         private async Task<Shift> MapShiftData(ShiftReadEditDto dto, Shift shift)
         {
@@ -592,48 +594,51 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return shift;
         }
 
-        //private async Task<IActionResult> SendNotifications()
-        //{
-        //    // if there are no shifts in db, redirect immediately
-        //    if (!_context.Shifts.Any())
-        //    {
-        //        return RedirectToPage();
-        //    }
-        //
-        //    //// set up smtp client
-        //    //SmtpClient client = new SmtpClient();
-        //    //await client.ConnectAsync("smtp.gmail.com", 587);
-        //
-        //    // get all volunteers
-        //    List<AppUser> volunteersUserAccounts = await _context.Users.Where(u => u.VolunteerProfile != null).ToListAsync();
-        //
-        //    // for each volunteer, prepare a list of shifts that agrees with their availability
-        //    foreach (var volunteer in volunteersUserAccounts)
-        //    {
-        //        // if this volunteer has no availabilities, skip them
-        //        if (!volunteer.VolunteerProfile.Availabilities.Any())
-        //        {
-        //            continue;
-        //        }
-        //
-        //        await _context.Entry(volunteer.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
-        //        List<Shift> workableShifts = GetWorkableShiftsFromAvailabilites(volunteer.VolunteerProfile.Availabilities);
-        //        bool noWorkableShifts = !workableShifts.Any();
-        //
-        //        // skip the volunteer if they can't work any shifts
-        //        if (noWorkableShifts)
-        //        {
-        //            continue;
-        //        }
-        //
-        //        // send them an email notification if there are shifts they can work
-        //        MimeMessage email = CreateEmailMessage(volunteer, workableShifts);
-        //        await client.SendAsync(email);
-        //    }
-        //    await client.DisconnectAsync(true);
-        //
-        //    return RedirectToPage();
-        //}
+        private async Task<IActionResult> SendNotifications()
+        {
+            // if there are no shifts in db, redirect immediately
+            if (!_context.Shifts.Any())
+            {
+                return RedirectToPage();
+            }
+
+            // get all volunteers
+            List<AppUser> volunteersUserAccounts = await _context.Users.Where(u => u.VolunteerProfile != null).ToListAsync();
+
+            // for each volunteer, prepare a list of shifts that agrees with their availability
+            foreach (var volunteer in volunteersUserAccounts)
+            {
+                // if this volunteer has no availabilities, skip them
+                if (!volunteer.VolunteerProfile.Availabilities.Any())
+                {
+                    continue;
+                }
+
+                await _context.Entry(volunteer.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
+                List<Shift> workableShifts = GetWorkableShiftsFromAvailabilites(volunteer.VolunteerProfile.Availabilities);
+                bool noWorkableShifts = !workableShifts.Any();
+
+                // skip the volunteer if they can't work any shifts
+                if (noWorkableShifts)
+                {
+                    continue;
+                }
+
+                string workableShiftsStr = "";
+
+                foreach (var shift in workableShifts)
+                {
+                    workableShiftsStr += ">   " + shift.StartDate.ToString("dddd, dd MMMM yyyy") + " - " + shift.StartTime + " until " + shift.EndTime + "\n";
+                }
+
+                await _emailSender.SendEmailAsync(volunteer.Email, "MHFB - Available open shifts", $"Hello { volunteer.VolunteerProfile.FirstName} { volunteer.VolunteerProfile.LastName}!\n\n"
+                 + $"According to your availability, you can volunteer for some currently open shifts:\n\n" +
+                           workableShiftsStr + "\nIf you can attend any of these shifts, sign up for them on your online account at <websitename> or email us at <email>.\n\n" +
+                           "Thanks again for volunteering at the Medicine Hat Food Bank,");
+
+            }
+            return RedirectToPage();
+        }
 
         private List<Shift> GetWorkableShiftsFromAvailabilites(IList<Availability> availabilities)
         {
@@ -679,33 +684,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
             return null;
         }
-
-        // TODO: automate this to take place every <configured time period>
-        private MimeMessage CreateEmailMessage(AppUser volunteer, List<Shift> workableShifts)
-        {
-            string workableShiftsStr = "";
-
-            foreach (var shift in workableShifts)
-            {
-                workableShiftsStr += ">   " + shift.StartDate.ToString("dddd, dd MMMM yyyy") + " - " + shift.StartTime + " until " + shift.EndTime + "\n";
-            }
-
-            MimeMessage message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Chase", "chase.mossing2@mymhc.ca"));
-            message.To.Add(new MailboxAddress(volunteer.VolunteerProfile.FirstName, volunteer.Email));
-            message.Subject = "You may be able to volunteer for some new shifts!";
-            message.Body = new TextPart("plain")
-            {
-                Text = $"Hello {volunteer.VolunteerProfile.FirstName} {volunteer.VolunteerProfile.LastName}!\n\n" +
-                       $"According to your availability, you can volunteer for some currently open shifts:\n\n" +
-                       workableShiftsStr + "\nIf you can attend any of these shifts, sign up for them on your online account at <websitename> or email us at <email>.\n\n" +
-                       "Thanks again for volunteering at the Medicine Hat Food Bank,"
-            };
-
-            return message;
-        }
-
-
 
         private async Task PrepareModel(string statusMessage)
         {

@@ -14,6 +14,7 @@ using AutoMapper;
 using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
 using MHFoodBank.Api.Repositories;
+using MHFoodBank.Web.Services;
 
 namespace MHFoodBank.Web
 {
@@ -36,7 +37,7 @@ namespace MHFoodBank.Web
             });
 
             services.AddIdentity<AppUser, IdentityRole<int>>(options =>
-                    options.SignIn.RequireConfirmedAccount = false)
+                    options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<FoodBankContext>()
                 .AddDefaultUI()
                 .AddDefaultTokenProviders();
@@ -58,8 +59,13 @@ namespace MHFoodBank.Web
                         }
                     )));
 
+            services.AddOptions();
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
             services.AddHangfireServer();
             services.AddScoped<IReminderManager, ReminderManager>();
+            services.AddScoped<IEmailSender, MailKitEmailSender>();
+            services.AddScoped<IEmailConfirm, EmailConfirmation>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
