@@ -60,19 +60,24 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             bool approvedFilter = true, 
             bool pendingFilter = true, 
             bool notApprovedFilter = true, 
-            bool deletedFilter = true)
+            bool deletedFilter = false)
         {
             StatusMessage = statusMessage;
             var volunteerDomainModels = await PrepareModel();
 
             var newList = new List<VolunteerProfile>();
 
+            ApprovedFilter = approvedFilter;
+            PendingFilter = pendingFilter;
+            NotApprovedFilter = notApprovedFilter;
+            DeletedFilter = deletedFilter;
+
             foreach (var volunteer in volunteerDomainModels)
             {
-                bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter;
-                bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter;
-                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter;
-                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Deleted) == DeletedFilter;
+                bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter && ApprovedFilter;
+                bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter && PendingFilter;
+                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter && NotApprovedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Deleted) == DeletedFilter && DeletedFilter;
 
                 if (passedapproved || passedpending || passednotapproved || passeddeleted)
                 {
@@ -81,10 +86,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
 
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(newList);
-            ApprovedFilter = approvedFilter;
-            PendingFilter = pendingFilter;
-            NotApprovedFilter = notApprovedFilter;
-            DeletedFilter = deletedFilter;
         }
 
         public async Task OnPost()

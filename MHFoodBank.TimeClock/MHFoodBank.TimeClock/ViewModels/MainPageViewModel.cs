@@ -17,10 +17,8 @@ namespace MHFoodBank.TimeClock.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {
-        //private const string punchClockUrl = "https://volunteer.lumnet.ca/timeclock/punch-clock";
-        //private const string getPositionsUrl = "https://volunteer.lumnet.ca/positions/all";
-        private const string punchClockUrl = "http://10.0.2.2:5000/timeclock/punch-clock";
-        private const string getPositionsUrl = "http://10.0.2.2:5000/positions/all";
+        private const string punchClockUrl = "https://volunteer.lumnet.ca/timeclock/punch-clock";
+        private const string getPositionsUrl = "https://volunteer.lumnet.ca/positions/all";
         private readonly HttpClient _client;
         private readonly Timer _resultTimer;
 

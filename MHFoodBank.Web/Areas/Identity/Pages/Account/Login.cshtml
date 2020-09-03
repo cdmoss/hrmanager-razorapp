@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Member Log in";
+    ViewData["Title"] = "Member Sign In";
 }
     <div class="mt-5">
         @if (Model.NewUser)
@@ -15,7 +15,9 @@
         <div style="height: 20vh" class="text-center">
             <img class="h-100" src="~/MHFB.png" alt="MHFB Logo" />
         </div>
-        <h1 class="text-center">@ViewData["Title"]</h1>
+        <br />
+        <br />
+        <h2 class="text-center">@ViewData["Title"]</h2>
         <div class="row justify-content-center">
             <div class="col-md-4 text-left">
                 <section>
@@ -34,20 +36,19 @@
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                         <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary w-100">Log in</button>
+                            <button type="submit" style="background-color: #8CB436; border: none" class="btn btn-primary w-100">Sign in</button>
                         </div>
                         <div class="form-group text-center">
                             <p>
-                                <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                                @*<a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>*@
+                                <a class="btn btn-light w-100" asp-page="./ForgotPassword">Forgot your password?</a>
                             </p>
                         </div>
                         <br />
+                        <hr />
                         <div class="form-group text-center">
-                            <h3>Don't have an account?</h3>
-                            <hr />
-                            <p>
-                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Apply for a volunteer position</a>
-                            </p>
+                            <h3 class="mb-4">Don't have an account?</h3>
+                            <a asp-page="./Register" class="btn btn-light w-100" asp-route-returnUrl="@Model.ReturnUrl">Apply for a volunteer position</a>
                         </div>
                     </form>
                 </section>

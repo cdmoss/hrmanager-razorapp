@@ -41,7 +41,7 @@
             <label id="notapproved" class="btn btn-reverse-primary">
                 <input type="checkbox" asp-for="NotApprovedFilter" onchange="changeStatus(this)" value="@Model.NotApprovedFilter" /> Not Approved
             </label>
-            <label id="deleted" class="btn btn-reverse-primary">
+            <label id="deleted" class="btn btn-reverse-danger">
                 <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Deleted
             </label>
         </div>
@@ -51,33 +51,44 @@
     {
         <table class="table">
             <colgroup>
-                <col style="width: 20%"/>
-                <col style="width: 65%"/>
-                <col style="width: 15%"/>
+                <col style="width: 20%" />
+                <col style="width: 20%" />
+                <col style="width: 45%" />
+                <col style="width: 15%" />
             </colgroup>
             <thead>
                 <tr>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
             {
-                <tr @if (volunteer.Deleted) { <text>style="background-color: #d3d3d3"</text>} else { <text></text> }>
-                    <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
-                    <td>@volunteer.LastName</td>
-
-                    <td>
-                        <div class="btn-group w-100">
-                            <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
-                            @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin") && !volunteer.Deleted)
-                            {
-                                <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
-                            }
-                        </div>
-                    </td>
-                </tr>
+        <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Deleted) { <text> style="background-color: #ffcccb" </text> } else if (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) { <text> style="background-color: #d3d3d3" </text>  } else if (volunteer.ApprovalStatus == ApprovalStatus.Pending) { <text> style="background-color: #FFF3CD" </text>  } else { <text></text> }>
+            <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
+            <td>@volunteer.LastName</td>
+            <td>
+                @if (Convert.ToInt32(volunteer.ApprovalStatus) == 2)
+                {
+                    <text>Not Approved</text>
+                }
+                else
+                {
+                    @Enum.GetName(typeof(ApprovalStatus), volunteer.ApprovalStatus)
+                }
+            </td>
+            <td>
+                <div class="btn-group w-100">
+                    <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
+                    @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin") && volunteer.ApprovalStatus != ApprovalStatus.Deleted)
+                    {
+                        <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
+                    }
+                </div>
+            </td>
+        </tr>
             }
         </table>
     }

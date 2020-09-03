@@ -12,14 +12,15 @@
 }
 
 <form method="post">
+    <input type="hidden" asp-for="@Model.DetailsModel.IsStaff" value="@Model.DetailsModel.IsStaff" />
     <input type="hidden" asp-for="@Model.DetailsModel.FirstName" value="@Model.DetailsModel.FirstName" />
     <input type="hidden" asp-for="@Model.DetailsModel.LastName" value="@Model.DetailsModel.LastName" />
     <div class="ml-5 mr-5">
         <!--if applicant is under 14, display alert-->
         @if (
-           (new DateTime(1, 1, 1) + DateTime.Now.Subtract(Model.DetailsModel.Birthdate)).Year - 1 < 14 &&
-           Model.DetailsModel.ApprovalStatus == ApprovalStatus.Pending
-           )
+          (new DateTime(1, 1, 1) + DateTime.Now.Subtract(Model.DetailsModel.Birthdate)).Year - 1 < 14 &&
+          Model.DetailsModel.ApprovalStatus == ApprovalStatus.Pending
+          )
         {
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 This applicant is under 14 years old.
@@ -33,20 +34,31 @@
         <div id="header-container">
             @if (!Model.DetailsModel.IsStaff)
             {
-            <div id="approval-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
-                <label id="approved" class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="0" /> Approved
-                </label>
-                <label id="pending" class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="1" /> Pending
-                </label>
-                <label id="not-approved" class="btn btn-reverse-primary">
-                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="2" /> Not Approved
-                </label>
-                <label id="deleted" class="btn btn-reverse-danger">
-                    <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="3" /> Deleted
-                </label>
-            </div>
+                <div id="approval-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label id="approved" class="btn btn-reverse-primary">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="0" /> Approved
+                    </label>
+                    <label id="pending" class="btn btn-reverse-primary">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="1" /> Pending
+                    </label>
+                    <label id="not-approved" class="btn btn-reverse-primary">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="2" /> Not Approved
+                    </label>
+                    <label id="deleted" class="btn btn-reverse-danger">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="3" /> Deleted
+                    </label>
+                </div>
+            }
+            else
+            {
+                <div id="approval-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label id="approved" class="btn btn-reverse-primary">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="0" /> Active
+                    </label>
+                    <label id="deleted" class="btn btn-reverse-danger">
+                        <input type="radio" asp-for="@Model.DetailsModel.ApprovalStatus" value="3" /> Deleted
+                    </label>
+                </div>
             }
 
             <button id="save-changes" class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>

@@ -11,8 +11,8 @@
             <Label x:Name="authLblResult" Text="{Binding Result}" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" TextColor="Black" Margin="20, 0, 20, 0" />
             <Entry x:Name="txtEmail" Placeholder="Email" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Email}"/>
             <Entry x:Name="txtPass" IsPassword="True" Placeholder="Password" VerticalOptions="Center" Margin="20, 0, 20, 0" Text="{Binding Password}"/>
-            <Button x:Name="btnSignIn" Text="Sign In" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding AuthCommand}"/>
-        </Grid>
+            <Button x:Name="btnSignIn" BackgroundColor="#8CB436" TextColor="White" Text="Sign In" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Margin="20, 0, 20, 20" Command="{Binding AuthCommand}"/>
+        </Grid> 
         <Grid x:Name="clockGrid" BackgroundColor="#FFFFFF" IsVisible="{Binding IsAuthenticated}"  >
             <Image x:Name="clockImgLogo" Source="MHFB.png" Aspect="AspectFit"/>
             <Label x:Name="clockLblResult" Text="{Binding Result}" HorizontalTextAlignment="Center" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" FontSize="Medium" TextColor="Black" Margin="20, 0, 20, 0" />

@@ -190,17 +190,8 @@
         {
             <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
         }
-
-        @if (@Model.SearchedPosition == null)
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        else
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
+        <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
+        </select>
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
         <div class="btn-group" id="main-buttons">
             <button id="email" asp-page-handler="SendNotifications" class="btn btn-primary">Send Email</button>

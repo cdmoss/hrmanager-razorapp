@@ -24,16 +24,7 @@
     <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
     <button id="add-staff" type="button" class="btn btn-sm btn-primary" onclick="$('#add-staff-modal').modal();">Add Staff Member</button>
     <div id="status-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label id="approved" class="btn btn-reverse-primary">
-            <input type="checkbox" asp-for="ApprovedFilter" onchange="changeStatus(this)" value="@Model.ApprovedFilter" /> Approved
-        </label>
-        <label id="pending" class="btn btn-reverse-primary">
-            <input type="checkbox" asp-for="PendingFilter" onchange="changeStatus(this)" value="@Model.PendingFilter" /> Pending
-        </label>
-        <label id="notapproved" class="btn btn-reverse-primary">
-            <input type="checkbox" asp-for="NotApprovedFilter" onchange="changeStatus(this)" value="@Model.NotApprovedFilter" /> Not Approved
-        </label>
-        <label id="deleted" class="btn btn-reverse-primary">
+        <label id="deleted" class="btn btn-reverse-danger">
             <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Deleted
         </label>
     </div>
@@ -56,14 +47,14 @@
         </thead>
         @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
         {
-            <tr>
+            <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Deleted) { <text>style="background-color: #ffcccb"</text>} else {<text></text>}>
                 <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
                 <td>@volunteer.LastName</td>
 
                 <td>
                     <div class="btn-group w-100">
                         <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
-                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin") && volunteer.ApprovalStatus != ApprovalStatus.Deleted)
                         {
                             <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
                         }
@@ -270,17 +261,13 @@
 </form>
 
 <script>
-    if (@Model.ApprovedFilter) {
-        $("#approved").addClass("active");
+    function changeStatus(filter) {
+        filter.value = filter.checked;
+        filter.form.submit();
     }
-    if (@Model.PendingFilter) {
-        $("#pending").addClass("active");
-    }
-    if (@Model.NotApprovedFilter) {
-        $("#notapproved").addClass("active");
-    }
-    if (@Model.DeletedFilter) {
-        $("#deleted").addClass("active");
+
+    @if (Model.DeletedFilter) {
+        <text>$("#deleted").addClass("active");</text>
     }
 
     document.getElementById('volunteer-tab').classList.remove('active');

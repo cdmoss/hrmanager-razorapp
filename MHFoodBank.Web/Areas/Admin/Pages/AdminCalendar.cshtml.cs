@@ -57,13 +57,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         // for choosing a volunteer when editing/adding a shift
         [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
-        // the position displayed on page load
-        [BindProperty(SupportsGet = true)]
-        public Position DefaultPosition { get; set; }
         [BindProperty]
         public string SearchedName { get; set; }
         [BindProperty]
-        public Position SearchedPosition { get; set; } = new Position();
+        public int SearchedPositionId { get; set; }
         [BindProperty]
         // position that was selected in the edit/delete position window
         public string SelectedPositionName { get; set; }
@@ -524,11 +521,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnPostSearch()
         {
+            //store in local variable so it doesn't get overwritten by prepare model
+            int searchedPosId = SearchedPositionId;
             await PrepareModel(null);
 
             var searcher = new Searcher(_context);
-            SearchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SearchedPosition.Id);
-            Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, SearchedPosition);
+            var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
+            Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, searchedPosition);
         }
 
         //public async Task<IActionResult> OnPostSendNotifications()
@@ -726,7 +725,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             // get positions
             Positions = _context.Positions.Where(p => !p.Deleted).ToList();
-            DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
+            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 
             // update status message
             StatusMessage = statusMessage;
