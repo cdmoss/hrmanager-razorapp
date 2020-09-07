@@ -59,7 +59,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             string statusMessage, 
             bool approvedFilter = true, 
             bool pendingFilter = true, 
-            bool notApprovedFilter = true, 
+            bool notApprovedFilter = false, 
             bool deletedFilter = false)
         {
             StatusMessage = statusMessage;
@@ -77,7 +77,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter && ApprovedFilter;
                 bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter && PendingFilter;
                 bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter && NotApprovedFilter;
-                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Deleted) == DeletedFilter && DeletedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == DeletedFilter && DeletedFilter;
 
                 if (passedapproved || passedpending || passednotapproved || passeddeleted)
                 {
@@ -103,23 +103,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         }
         public async Task<IActionResult> OnPostDeleteVolunteer()
         {
-            Volunteer = await _context.VolunteerProfiles
-                .Include(p => p.Shifts)
-                .FirstOrDefaultAsync(p => p.Id == SelectedVolunteerId);
+            var user = await _context.Users
+                .Include(p => p.VolunteerProfile).ThenInclude(p => p.Shifts)
+                .FirstOrDefaultAsync(p => p.VolunteerProfile.Id == SelectedVolunteerId);
 
-            _context.Update(Volunteer);
-
-            foreach(Shift shift in Volunteer.Shifts)
+            foreach (Shift shift in user.VolunteerProfile.Shifts)
             {
                 _context.Update(shift);
                 shift.Volunteer = null;
                 shift.CreateDescription();
             }
 
-            Volunteer.ApprovalStatus = ApprovalStatus.Deleted;
+            _context.Remove(user);
+
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { statusMessage = "You have successfully deleted the selected volunteer." });
+            return RedirectToPage(new { statusMessage = $"You have successfully deleted {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName} volunteer." });
         }
 
         private async Task<List<VolunteerProfile>> PrepareModel()

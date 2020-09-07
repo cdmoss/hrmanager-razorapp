@@ -16,6 +16,7 @@ using MHFoodBank.Common.Dtos;
 using AutoMapper;
 using MHFoodBank.Web.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
 {
@@ -38,10 +39,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
         public string ReturnUrl { get; set; }
 
         private readonly IMapper _mapper;
+        private readonly UserManager<AppUser> _userManager;
 
-        public VolunteerDetailsModel(FoodBankContext context, IMapper mapper, string currentPage = "Volunteer Details") : base(context, currentPage)
+        public VolunteerDetailsModel(FoodBankContext context, IMapper mapper, UserManager<AppUser> userManager, string currentPage = "Volunteer Details") : base(context, currentPage)
         {
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         public IActionResult OnGet(int id, string statusMessage = null, string returnUrl = null)
@@ -93,6 +96,37 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             }
 
             return RedirectToPage(new { statusMessage = "Successfully updated the volunteer profile." });
+        }
+
+        public async Task<IActionResult> OnPostDelete(int id)
+        {
+            var user = await _context.Users
+                .Include(p => p.VolunteerProfile).ThenInclude(p => p.Shifts)
+                .FirstOrDefaultAsync(p => p.VolunteerProfile.Id == id);
+
+            foreach (Shift shift in user.VolunteerProfile.Shifts)
+            {
+                _context.Update(shift);
+                shift.Volunteer = null;
+                shift.CreateDescription();
+            }
+
+            string redirectLocation = "";
+
+            if (user.VolunteerProfile.IsStaff)
+            {
+                redirectLocation = "Team/Staff";
+            }
+            else
+            {
+                redirectLocation = "Team/Volunteers";
+            }
+
+            _context.Remove(user);
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage( redirectLocation, new { statusMessage = $"You have successfully deleted {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName} volunteer." });
         }
 
         private async Task UpdateStatus(int statusChangeType)

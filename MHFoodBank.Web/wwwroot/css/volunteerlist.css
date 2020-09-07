@@ -1,8 +1,8 @@
 ﻿#container {
     display: grid;
-    grid-template-columns: 2fr 2fr 1fr 2fr 3fr;
+    grid-template-columns: 2fr 2fr 1fr 2fr .3fr 3fr;
     grid-template-rows: auto;
-    grid-template-areas: "search-name search-position search-button . status-radios";
+    grid-template-areas: "search-name search-position search-button . status-label status-radios";
     gap: .5rem;
 }
 
@@ -10,12 +10,11 @@
 }
 
 @media (max-width: 1369px) {
-
     #container {
         display: grid;
         grid-template-columns: 2fr 2fr 1fr 3fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-position search-button status-radios";
+        grid-template-areas: "search-name search-position status-label search-button status-radios";
         gap: .5rem;
     }
 }
@@ -34,4 +33,8 @@
 
 #status-radios {
     grid-area: status-radios;
+}
+
+#status-label {
+    grid-area: status-label;
 }

@@ -9,7 +9,7 @@ namespace MHFoodBank.Common
         Approved,
         Pending,
         NotApproved,
-        Deleted
+        Archived
     }
 
     public enum UserRole

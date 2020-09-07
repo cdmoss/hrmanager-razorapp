@@ -4,6 +4,8 @@ for details on configuring this project to bundle and minify static web assets. 
 :root {
     --primary: #343A40;
     --danger: #8A0C0C;
+    --success: #006400;
+    --info: #1596AA;
 }
 
 .form-control[readonly].datetime-readonly{
@@ -38,6 +40,21 @@ for details on configuring this project to bundle and minify static web assets. 
     border-color: var(--primary);
 }
 
+
+
+.btn-primary:focus, .btn-primary.focus {
+    color: var(--primary);
+    background-color: #fff;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.2rem rgba(130, 138, 145, 0.5);
+}
+
+.btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active, .show > .btn-primary.dropdown-toggle {
+    color: #fff;
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
 .btn-reverse-primary{
     color: var(--primary);
     background-color: #fff;
@@ -50,6 +67,30 @@ for details on configuring this project to bundle and minify static web assets. 
     border-color: var(--primary);
 }
 
+.btn-success {
+    color: #fff;
+    background-color: var(--success);
+    border-color: var(--success);
+}
+
+.btn-success:hover {
+    color: var(--success);
+    background-color: #fff;
+    border-color: var(--success);
+}
+
+.btn-info {
+    color: #fff;
+    background-color: var(--info);
+    border-color: var(--info);
+}
+
+.btn-info:hover {
+    color: var(--info);
+    background-color: #fff;
+    border-color: var(--info);
+}
+
 .btn-reverse-primary:not(:disabled):not(.disabled):active, .btn-reverse-primary:not(:disabled):not(.disabled).active, .show > .btn-reverse-primary.dropdown-toggle {
     color: #fff;
     background-color: var(--primary);
@@ -60,6 +101,18 @@ for details on configuring this project to bundle and minify static web assets. 
     color: #fff;
     background-color: #6c757d;
     border-color: #6c757d;
+}
+
+.btn-light-custom {
+    color: #212529;
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.btn-light-custom:hover {
+    color: #212529;
+    background-color: #e2e6ea;
+    border-color: #dae0e5;
 }
 
 .btn-secondary:hover {

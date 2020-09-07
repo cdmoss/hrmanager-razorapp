@@ -65,7 +65,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
             foreach (var volunteer in volunteerDomainModels)
             {
                 bool isActive = (volunteer.ApprovalStatus == ApprovalStatus.Approved);
-                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Deleted) == DeletedFilter && DeletedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == DeletedFilter && DeletedFilter;
 
                 if (isActive || passeddeleted)
                 {
@@ -103,7 +103,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
                 shift.CreateDescription();
             }
 
-            Volunteer.ApprovalStatus = ApprovalStatus.Deleted;
+            Volunteer.ApprovalStatus = ApprovalStatus.Archived;
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = $"You have successfully deleted {Volunteer.FirstName} {Volunteer.LastName} volunteer." });

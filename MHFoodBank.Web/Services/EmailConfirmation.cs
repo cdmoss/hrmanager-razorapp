@@ -16,7 +16,7 @@ namespace MHFoodBank.Web.Services
 {
     public interface IEmailConfirm
     {
-        Task<bool> TrySendConfirmationEmail(AppUser user, HttpRequest request, IUrlHelper url);
+        Task TrySendConfirmationEmail(AppUser user, HttpRequest request, IUrlHelper url);
     }
 
     public class EmailConfirmation : IEmailConfirm
@@ -30,7 +30,7 @@ namespace MHFoodBank.Web.Services
             _emailSender = emailSender;
         }
 
-        public async Task<bool> TrySendConfirmationEmail(AppUser user, HttpRequest request, IUrlHelper url)
+        public async Task TrySendConfirmationEmail(AppUser user, HttpRequest request, IUrlHelper url)
         {
             try
             {
@@ -44,11 +44,10 @@ namespace MHFoodBank.Web.Services
 
                 await _emailSender.SendEmailAsync(user.Email, "MHFB - Confirm your email",
                     $"<img alt='Medicine Hat Food Bank Logo' src='https://static.wixstatic.com/media/9c0c8c_8e19160d960f483f9252fcfd8b45af4a~mv2_d_8359_7389_s_4_2.png/v1/fill/w_120,h_106,al_c,q_85,usm_0.66_1.00_0.01/9c0c8c_8e19160d960f483f9252fcfd8b45af4a~mv2_d_8359_7389_s_4_2.webp'><br/><br/>Thanks for applying as a volunteer to the Medicine Hat Food Bank!<br/><br/>Once you confirm your account, you will be able to login to manage your availability and personal information. Once you're accepted you will be able to view and sign up for open shifts.<br/><br/>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                return true;
             }
             catch (Exception ex)
             {
-                return false;
+                throw ex;
             }
         }
     }

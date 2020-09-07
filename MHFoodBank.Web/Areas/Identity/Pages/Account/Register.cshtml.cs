@@ -31,7 +31,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailConfirm _emailConfirm;
         private readonly IMapper _mapper;
 
         public RegisterModel(
@@ -40,14 +40,14 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             SignInManager<AppUser> signInManager,
             IMapper mapper,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailConfirm emailConfirm)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
             _mapper = mapper;
+            _emailConfirm = emailConfirm;
         }
 
         [BindProperty]
@@ -97,45 +97,54 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             user.VolunteerProfile.Alerts = new List<Alert>() { new ApplicationAlert { Date = DateTime.Now, Volunteer = user.VolunteerProfile, Read = false } };
             user.VolunteerProfile.Positions = AssignPreferredPositions(user.VolunteerProfile);
 
-            IdentityResult accountCreationResult = await _userManager.CreateAsync(user, Volunteer.Password);
-            IdentityResult addToRoleResult = await _userManager.AddToRoleAsync(user, "Volunteer");
+            IdentityResult accountCreationResult = null;
+            IdentityResult addToRoleResult = null;
 
             // this are initialized to "success" but will be actually evaluated in the methods below
             bool ConfirmationEmailSentResult = true;
 
-            if (accountCreationResult.Succeeded &&
-                addToRoleResult.Succeeded &&
-                user.VolunteerProfile.Availabilities != null)
+            if (user.VolunteerProfile.Availabilities != null)
             {
-                await _context.Entry(user.VolunteerProfile).Collection(p => p.Alerts).LoadAsync();
+                accountCreationResult = await _userManager.CreateAsync(user, Volunteer.Password);
+                addToRoleResult = await _userManager.AddToRoleAsync(user, "Volunteer");
 
-                _logger.LogInformation("User created a new account with password.");
-                // we should also figure out if we even need account confirmation
-                ConfirmationEmailSentResult = await TrySendConfirmationEmail(user);
-                if (ConfirmationEmailSentResult)
+                if (accountCreationResult.Succeeded && addToRoleResult.Succeeded)
                 {
-                    return RedirectToPage("/Account/Login", new { statusMessage = "Thank you for applying to the Medicine Hat Food Bank! You will receive a confirmation email to confirm your account. Check your spam/junk folder if the email is not in your inbox." });
+                    await _context.Entry(user.VolunteerProfile).Collection(p => p.Alerts).LoadAsync();
+
+                    _logger.LogInformation("User created a new account with password.");
+                    // we should also figure out if we even need account confirmation
+
+                    try
+                    {
+                        await TrySendConfirmationEmail(user);
+                        return RedirectToPage("/Account/Login", new { registeredUserId = user.Id, statusMessage = "Thank you for applying to the Medicine Hat Food Bank! You will receive a confirmation email to confirm your account. Check your spam/junk folder if the email is not in your inbox." });
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError(String.Empty, "Email failed to send.");
+
+                    }
                 }
                 else
                 {
-                    ModelState.AddModelError(String.Empty, "Email failed to send");
+                    if (accountCreationResult != null && !accountCreationResult.Succeeded)
+                    {
+                        if (_context.Users.Any(e => e.Email == Volunteer.Email))
+                        {
+                            ModelState.AddModelError("EmailError", "This email is already in use.");
+                        }
+
+                        AddIdentityErrors(accountCreationResult);
+                    }
+                    if (addToRoleResult != null && !addToRoleResult.Succeeded)
+                    {
+                        AddIdentityErrors(addToRoleResult);
+                    }
                 }
             }
             else
             {
-                if (!accountCreationResult.Succeeded)
-                {
-                    if (_context.Users.Any(e => e.Email == Volunteer.Email))
-                    {
-                        ModelState.AddModelError("EmailError", "This email is already in use.");
-                    }
-
-                    AddIdentityErrors(accountCreationResult);
-                }
-                if (!addToRoleResult.Succeeded)
-                {
-                    AddIdentityErrors(addToRoleResult);
-                }
                 if (user.VolunteerProfile.Availabilities == null)
                 {
                     ModelState.AddModelError("AvailabilityError", "One or more of the availability ranges are invalid.");
@@ -146,26 +155,15 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private async Task<bool> TrySendConfirmationEmail(AppUser user)
+        private async Task TrySendConfirmationEmail(AppUser user)
         {
             try
             {
-                string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                string callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail",
-                    pageHandler: null,
-                    values: new { area = "Identity", userId = user.Id, code = code },
-                    protocol: Request.Scheme);
-
-                await _emailSender.SendEmailAsync(user.Email, "MHFB - Confirm your email",
-                    $"<img alt='Medicine Hat Food Bank Logo' src='https://static.wixstatic.com/media/9c0c8c_8e19160d960f483f9252fcfd8b45af4a~mv2_d_8359_7389_s_4_2.png/v1/fill/w_120,h_106,al_c,q_85,usm_0.66_1.00_0.01/9c0c8c_8e19160d960f483f9252fcfd8b45af4a~mv2_d_8359_7389_s_4_2.webp'><br/><br/>Thanks for applying as a volunteer to the Medicine Hat Food Bank!<br/><br/>Once you confirm your account, you will be able to login to manage your availability and personal information. Once you're accepted you will be able to view and sign up for open shifts.<br/><br/>Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-                return true;
+                await _emailConfirm.TrySendConfirmationEmail(user, Request, Url);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Email confirmation failed to send. Error: " + ex.ToString());
-                return false;
             }
         }
 

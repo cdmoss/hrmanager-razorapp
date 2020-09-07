@@ -5,13 +5,19 @@
     ViewData["Title"] = "Member Sign In";
 }
     <div class="mt-5">
-        @if (!String.IsNullOrEmpty(Model.StatusMessage))
+        @if (!string.IsNullOrWhiteSpace(Model.StatusMessage))
         {
             var statusMessageClass = Model.StatusMessage.StartsWith("Error") ? "danger" : "success";
-            <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                @Model.StatusMessage
-            </div>
+        <div class="alert alert-@statusMessageClass alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            @Model.StatusMessage
+            @if (Model.RegisteredUserId > 0)
+            {
+                <form method="post" asp-page="Login" asp-page-handler="ResendEmail" asp-route-userId="@Model.RegisteredUserId">
+                    Click <a href="#" onclick="this.parentNode.submit();">here</a> to resend the confirmation email.
+                </form>
+            }
+        </div>
         }
         <div style="height: 20vh" class="text-center">
             <img class="h-100" src="~/MHFB.png" alt="MHFB Logo" />

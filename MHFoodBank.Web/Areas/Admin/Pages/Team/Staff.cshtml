@@ -24,8 +24,8 @@
     <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
     <button id="add-staff" type="button" class="btn btn-sm btn-primary" onclick="$('#add-staff-modal').modal();">Add Staff Member</button>
     <div id="status-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label id="deleted" class="btn btn-reverse-danger">
-            <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Deleted
+        <label id="deleted" class="btn btn-reverse-primary">
+            <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Include Archived
         </label>
     </div>
 </form>
@@ -35,8 +35,8 @@
     <table class="table">
         <colgroup>
             <col style="width: 20%" />
-            <col style="width: 65%" />
-            <col style="width: 15%" />
+            <col style="width: 70%" />
+            <col style="width: 10%" />
         </colgroup>
         <thead>
             <tr>
@@ -47,20 +47,33 @@
         </thead>
         @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
         {
-            <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Deleted) { <text>style="background-color: #ffcccb"</text>} else {<text></text>}>
-                <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
-                <td>@volunteer.LastName</td>
+    <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text>  }  else { <text></text> }>
+        <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
+        <td>@volunteer.LastName</td>
 
-                <td>
-                    <div class="btn-group w-100">
-                        <a class="btn-primary btn btn-sm" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
-                        @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin") && volunteer.ApprovalStatus != ApprovalStatus.Deleted)
-                        {
-                            <button type="button" class="btn-danger btn-sm btn" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
-                        }
-                    </div>
-                </td>
-            </tr>
+        <td>
+            <div class="btn-group w-100">
+                <a class="btn btn-sm btn-primary" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
+                <button class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
+                <div class="dropdown-menu">
+                    @if (volunteer.ApprovalStatus != ApprovalStatus.Approved)
+                    {
+                        <button class="btn-light-custom btn-sm btn w-100 h-100" asp-page-handler="ChangeStatus" asp-route-volId="@volunteer.Id" asp-route-status="0">Set Active</button>
+                    }
+                    @if (volunteer.ApprovalStatus != ApprovalStatus.Archived)
+                    {
+                        <button class="btn-light-custom btn-sm btn w-100 h-100" asp-page-handler="ChangeStatus" asp-route-volId="@volunteer.Id" asp-route-status="3">Archive</button>
+                    }
+                    <div class="dropdown-divider"></div>
+                    @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
+                    {
+                        <button type="button" class="btn-light-custom btn-sm btn w-100 h-100" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
+                    }
+                </div>
+            </div>
+        </td>
+    </tr>
         }
     </table>
 }
