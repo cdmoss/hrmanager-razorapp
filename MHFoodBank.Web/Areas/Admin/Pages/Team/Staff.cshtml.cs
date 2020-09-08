@@ -25,10 +25,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
         private readonly IMapper _mapper;
 
         [BindProperty]
-        public bool DeletedFilter { get; set; }
+        public bool ArchivedFilter { get; set; }
         [BindProperty(SupportsGet = true)]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
-        public VolunteerProfile Volunteer { get; set; }
+        public VolunteerProfile Staff { get; set; }
         [BindProperty(SupportsGet = true)]
         public List<Position> Positions { get; set; }
         // make supportsget = true for this will result in it not being null
@@ -51,7 +51,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
         }
 
         public async Task OnGet(string statusMessage,
-            bool deletedFilter = false)
+            bool archivedFilter = false)
         {
             StatusMessage = statusMessage;
             var volunteerDomainModels = await PrepareModel();
@@ -60,12 +60,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
 
             StatusMessage = statusMessage;
 
-            DeletedFilter = deletedFilter;
+            ArchivedFilter = archivedFilter;
 
             foreach (var volunteer in volunteerDomainModels)
             {
                 bool isActive = (volunteer.ApprovalStatus == ApprovalStatus.Approved);
-                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == DeletedFilter && DeletedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == ArchivedFilter && ArchivedFilter;
 
                 if (isActive || passeddeleted)
                 {
@@ -78,7 +78,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
 
         public async Task OnPost()
         {
-            await OnGet("", DeletedFilter);
+            await OnGet("", ArchivedFilter);
         }
 
         public async Task OnPostSearch()
@@ -88,25 +88,44 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
             volunteerDomainModels = searcher.FilterVolunteersBySearch(volunteerDomainModels, SearchedName, null);
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
         }
-        public async Task<IActionResult> OnPostDeleteVolunteer()
+
+        public async Task<IActionResult> OnPostChangeStatus(int volId, int status, bool archivedFilter)
         {
-            Volunteer = await _context.VolunteerProfiles
+            Staff = await _context.VolunteerProfiles
+                .Include(p => p.Shifts)
+                .FirstOrDefaultAsync(p => p.Id == volId);
+
+            _context.Update(Staff);
+
+            //foreach (Shift shift in Staff.Shifts)
+            //{
+            //    _context.Update(shift);
+            //    shift.Volunteer = null;
+            //    shift.CreateDescription();
+            //}
+
+            Staff.ApprovalStatus = (ApprovalStatus)status;
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage(new { statusMessage = $"You have successfully changed {Staff.FirstName} {Staff.LastName} to {Enum.GetName(typeof(ApprovalStatus), status)}.", archivedFilter });
+        }
+        public async Task<IActionResult> OnPostDeleteStaff()
+        {
+            Staff = await _context.VolunteerProfiles
                 .Include(p => p.Shifts)
                 .FirstOrDefaultAsync(p => p.Id == SelectedVolunteerId);
 
-            _context.Update(Volunteer);
+            _context.Remove(Staff);
 
-            foreach (Shift shift in Volunteer.Shifts)
-            {
-                _context.Update(shift);
-                shift.Volunteer = null;
-                shift.CreateDescription();
-            }
-
-            Volunteer.ApprovalStatus = ApprovalStatus.Archived;
+            //foreach (Shift shift in Volunteer.Shifts)
+            //{
+            //    _context.Update(shift);
+            //    shift.Volunteer = null;
+            //    shift.CreateDescription();
+            //}
             await _context.SaveChangesAsync();
 
-            return RedirectToPage(new { statusMessage = $"You have successfully deleted {Volunteer.FirstName} {Volunteer.LastName} volunteer." });
+            return RedirectToPage(new { statusMessage = $"You have successfully deleted {Staff.FirstName} {Staff.LastName} from staff." });
         }
 
         public async Task<IActionResult> OnPostAddNewStaff()

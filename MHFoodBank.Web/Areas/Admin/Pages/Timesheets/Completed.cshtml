@@ -37,16 +37,9 @@
             </div>
         </div>
 
-        @if (@Model.SearchedPosition == null)
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.DefaultPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
-        else
-        {
-            <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPosition.Id))" asp-for="@Model.SearchedPosition.Id" required>
-            </select>
-        }
+        <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
+        </select>
+
         <button id="search-button" class="btn btn-primary" asp-route-viewType="completed" asp-page-handler="Search"><i class="fas fa-search"></i></button>
         <button type="button" id="add-time" onclick="$('#add-time-modal').modal()" class="btn btn-primary"><i class="fas fa-plus"></i> Entry</button>
     </div>

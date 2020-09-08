@@ -70,30 +70,30 @@
         <div id="cert-container">
             <div id="firstaid" class="row">
                 <div class="col-4">
-                    <input id="firstaid-check" class="ml-3" onclick="toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container')" asp-for="PersonalInfo.FirstAidCpr" />
+                    <input id="firstaid-check" class="ml-3" onclick="toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container')" value="@Model.PersonalInfo.FirstAidCpr" asp-for="PersonalInfo.FirstAidCpr" />
                     <label asp-for="PersonalInfo.FirstAidCpr" class="form-check-label">First aid/Cpr</label>
                 </div>
 
                 <div class="d-none" id="firstaid-container">
                     <div class="col-7">
                         <label>Expiry:</label>
-                        <input class="form-control" id="firstaid-date" asp-for="PersonalInfo.FirstAidCprExpiry" disabled />
+                        <input class="form-control" id="firstaid-date" asp-for="PersonalInfo.FirstAidCprExpiry" value="@Model.PersonalInfo.FirstAidCprExpiry?.ToString("yyyy-MM-dd")" disabled />
                     </div>
                     <div class="col-5">
                         <label asp-for="@Model.PersonalInfo.FirstAidCprLevel">Level:</label>
-                        <input class="form-control" id="firstaid-level" type="text" asp-for="@Model.PersonalInfo.FirstAidCprLevel" disabled />
+                        <input class="form-control" id="firstaid-level" type="text" asp-for="@Model.PersonalInfo.FirstAidCprLevel" value="@Model.PersonalInfo.FirstAidCprLevel" disabled />
                     </div>
                 </div>
             </div>
             <div id="foodsafe" class="row mt-2">
                 <div class="col-4">
-                    <input id="foodsafe-check" class="ml-3" onclick="toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container')" asp-for="PersonalInfo.FoodSafe" />
+                    <input id="foodsafe-check" class="ml-3" onclick="toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container')" value="@Model.PersonalInfo.FoodSafe" asp-for="PersonalInfo.FoodSafe" />
                     <label asp-for="PersonalInfo.FoodSafe" class="form-check-label">Food Safe</label>
                 </div>
                 <div class="d-none" id="foodsafe-container">
                     <div class="col-7">
                         <label>Expiry:</label>
-                        <input id="foodsafe-date" class="form-control" asp-for="PersonalInfo.FoodSafeExpiry" disabled />
+                        <input id="foodsafe-date" class="form-control" asp-for="PersonalInfo.FoodSafeExpiry" value="@Model.PersonalInfo.FoodSafeExpiry?.ToString("yyyy-MM-dd")" disabled />
                     </div>
                 </div>
             </div>

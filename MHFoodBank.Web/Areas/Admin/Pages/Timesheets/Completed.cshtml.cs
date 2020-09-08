@@ -28,6 +28,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public Position SearchedPosition { get; set; } = new Position();
         [BindProperty]
+        public int SearchedPositionId { get; set; }
+        [BindProperty]
         public Position DefaultPosition { get; set; }
         [BindProperty]
         public List<Position> Positions { get; set; }
@@ -164,11 +166,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnPostSearch()
         {
+            int searchedPosId = SearchedPositionId;
             await PrepareModel();
 
             var searcher = new Searcher(_context);
-            
-            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, SearchedPosition, SearchedStartDate, SearchedEndDate);
+            var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
+            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, searchedPosition, SearchedStartDate, SearchedEndDate);
         }
 
         private async Task PrepareModel()
@@ -181,7 +184,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .ToListAsync();
 
             Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
-            DefaultPosition = Positions.FirstOrDefault(p => p.Name == "All");
+            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
             Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
             clockedTimeDtos = _mapper.Map(clockedTimeDomainModels, clockedTimeDtos);
 

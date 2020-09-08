@@ -61,9 +61,11 @@
                 </div>
             }
 
+        <div id="actions" class="btn-group">
             <button id="save-changes" class="btn-primary btn-sm btn" asp-page-handler="SaveChanges" asp-route-id="@Model.DetailsModel.Id">Save Changes</button>
             <button id="change-password" class="btn btn-sm btn-primary" asp-page-handler="AdminChangePassword" asp-route-id="@Model.DetailsModel.Id">Change Password</button>
-            <button id="deleted" class="btn btn-danger" type="button" onclick="$('#delete-volunteer-prompt').modal();" /> Delete
+            <button id="deleted" class="btn btn-sm btn-danger" type="button" onclick="$('#delete-volunteer-prompt').modal();" /> Delete
+        </div>
 
         </div>
         <hr class="mt-4 mb-4" />
@@ -159,30 +161,30 @@
                 <div class="card-body" id="cert-container">
                     <div id="firstaid" class="row">
                         <div class="col-4">
-                            <input id="firstaid-check" onclick="toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container')" asp-for="DetailsModel.FirstAidCpr" />
+                            <input id="firstaid-check" onclick="toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container')" value="@Model.DetailsModel.FirstAidCpr" asp-for="DetailsModel.FirstAidCpr" />
                             <label asp-for="DetailsModel.FirstAidCpr" class="form-check-label">First aid/Cpr</label>
                         </div>
 
                         <div class="d-none" id="firstaid-container">
                             <div class="col-7">
                                 <label>Expiry:</label>
-                                <input class="form-control" id="firstaid-date" asp-for="DetailsModel.FirstAidCprExpiry" disabled />
+                                <input class="form-control" id="firstaid-date" asp-for="DetailsModel.FirstAidCprExpiry" value="@Model.DetailsModel.FirstAidCprExpiry?.ToString("yyyy-MM-dd")" disabled />
                             </div>
                             <div class="col-5">
                                 <label asp-for="@Model.DetailsModel.FirstAidCprLevel">Level:</label>
-                                <input class="form-control" id="firstaid-level" type="text" asp-for="@Model.DetailsModel.FirstAidCprLevel" disabled />
+                                <input class="form-control" id="firstaid-level" type="text" asp-for="@Model.DetailsModel.FirstAidCprLevel" value="@Model.DetailsModel.FirstAidCprLevel" disabled />
                             </div>
                         </div>
                     </div>
                     <div id="foodsafe" class="row">
                         <div class="col-4">
-                            <input id="foodsafe-check" onclick="toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container')" asp-for="DetailsModel.FoodSafe" />
+                            <input id="foodsafe-check" onclick="toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container')" value="@Model.DetailsModel.FoodSafe" asp-for="DetailsModel.FoodSafe" />
                             <label asp-for="DetailsModel.FoodSafe" class="form-check-label">Food Safe</label>
                         </div>
                         <div class="d-none" id="foodsafe-container">
                             <div class="col-7">
                                 <label>Expiry:</label>
-                                <input id="foodsafe-date" class="form-control" asp-for="DetailsModel.FoodSafeExpiry" disabled />
+                                <input id="foodsafe-date" class="form-control" asp-for="DetailsModel.FoodSafeExpiry" value="@Model.DetailsModel.FoodSafeExpiry?.ToString("yyyy-MM-dd")" disabled />
                             </div>
                         </div>
                     </div>
@@ -810,9 +812,7 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
                     }
                 </div>
             }
-
         </div>
-
     </div>
 </form>
 
@@ -840,8 +840,8 @@ p.Association != PositionVolunteer.AssociationType.Preferred))
     </div>
 </form>
 
-<script src="~/js/checkboxes.js"></script>
 <script src="~/js/availability.js"></script>
+<script src="~/js/checkboxes.js"></script>
 <script>
     const approvalStatus = @Convert.ToInt32(Model.DetailsModel.ApprovalStatus);
 

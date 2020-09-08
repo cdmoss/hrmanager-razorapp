@@ -1,7 +1,7 @@
 ﻿#header-container {
     display: grid;
-    grid-template-columns: 2fr 1.5fr .6fr .6fr;
-    grid-template-areas: "approval-radios . save-changes change-password deleted";
+    grid-template-columns: 1.5fr 2.5fr 1.5fr;
+    grid-template-areas: "approval-radios . actions";
     grid-gap: 1rem;
 }
 
@@ -9,16 +9,8 @@
     grid-area: approval-radios;
 }
 
-#save-changes{
-    grid-area: save-changes;
-}
-
-#change-password {
-    grid-area: change-password;
-}
-
-#deleted {
-    grid-area: deleted;
+#actions {
+    grid-area: actions;
 }
 
 #personal-container {

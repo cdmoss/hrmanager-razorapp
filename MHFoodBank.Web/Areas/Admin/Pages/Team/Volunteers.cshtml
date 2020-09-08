@@ -43,7 +43,7 @@
                 <input type="checkbox" asp-for="NotApprovedFilter" onchange="changeStatus(this)" value="@Model.NotApprovedFilter" /> Not Approved
             </label>
             <label id="deleted" class="btn btn-reverse-primary">
-                <input type="checkbox" asp-for="DeletedFilter" onchange="changeStatus(this)" value="@Model.DeletedFilter" /> Archived
+                <input type="checkbox" asp-for="ArchivedFilter" onchange="changeStatus(this)" value="@Model.ArchivedFilter" /> Archived
             </label>
         </div>
     </form>
@@ -67,7 +67,7 @@
             </thead>
             @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
             {
-        <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text> } else if (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) { <text> style="background-color: #ffcccb" </text>  } else if (volunteer.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #FFF3CD" </text>  } else { <text></text> }>
+        <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text> } else if (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) { <text> style="background-color: #ffcccb" </text>  } else if (volunteer.ApprovalStatus == ApprovalStatus.Pending) { <text> style="background-color: #FFF3CD" </text>  } else { <text></text> }>
             <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
             <td>@volunteer.LastName</td>
             <td>
@@ -88,15 +88,36 @@
                     <div class="dropdown-menu">
                         @if (volunteer.ApprovalStatus != ApprovalStatus.Approved)
                         {
-                            <button class="btn-light-custom btn-sm btn w-100 h-100" asp-page-handler="ChangeStatus" asp-route-volId="@volunteer.Id" asp-route-status="0">Approve</button>
+                            <button class="btn-light-custom btn-sm btn w-100 h-100" 
+                                    asp-page-handler="ChangeStatus" 
+                                    asp-route-volId="@volunteer.Id" 
+                                    asp-route-status="0"
+                                    asp-route-approvedFilter="@Model.ApprovedFilter"
+                                    asp-route-pendingFilter="@Model.PendingFilter"
+                                    asp-route-notApprovedFilter="@Model.NotApprovedFilter"
+                                    asp-route-archivedFilter="@Model.ArchivedFilter">Approve</button>
                         }
                         @if (volunteer.ApprovalStatus != ApprovalStatus.NotApproved)
                         {
-                            <button class="btn-light-custom btn-sm btn w-100 h-100" asp-page-handler="ChangeStatus" asp-route-volId="@volunteer.Id" asp-route-status="2">Disapprove</button>
+                            <button class="btn-light-custom btn-sm btn w-100 h-100" 
+                                    asp-page-handler="ChangeStatus" 
+                                    asp-route-volId="@volunteer.Id" 
+                                    asp-route-status="2"
+                                    asp-route-approvedFilter="@Model.ApprovedFilter"
+                                    asp-route-pendingFilter="@Model.PendingFilter"
+                                    asp-route-notApprovedFilter="@Model.NotApprovedFilter"
+                                    asp-route-archivedFilter="@Model.ArchivedFilter">Disapprove</button>
                         }
                         @if (volunteer.ApprovalStatus != ApprovalStatus.Archived)
                         {
-                            <button class="btn-light-custom btn-sm btn w-100 h-100" asp-page-handler="ChangeStatus" asp-route-volId="@volunteer.Id" asp-route-status="3">Archive</button>
+                            <button class="btn-light-custom btn-sm btn w-100 h-100" 
+                                    asp-page-handler="ChangeStatus" 
+                                    asp-route-volId="@volunteer.Id" 
+                                    asp-route-status="3"
+                                    asp-route-approvedFilter="@Model.ApprovedFilter"
+                                    asp-route-pendingFilter="@Model.PendingFilter"
+                                    asp-route-notApprovedFilter="@Model.NotApprovedFilter"
+                                    asp-route-archivedFilter="@Model.ArchivedFilter">Archive</button>
                         }
                         <div class="dropdown-divider"></div>
                         @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
@@ -126,7 +147,7 @@
     @if (Model.NotApprovedFilter) {
         <text>$("#notapproved").addClass("active");</text>
     }
-    @if (Model.DeletedFilter) {
+    @if (Model.ArchivedFilter) {
         <text>$("#deleted").addClass("active");</text>
     }
 

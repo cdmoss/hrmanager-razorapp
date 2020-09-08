@@ -66,6 +66,7 @@ namespace MHFoodBank.Web
             services.AddScoped<IReminderManager, ReminderManager>();
             services.AddScoped<IEmailSender, MailKitEmailSender>();
             services.AddScoped<IEmailConfirm, EmailConfirmation>();
+            services.AddScoped<IEmailForgotPassword, EmailForgotPassword>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
