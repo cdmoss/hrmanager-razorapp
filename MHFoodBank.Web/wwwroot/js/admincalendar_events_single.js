@@ -8,33 +8,35 @@
     selectedShiftInitialStartDate = new Date(selectedShift.start);
     selectedShiftEndDate = new Date(selectedShift.end);
 
-    let startTime = moment(selectedShiftInitialStartDate).format('HH:mm');
-    let endTime = moment(selectedShiftEndDate).format('HH:mm');
+    let startTime = selectedShiftInitialStartDate;
+    let endTime = selectedShiftEndDate;
 
     document.getElementById("edit-shift-id").value = selectedShift.id;
     document.getElementById("edit-shift-date").value = moment(selectedShiftInitialStartDate).format('yyyy-MM-DD');
     document.getElementById("edit-shift-position").value = (selectedShift.extendedProps.posWorked);
 
     // validation must be initialized before values are assigned to inputs to prevent starttime from being assigned to both, thanks tempus
-    $('#dtp-shift-edit-endtime').datetimepicker('minDate', startTime);
-    $('#dtp-shift-edit-starttime').datetimepicker('maxDate', endTime);
+    //$('#dtp-shift-edit-endtime').datetimepicker('minDate', startTime);
+    //$('#dtp-shift-edit-starttime').datetimepicker('maxDate', endTime);
 
-    $("dtp-shift-edit-starttime").on("change.datetimepicker", function (e) {
-        const endTimeInput = document.getElementsById('edit-shift-endtime');
-        let originalDate = moment(endTimeInput.value, 'HH:mm');
-        $('dtp-shift-edit-endtime').datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-        endTimeInput.value = originalDate.format('HH:mm');
-    });
+    //$("#dtp-shift-edit-starttime").on("change.datetimepicker", function (e) {
+    //    const endTimeInput = document.getElementById('edit-shift-endtime');
+    //    let originalDate = moment(endTimeInput.value, 'HH:mm');
+    //    $('#dtp-shift-edit-endtime').datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
+    //    endTimeInput.value = originalDate.format('HH:mm');
+    //});
 
-    $("#dtp-shift-edit-endtime").on("change.datetimepicker", function (e) {
-        const startTimeInput = startTimeDiv.getElementsById('edit-shift-starttime')[0];
-        let originalDate = moment(startTimeInput.value, 'HH:mm');
-        $('dtp-shift-edit-starttime').datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-        startTimeInput.value = originalDate.format('HH:mm');
-    });
+    //$("#dtp-shift-edit-endtime").on("change.datetimepicker", function (e) {
+    //    const startTimeInput = document.getElementById('edit-shift-starttime');
+    //    let originalDate = moment(startTimeInput.value, 'HH:mm');
+    //    $('#dtp-shift-edit-starttime').datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
+    //    startTimeInput.value = originalDate.format('HH:mm');
+    //});
 
-    document.getElementById("edit-shift-starttime").value = startTime;
-    document.getElementById("edit-shift-endtime").value = endTime;
+    $('#edit-shift-starttime').timepicker('setTime', new Date(startTime));
+    $('#edit-shift-endtime').timepicker('setTime', new Date(endTime));
+
+    $('#edit-shift-time-div').datepair('refresh');
 
     let volunteerFullNameWithId = selectedShift.extendedProps.vol;
 

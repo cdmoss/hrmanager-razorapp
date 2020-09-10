@@ -13,6 +13,14 @@
     {
       "library": "jquery@3.5.1",
       "destination": "wwwroot/lib/jquery/"
+    },
+    {
+      "library": "datepair.js@0.4.16",
+      "destination": "wwwroot/lib/datepair.js/"
+    },
+    {
+      "library": "jquery-timepicker@1.10.0",
+      "destination": "wwwroot/lib/jquery-timepicker/"
     }
   ]
 }

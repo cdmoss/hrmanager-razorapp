@@ -437,3 +437,4 @@ C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHF
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.pdb
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.genruntimeconfig.cache
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\ResetPassword.cshtml.g.cs
+C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\Razor\Areas\Identity\Pages\Account\ResetPassword.cshtml.g.cs

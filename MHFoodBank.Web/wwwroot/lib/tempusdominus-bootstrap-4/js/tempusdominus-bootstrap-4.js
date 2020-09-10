@@ -561,33 +561,9 @@ var DateTimePicker = function ($, moment) {
         };
 
         DateTimePicker.prototype._notifyEvent = function _notifyEvent(e) {
-            switch (e.type) {
-                case
-                    DateTimePicker.Event.SHOW:
-                    break;
-                case DateTimePicker.Event.HIDE:
-                    if (!e.date) { return; } break;
-                case DateTimePicker.Event.UPDATE:
-                    if (!e.change || !e.viewDate)
-                    {
-                        return;
-                    }
-                    break;
-                case DateTimePicker.Event.ERROR:
-                    if (!e.date || !e.oldDate)
-                    {
-                        return;
-                    }
-                    break;
-                case DateTimePicker.Event.CHANGE:
-                    if (!e.date || !e.oldDate || e.date.isSame(e.oldDate))
-                    {
-                        return;
-                    }
-                    break;
-                default:
-                    return;
-            };
+            if (e.type === DateTimePicker.Event.CHANGE && (e.date && e.date.isSame(e.oldDate)) || !e.date && !e.oldDate) {
+                return;
+            }
             this._element.trigger(e);
         };
 
