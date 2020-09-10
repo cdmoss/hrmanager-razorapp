@@ -14,17 +14,17 @@ using System.Threading.Tasks;
 
 namespace MHFoodBank.Web.Services
 {
-    public interface IEmailConfirm
+    public interface IEmailConfirmationService
     {
         Task TrySendConfirmationEmail(AppUser user, HttpRequest request, IUrlHelper url);
     }
 
-    public class EmailConfirmation : IEmailConfirm
+    public class EmailConfirmationService : IEmailConfirmationService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly IEmailSender _emailSender;
 
-        public EmailConfirmation(UserManager<AppUser> userManager, IEmailSender emailSender)
+        public EmailConfirmationService(UserManager<AppUser> userManager, IEmailSender emailSender)
         {
             _userManager = userManager;
             _emailSender = emailSender;

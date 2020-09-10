@@ -65,8 +65,8 @@ namespace MHFoodBank.Web
             services.AddHangfireServer();
             services.AddScoped<IReminderManager, ReminderManager>();
             services.AddScoped<IEmailSender, MailKitEmailSender>();
-            services.AddScoped<IEmailConfirm, EmailConfirmation>();
-            services.AddScoped<IEmailForgotPassword, EmailForgotPassword>();
+            services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
+            services.AddScoped<IPasswordRecoveryService, PasswordRecoveryService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();

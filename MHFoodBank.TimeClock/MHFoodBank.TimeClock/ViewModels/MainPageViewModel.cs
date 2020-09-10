@@ -99,42 +99,53 @@ namespace MHFoodBank.TimeClock.ViewModels
 
         private async void AuthenticateUser()
         {
-            if (!String.IsNullOrWhiteSpace(Email) && !String.IsNullOrWhiteSpace(Password))
+            try
             {
-                ClockedTimeCreateDto dto = new ClockedTimeCreateDto
+                if (!String.IsNullOrWhiteSpace(Email) && !String.IsNullOrWhiteSpace(Password))
                 {
-                    Email = _email,
-                    Password = _password,
-                };
-
-                var json = JsonConvert.SerializeObject(dto);
-                var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
-
-                var response = await _client.PostAsync(punchClockUrl, requestContent);
-                if (response.IsSuccessStatusCode)
-                {
-                    var responseContent = await response.Content.ReadAsStringAsync();
-                    var result = JsonConvert.DeserializeObject<PunchClockResult>(responseContent);
-                    Result = result.Message;
-                    if (result.Success)
+                    ClockedTimeCreateDto dto = new ClockedTimeCreateDto
                     {
-                        if (!result.Message.Contains("clocked out"))
+                        Email = _email,
+                        Password = _password,
+                    };
+
+                    var json = JsonConvert.SerializeObject(dto);
+                    var requestContent = new StringContent(json, Encoding.UTF8, "application/json");
+
+                    var response = await _client.PostAsync(punchClockUrl, requestContent);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var result = JsonConvert.DeserializeObject<PunchClockResult>(responseContent);
+                        Result = result.Message;
+                        if (result.Success)
                         {
-                            IsNotAuthenticated = false;
-                            IsAuthenticated = true;
-                        }
-                        else
-                        {
-                            Email = "";
-                            Password = "";
-                            Position = null;
+                            if (!result.Message.Contains("clocked out"))
+                            {
+                                IsNotAuthenticated = false;
+                                IsAuthenticated = true;
+                            }
+                            else
+                            {
+                                Email = "";
+                                Password = "";
+                                Position = null;
+                            }
                         }
                     }
                 }
+                else
+                {
+                    Result = "You must enter both your email and password to clock in.";
+                }
             }
-            else
+            catch (HttpRequestException netEx)
             {
-                Result = "You must enter both your email and password to clock in.";
+                Result = "There was an error connecting to the database that was most likely caused by lack of internet connection. Please contact your supervisor.";
+            }
+            catch (Exception ex)
+            {
+                Result = "An unhandled error occured. Please contact your supervisor.";
             }
         }
 

@@ -13,7 +13,8 @@
           "Newtonsoft.Json": "12.0.3",
           "Prism.DryIoc.Forms": "7.2.0.1422",
           "Xamarin.Essentials.Interfaces": "1.5.2",
-          "Xamarin.Forms": "4.7.0.1179"
+          "Xamarin.Forms": "4.7.0.1179",
+          "Mono.Android": "0.0.0.0"
         },
         "runtime": {
           "MHFoodBank.TimeClock.dll": {}
@@ -836,6 +837,14 @@
         "runtime": {
           "MHFoodBank.Common.dll": {}
         }
+      },
+      "Mono.Android/0.0.0.0": {
+        "runtime": {
+          "Mono.Android.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
       }
     }
   },
@@ -1372,6 +1381,11 @@
     },
     "MHFoodBank.Common/1.0.0": {
       "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Mono.Android/0.0.0.0": {
+      "type": "reference",
       "serviceable": false,
       "sha512": ""
     }

@@ -84,7 +84,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             {
                 return OnGet(id: id, statusMessage: "Error: One or more of the fields was not filled in properly.");
             }
-            await UpdateUserProfile(id);
+
+            // retrieve the user to be updated, load volunteer profile and all navigation properties
+            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
+
+            await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.References).LoadAsync();
+            await _context.Entry(user.VolunteerProfile).Collection(p => p.WorkExperiences).LoadAsync();
+
+            bool DuplicateEmailFound = await _context.Users.AnyAsync(u => u.NormalizedEmail == DetailsModel.Email.ToUpper() && u.Id != user.Id);
+            if (DuplicateEmailFound)
+            {
+                return OnGet(id: id, statusMessage: "Error: The email you entered already belongs to someone else.");
+            }
+
+            await UpdateUserProfile(user);
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == id);
 
             AvailabilityHandler availability = new AvailabilityHandler();
@@ -162,17 +177,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             }
         }
 
-        private async Task UpdateUserProfile(int id)
+        private async Task<bool> UpdateUserProfile(AppUser user)
         {
             // get positions for display
             Positions = await _context.Positions.ToListAsync();
-
-            // retrieve the user to be updated, load volunteer profile and all navigation properties
-            AppUser user = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == id);
-            await _context.Entry(user).Reference(p => p.VolunteerProfile).LoadAsync();
-            await _context.Entry(user.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
-            await _context.Entry(user.VolunteerProfile).Collection(p => p.References).LoadAsync();
-            await _context.Entry(user.VolunteerProfile).Collection(p => p.WorkExperiences).LoadAsync();
 
             // tag it for change
             _context.Update(user);
@@ -193,6 +201,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             // update preferred and assigned positions
             UpdateVolunteerPositions(user.VolunteerProfile);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         private int GetMaxAvailabilityCount()

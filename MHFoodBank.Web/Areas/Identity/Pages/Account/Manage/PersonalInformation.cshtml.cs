@@ -66,6 +66,11 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account.Manage
             }
             Positions = await _context.Positions.Where(p => p.Name != "All" && !p.Deleted).ToListAsync();
             var currentUser = await _userManager.GetUserAsync(User);
+            bool DuplicateEmailFound = await _context.Users.AnyAsync(u => u.NormalizedEmail == PersonalInfo.Email.ToUpper() && u.Id != currentUser.Id);
+            if (DuplicateEmailFound)
+            {
+                return await OnGet(statusMessage: "Error: That email already belongs to another user.");
+            }
             await _context.Entry(currentUser).Reference(p => p.VolunteerProfile).LoadAsync();
             _context.Update(currentUser);
             currentUser.VolunteerProfile.Address = PersonalInfo.Address;

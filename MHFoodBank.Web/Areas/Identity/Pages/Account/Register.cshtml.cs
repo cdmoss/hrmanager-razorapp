@@ -31,7 +31,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
-        private readonly IEmailConfirm _emailConfirm;
+        private readonly IEmailConfirmationService _emailConfirm;
         private readonly IMapper _mapper;
 
         public RegisterModel(
@@ -40,7 +40,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             SignInManager<AppUser> signInManager,
             IMapper mapper,
             ILogger<RegisterModel> logger,
-            IEmailConfirm emailConfirm)
+            IEmailConfirmationService emailConfirm)
         {
             _context = context;
             _userManager = userManager;

@@ -470,13 +470,11 @@
                                 <input asp-for="@Model.WorkExperiences[@i].EmployerAddress" class="form-control">
                                 <span asp-validation-for="@Model.WorkExperiences[@i].EmployerAddress" class="text-danger"></span>
                             </div>
-                            <div class="col-md-6 form-group">
-                                <label id="workexp-current-label-@i" asp-for="@Model.WorkExperiences[@i].EndDate"></label>
-                                @*<input id="workexp-current-enddate-@i" asp-for="@Model.WorkExperiences[@i].EndDate" class="form-control">*@
-
+                            <div class="col-md-6 form-group" id="workexp-enddate-@i">
+                                <label asp-for="@Model.WorkExperiences[@i].EndDate"></label>
                                 <div>
                                     <div class="input-group date datetimepicker-date-end" id="dtp-register-workexp-end-@i" data-target-input="nearest">
-                                        <input id="workexp-current-enddate-@i" type="text" class="form-control datetimepicker-input" asp-for="@Model.WorkExperiences[@i].EndDate" data-target="#dtp-register-workexp-end-@i" />
+                                        <input type="text" class="form-control datetimepicker-input" asp-for="@Model.WorkExperiences[@i].EndDate" data-target="#dtp-register-workexp-end-@i" />
                                         <div class="input-group-append" data-target="#dtp-register-workexp-end-@i" data-toggle="datetimepicker">
                                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                                         </div>

@@ -21,9 +21,9 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IEmailConfirm _emailConfirm;
+        private readonly IEmailConfirmationService _emailConfirm;
 
-        public ConfirmEmailModel(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailConfirm emailConfirm)
+        public ConfirmEmailModel(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailConfirmationService emailConfirm)
         {
             _userManager = userManager;
             _signInManager = signInManager;
