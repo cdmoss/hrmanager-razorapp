@@ -204,7 +204,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Include(p => p.Position)
                 .ToListAsync();
 
-            Positions = await _context.Positions.Where(p => !p.Deleted).ToListAsync();
+            Positions = _context.Positions.Where(p => !p.Deleted).OrderByDescending(p => p.Name).ToList();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
             Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
             clockedTimeDtos = _mapper.Map(clockedTimeDomainModels, clockedTimeDtos);

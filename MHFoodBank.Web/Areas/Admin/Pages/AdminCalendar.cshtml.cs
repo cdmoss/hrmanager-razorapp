@@ -865,7 +865,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
 
             // get positions
-            Positions = _context.Positions.Where(p => !p.Deleted).ToList();
+            Positions = _context.Positions.Where(p => !p.Deleted).OrderByDescending(p => p.Name).ToList();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
 
             ShiftAmounts = new Dictionary<int, int>();
