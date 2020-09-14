@@ -724,18 +724,18 @@ C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcorea
 C:\Users\dofus\Downloads\VS Proj\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Common.pdb
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Common.dll
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Common.pdb
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.Views.dll
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.Views.pdb
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\appsettings.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\bundleconfig.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\libman.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.StaticWebAssets.xml
+C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.exe
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\xunit.runner.visualstudio.dotnetcore.testadapter.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\xunit.runner.reporters.netcoreapp10.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\xunit.runner.utility.netcoreapp10.dll
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.Views.dll
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.Views.pdb
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.StaticWebAssets.xml
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodBank.Web.exe
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodbank.Test.deps.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodbank.Test.runtimeconfig.json
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcoreapp3.1\MHFoodbank.Test.runtimeconfig.dev.json

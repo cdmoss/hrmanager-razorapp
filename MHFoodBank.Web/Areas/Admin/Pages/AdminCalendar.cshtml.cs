@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Identity;
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
     [Authorize(Roles = "Staff, Admin")]
+    [BindProperties]
     public class AdminCalendar : AdminPageModel
     {
         private readonly IReminderManager _reminderManager;
@@ -40,57 +41,36 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         #region model properties
         // for choosing a volunteer when editing/adding a shift
-        [BindProperty]
         public List<Position> Positions { get; set; }
-        [BindProperty]
         public string SelectedShiftPosition { get; set; }
-        [BindProperty]
         public string SelectedShiftVolunteer { get; set; }
-        [BindProperty]
         public DateTime OriginalStartDate { get; set; }
         // Created this property to grab the original start date for the whole recurring set.
         // This is needed along side selectedshift.startdate in the edit rec shift modal for the changing between single shift
         // and whole recurring set start date.
-        [BindProperty]
         public DateTime RecurrenceSetStartDate { get; set; }
-        [BindProperty]
         public ShiftReadEditDto SelectedShift { get; set; } = new ShiftReadEditDto();
         // for choosing a volunteer when editing/adding a shift
-        [BindProperty]
         public List<VolunteerMinimalDto> Volunteers { get; set; }
-        [BindProperty]
         public string SearchedName { get; set; }
-        [BindProperty]
         public int SearchedPositionId { get; set; }
-        [BindProperty]
         // position that was selected in the edit/delete position window
         public string SelectedPositionName { get; set; }
-        [BindProperty]
         public string NewPositionName { get; set; }
         // give user feedback after action
         public string StatusMessage { get; set; }
-        [BindProperty]
-        public Dictionary<int, int> ShiftAmounts { get; set; }
-
+        [BindProperty(Name = nameof(ShiftAmounts))]public Dictionary<int, int> ShiftAmounts { get; set; }
         // to change behaviour of recurring shift edit process, 
         // switches between editing only the selected shift or the whole recurring set
-        [BindProperty]
         public RecurringShiftEditType EditType { get; set; }
         #region weekdays for recurring shift add/edit window
         // these are bound to the checkboxes on the recurring shift add/edit window
-        [BindProperty]
         public bool Sunday { get; set; }
-        [BindProperty]
         public bool Monday { get; set; }
-        [BindProperty]
         public bool Tuesday { get; set; }
-        [BindProperty]
         public bool Wednesday { get; set; }
-        [BindProperty]
         public bool Thursday { get; set; }
-        [BindProperty]
         public bool Friday { get; set; }
-        [BindProperty]
         public bool Saturday { get; set; }
         #endregion
 
