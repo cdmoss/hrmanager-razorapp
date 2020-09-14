@@ -17,25 +17,13 @@
             <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
         }
 
-        <div>
-            <div class="input-group date" id="dtp-timeclock-search-start" data-target-input="nearest">
-                <input id="search-date-range-start" type="text" class="form-control datetimepicker-input datetime-readonly" value="@Model.SearchedStartDate.ToString("yyyy-MM-dd HH:mm")" asp-for="@Model.SearchedStartDate" data-target="#dtp-timeclock-search-start" readonly="readonly" />
-                <div class="input-group-append" data-target="#dtp-timeclock-search-start" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="centered" id="date-separator"><span>-</span></div>
-
-        <div>
-            <div class="input-group date" id="dtp-timeclock-search-end" data-target-input="nearest">
-                <input id="search-date-range-end" type="text" class="form-control datetimepicker-input datetime-readonly" value="@Model.SearchedEndDate.ToString("yyyy-MM-dd HH:mm")" asp-for="@Model.SearchedEndDate" data-target="#dtp-timeclock-search-end" readonly="readonly" />
-                <div class="input-group-append" data-target="#dtp-timeclock-search-end" data-toggle="datetimepicker">
-                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                </div>
-            </div>
-        </div>
+    <div id="search-range" class="d-flex date-pair">
+        <input type="text" class="form-control date start col-md-3 mr-1" value="@Model.SearchedStartDate.ToString("yyyy-MM-dd")" asp-for="@Model.SearchedStartDate" />
+        <input type="text" class="form-control time start col-md-2" value="@Model.SearchedStartTime.ToString(@"hh\:mm")" asp-for="@Model.SearchedStartTime" />
+        <div class="centered ml-1 mr-1 col-md-1"><span>-</span></div>
+        <input type="text" class="form-control date end col-md-3 mr-1" value="@Model.SearchedEndDate.ToString("yyyy-MM-dd")" asp-for="@Model.SearchedEndDate" />
+        <input type="text" class="form-control time end col-md-2" value="@Model.SearchedEndTime.ToString(@"hh\:mm")" asp-for="@Model.SearchedEndTime" />
+    </div>
 
         <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.Positions, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
         </select>
@@ -57,15 +45,15 @@
             <tr>
                 <th>Volunteer</th>
                 <th>Position</th>
-                <th>Start Date/Time</th>
-                <th>End Date/Time</th>
+                <th>Start (yyyy-mm-dd hh:ss)</th>
+                <th>End (yyyy-mm-dd hh:ss)</th>
                 <th>Duration</th>
                 <th></th>
             </tr>
         </thead>
         @foreach (var ct in Model.ClockedTimes)
         {
-            <tr>
+            <tr class="date-pair">
                 <td>
                     <!--this is for the delete modal-->
                     <input id="entry-id-@ct.Id" type="hidden" value="@ct.Id" />
@@ -91,23 +79,15 @@
                            readonly>
                 </td>
                 <td>
-                    <div>
-                        <div class="input-group date datetimepicker-datetime-start-entry" id="dtp-entry-start-@ct.Id" data-target-input="nearest">
-                            <input name="entry-starttime-@ct.Id" id="entry-starttime-@ct.Id" class="form-control datetimepicker-input" type="text" asp-for="@ct.StartTime" value="@ct.StartTime.ToString("yyyy-MM-dd HH:mm")" data-target="#dtp-entry-start-@ct.Id" readonly />
-                            <div class="input-group-append" data-target="#dtp-entry-start-@ct.Id" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                    <div class="d-flex">
+                        <input name="entry-startdate-@ct.Id" id="entry-startdate-@ct.Id" class="form-control date start col-md-8 mr-1" type="text" value="@ct.StartTime.Date.ToString("yyyy-MM-dd")" readonly/>
+                        <input name="entry-starttime-@ct.Id" id="entry-starttime-@ct.Id" class="form-control time start col-md-4" type="text" value="@ct.StartTime.TimeOfDay.ToString(@"hh\:mm")" readonly/>
                     </div>
                 </td>
                 <td>
-                    <div class="form-group">
-                        <div class="input-group date datetimepicker-datetime-end-entry" id="dtp-entry-endtime-@ct.Id" data-target-input="nearest">
-                            <input name="entry-endtime-@ct.Id" id="entry-endtime-@ct.Id" type="text" class="form-control datetimepicker-input" asp-for="@ct.EndTime?" value="@ct.EndTime?.ToString("yyyy-MM-dd HH:mm")" readonly data-target="#dtp-entry-endtime-@ct.Id" />
-                            <div class="input-group-append" data-target="#dtp-entry-endtime-@ct.Id" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                    <div class="d-flex">
+                        <input name="entry-enddate-@ct.Id" id="entry-enddate-@ct.Id" class="form-control date end col-md-8 mr-1" type="text" value="@ct.EndTime?.Date.ToString("yyyy-MM-dd")" readonly/>
+                        <input name="entry-endtime-@ct.Id" id="entry-endtime-@ct.Id" class="form-control time end col-md-4" type="text" value="@ct.EndTime?.TimeOfDay.ToString(@"hh\:mm")" readonly/>
                     </div>
                 </td>
                 <td>
@@ -129,7 +109,7 @@
                 </td>
                 <td style="text-align: right;">
                     <div class="btn-group unselected-buttons">
-                        <button type="button" class="btn btn-sm entry-edit-button btn-primary" onclick="makeEntryEditable(@ct.Id, false);validateTimePickers(this.parentElement.parentElement.parentElement)">Edit</button>
+                        <button type="button" class="btn btn-sm entry-edit-button btn-primary" onclick="makeEntryEditable(@ct.Id, false);">Edit</button>
                         @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
                         {
                             <button type="button" class="btn btn-sm entry-delete-button btn-danger" onclick="openDeleteModal(@ct.Id)">Delete</button>
@@ -171,34 +151,24 @@
                                list="volunteers"
                                id="add-time-volunteer"
                                required>
-                        <label id="add-time-start-label">Start</label>
-                        <div id="add-time-start">
-                            <div class="input-group date" id="dtp-timeclock-entry-start" data-target-input="nearest">
-                                <input id="timeclock-entry-start" type="text" class="form-control datetimepicker-input datetime-readonly" value="@Model.EntryStartDate" asp-for="@Model.EntryStartDate" data-target="#dtp-timeclock-entry-start" readonly="readonly" />
-                                <div class="input-group-append" data-target="#dtp-timeclock-entry-start" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="row align-items-center justify-content-center" id="add-time-separator"><span>-</span></div>
 
-                        <label id="add-time-end-label">End Date/Time</label>
+                        <label id="add-time-start-label">Start (yyyy-mm-dd hh:ss)</label>
+                        <label id="add-time-end-label">End (yyyy-mm-dd hh:ss)</label>
 
-                        <div id="add-time-end">
-                            <div class="input-group date" id="dtp-timeclock-entry-end" data-target-input="nearest">
-                                <input id="timeclock-entry-end" type="text" class="form-control datetimepicker-input datetime-readonly" value="@Model.EntryEndDate" asp-for="@Model.EntryEndDate" data-target="#dtp-timeclock-entry-end" readonly="readonly" />
-                                <div class="input-group-append" data-target="#dtp-timeclock-entry-end" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
+                        <div id="datetime-fields" class="date-pair d-flex">
+                            <input id="add-time-startdate" type="text" class="form-control date start col-md-3 mr-1" value="@Model.EntryStartDate.ToString("yyyy-MM-dd")" asp-for="@Model.EntryStartDate" />
+                            <input id="add-time-starttime" type="text" class="form-control time start col-md-2" value="@Model.EntryStartTime.ToString(@"hh\:mm")" asp-for="@Model.EntryStartTime" />
+                            <div class="row align-items-center justify-content-center col-md-2" id="add-time-separator"><span>-</span></div>
+                            <input id="add-time-startdate" type="text" class="form-control date end col-md-3 mr-1" value="@Model.EntryEndDate.ToString("yyyy-MM-dd")" asp-for="@Model.EntryEndDate" />
+                            <input id="add-time-starttime" type="text" class="form-control time end col-md-2" value="@Model.EntryEndTime.ToString(@"hh\:mm")" asp-for="@Model.EntryEndTime" />
                         </div>
 
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="AddEntry">Add</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal" >Cancel</button>
                 </div>
             </div>
         </div>
@@ -231,6 +201,26 @@
 <script src="~/js/clockedtime_edit_entries.js"></script>
 <script>
 
+    // initialize input widgets first
+    $('.time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'G:i',
+        'show2400': true,
+        'maxTime': '23:59',
+        'defaultTimeDelta': '60000',
+        'step': '15',
+        'disableTextInput': true
+    });
+
+    $('.date').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
+    });
+
+    // initialize datepair
+    $('.date-pair').datepair();
+
     document.getElementById('completed-tab').classList.add('active');
     document.getElementById('current-tab').classList.remove('active');
 
@@ -262,121 +252,10 @@
 
     document.getElementById('positions').innerHTML = options;
 
-    const entries = document.getElementsByTagName('TR');
-
-    function validateTimePickers(row) {
-        if (row.getElementsByTagName('TH').length === 0) {
-            const endTimeDiv = row.getElementsByClassName('datetimepicker-datetime-end-entry')[0];
-            const endTimeStr = endTimeDiv.getElementsByTagName('INPUT')[0].value;
-            //const endTime = moment(endTimeStr, "YYYY-MM-DD HH:mm");
-
-            const startTimeDiv = row.parentElement.getElementsByClassName('datetimepicker-datetime-start-entry')[0]
-            const startTimeStr = startTimeDiv.getElementsByTagName('INPUT')[0].value;
-            //const startTime = moment(startTimeStr, "YYYY-MM-DD HH:mm");
-
-            $(endTimeDiv).datetimepicker('minDate', startTimeStr);
-            $(startTimeDiv).datetimepicker('maxDate', endTimeStr);
-
-           // $(endTimeDiv).datetimepicker('minDate', moment({ d: startTime.date(), h: startTime.hour(), m: startTime.minutes() }));
-          //  $(startTimeDiv).datetimepicker('maxDate', moment({ d: endTime.date(), h: endTime.hour(), m: endTime.minutes() }));
-
-            $(startTimeDiv).on("change.datetimepicker", function (e) {
-                $(endTimeDiv).datetimepicker('minDate', e.date);
-            });
-
-            $(endTimeDiv).on("change.datetimepicker", function (e) {
-                $(startTimeDiv).datetimepicker('maxDate', e.date);
-            });
-        }
-    }
-
     function openDeleteModal(id) {
         $('#delete-entry-prompt').modal();
         let test = document.getElementById("entry-id-modal");
         let test1 = document.getElementById("entry-id-" + id);
         document.getElementById("entry-id-modal").value = document.getElementById("entry-id-" + id).value;
     }
-
-    const searchStart = document.getElementById('search-date-range-start').value;
-    const searchEnd = document.getElementById('search-date-range-end').value;
-
-    const entryStart = document.getElementById('timeclock-entry-start').value;
-    const entryEnd = document.getElementById('timeclock-entry-end').value;
-
-    $('.datetimepicker-datetime-start-entry').datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
-    });
-
-    $('.datetimepicker-datetime-end-entry').datetimepicker({
-        format: 'YYYY-MM-DD HH:mm'
-    });
-
-    $('#dtp-clockout-volunteer-endtime').datetimepicker({
-        date: moment(),
-        format: 'YYYY-MM-DD HH:mm'
-    });
-
-    $('#dtp-timeclock-search-start').datetimepicker({
-        date: moment().startOf('day'),
-        format: 'YYYY-MM-DD HH:mm',
-        ignoreReadonly: true,
-        maxDate: searchEnd
-    });
-
-    $('#dtp-timeclock-search-end').datetimepicker({
-        date: moment().add(1, 'days').startOf('day'),
-        format: 'YYYY-MM-DD HH:mm',
-        ignoreReadonly: true,
-        minDate: searchStart
-    });
-
-    $("#dtp-timeclock-search-start").on("change.datetimepicker", function (e) {
-        $('#dtp-timeclock-search-end').datetimepicker('minDate', e.date);
-    });
-
-    $("#dtp-timeclock-search-end").on("change.datetimepicker", function (e) {
-        $('#dtp-timeclock-search-start').datetimepicker('maxDate', e.date);
-    });
-
-    $('#dtp-timeclock-entry-start').datetimepicker({
-        ignoreReadonly: true,
-        date: moment(),
-        maxDate: entryEnd,
-        format: 'YYYY-MM-DD HH:mm'
-    });
-
-    $('#dtp-timeclock-entry-end').datetimepicker({
-        ignoreReadonly: true,
-        date: moment().add(5, 'hours'),
-        minDate: entryStart,
-        format: 'YYYY-MM-DD HH:mm'
-    });
-
-    $("#dtp-timeclock-entry-start").on("change.datetimepicker", function (e) {
-        $('#dtp-timeclock-entry-end').datetimepicker('minDate', e.date);
-    });
-
-    $("#dtp-timeclock-entry-end").on("change.datetimepicker", function (e) {
-        $('#dtp-timeclock-entry-start').datetimepicker('maxDate', e.date);
-    });
-
-    $('.datetimepicker-time-start').datetimepicker(
-        {
-            format: 'HH:mm',
-        });
-
-    $('.datetimepicker-time-end').datetimepicker(
-        {
-            format: 'HH:mm'
-        });
-
-    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
-        const endTimeDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-    });
-
-    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
-        const startTimeDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
-        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-    });
 </script>

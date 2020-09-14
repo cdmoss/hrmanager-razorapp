@@ -69,6 +69,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         public string NewPositionName { get; set; }
         // give user feedback after action
         public string StatusMessage { get; set; }
+        [BindProperty]
+        public Dictionary<int, int> ShiftAmounts { get; set; }
 
         // to change behaviour of recurring shift edit process, 
         // switches between editing only the selected shift or the whole recurring set
@@ -218,6 +220,167 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return RedirectToPage(new { statusMessage = successMessage });
         }
 
+        public async Task<IActionResult> OnPostAddManyShifts()
+        {
+            SelectedShiftPosition = _context.Positions.ToList()[0].Name;
+            var user = await _userManager.GetUserAsync(User);
+            bool isStaff = await _userManager.IsInRoleAsync(user, "staff");
+            bool isOpen = false;
+            string volstr = "";
+            string dateStr = "";
+            string startTimeStr = "";
+            string endTimeStr = "";
+            foreach (var position in ShiftAmounts)
+            {
+                var shiftAmount = Convert.ToInt32(position.Value);
+                if (shiftAmount > 0)
+                {
+                    for (int i = 0; i < shiftAmount; i++)
+                    {
+                        var shift = await MapShiftData(SelectedShift, new Shift());
+                        isOpen = SelectedShift.Volunteer == null;
+                        dateStr = shift.StartDate.ToString("D");
+                        startTimeStr = shift.StartTime.ToString();
+                        endTimeStr = shift.EndTime.ToString();
+                        if (!isOpen)
+                        {
+                            volstr = shift.Volunteer.FirstName + " " + shift.Volunteer.LastName;
+                        }
+                        shift.PositionWorked = _context.Positions.FirstOrDefault(p => p.Id == position.Key);
+
+                        if (shift.Description == "vol")
+                        {
+                            return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+                        }
+
+                        if (shift.Description == "pos")
+                        {
+                            return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+                        }
+
+                        if (shift.StartDate < DateTime.Now.AddDays(-1))
+                        {
+                            if (isStaff)
+                                return RedirectToPage(new { statusMessage = "Error: Only administrators are able to add shifts that are before today's date." });
+                        }
+
+                        await _context.Shifts.AddAsync(shift);
+                        await _context.SaveChangesAsync();
+
+                        if (shift.Volunteer != null)
+                        {
+                            AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
+                            _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            string successMessage;
+
+            if (isOpen)
+            {
+                successMessage = $"You successfully added multiple open shifts on " +
+                $"{dateStr} from " +
+                $"{startTimeStr} to {endTimeStr}.";
+            }
+            else
+            {
+                successMessage = $"You successfully added multiple shifts on " +
+                $"{dateStr} from " +
+                $"{startTimeStr} to {endTimeStr} worked by {volstr}.";
+            }
+
+            return RedirectToPage(new { statusMessage = successMessage });
+        }
+
+
+        public async Task<IActionResult> OnPostAddManyRecurringShifts()
+        {
+            // so mapshift data doesnt return null
+            SelectedShiftPosition = _context.Positions.ToList()[0].Name;
+            bool isOpen = false;
+            string volstr = "";
+            string startDateStr = "";
+            string endDateStr = "";
+            string startTimeStr = "";
+            string endTimeStr = "";
+            string weekdayStr = "";
+            foreach (var position in ShiftAmounts)
+            {
+                int shiftAmount = Convert.ToInt32(position.Value);
+                if (shiftAmount > 0)
+                {
+                    for (int i = 0; i < shiftAmount; i++)
+                    {
+                        if (SelectedShift.StartDate > SelectedShift.EndDate)
+                        {
+                            return await OnGet("Error: The start date must be before the end date.");
+                        }
+                        var shift = (RecurringShift)(await MapShiftData(SelectedShift, new RecurringShift()));
+                        isOpen = SelectedShift.Volunteer == null;
+                        startDateStr = shift.StartDate.ToString("D");
+                        endDateStr = shift.EndDate.ToString("D");
+                        startTimeStr = shift.StartTime.ToString();
+                        endTimeStr = shift.EndTime.ToString();
+                        if (!isOpen)
+                        {
+                            volstr = shift.Volunteer.FirstName + " " + shift.Volunteer.LastName;
+                        }
+                        weekdayStr = shift.NormalizedWeekdays;
+                        shift.PositionWorked = _context.Positions.FirstOrDefault(p => p.Id == position.Key);
+
+                        if (shift.Description == "vol")
+                        {
+                            return RedirectToPage(new { statusMessage = "Error: Please either enter a valid volunteer ID or select a volunteer from the list." });
+                        }
+
+                        if (shift.Description == "pos")
+                        {
+                            return RedirectToPage(new { statusMessage = "Error: Please either enter a valid position name or select a position from the list" });
+                        }
+
+                        if (string.IsNullOrEmpty(shift.Weekdays))
+                        {
+                            return RedirectToPage(new { statusMessage = "Error: You must select weekdays on which the shift should repeat." });
+                        }
+
+                        _context.RecurringShifts.Add(shift);
+
+                        // the first call establishes the new shift in the db with an id so that the reminder will be created properly
+                        await _context.SaveChangesAsync();
+
+                        // schedule email notification for shift
+                        if (shift.Volunteer != null)
+                        {
+                            AppUser volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == shift.Volunteer.Id);
+                            _reminderManager.ScheduleReminder(volunteerAccount.Email, shift.Volunteer, shift);
+                        }
+
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+
+            string successMessage;
+
+            if (isOpen)
+            {
+                successMessage = $"You successfully added multiple recurring sets of open shifts starting on " +
+                $"{startDateStr} and ending on {endDateStr} from " +
+                $"{startTimeStr} to {endTimeStr} occuring every {weekdayStr.TrimEnd(' ').TrimEnd(',')}";
+            }
+            else
+            {
+                successMessage = $"You successfully added multiple recurring sets of shifts starting on " +
+                $"{startDateStr} and ending on {endDateStr} from " +
+                $"{startTimeStr} to {endTimeStr} occuring every {weekdayStr.TrimEnd(' ').TrimEnd(',')} worked by {volstr}.";
+            }
+
+            return RedirectToPage(new { statusMessage = successMessage });
+        }
 
         public async Task<IActionResult> OnPostAddRecurringShift()
         {
@@ -704,6 +867,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             // get positions
             Positions = _context.Positions.Where(p => !p.Deleted).ToList();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
+
+            ShiftAmounts = new Dictionary<int, int>();
+
+            foreach (var position in Positions)
+            {
+                ShiftAmounts.Add(position.Id, 0);
+            }
 
             // update status message
             StatusMessage = statusMessage;

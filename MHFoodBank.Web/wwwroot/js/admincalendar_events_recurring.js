@@ -15,51 +15,7 @@ function populateRecurringShiftModal(selectedShift) {
     }
     else {
         document.getElementById("edit-recshift-volunteer").value = selectedShift.extendedProps.vol;
-    }
-
-    // initalize validation (must be done before assigning values to inputs to prevent duplicate assignment errors caused by the minDate/maxDate assignment)
-    let startTimeStr = recurringShiftStrings.startTime.split(':');
-    let startTime = moment({ h: startTimeStr[0], m: startTimeStr[1] })
-
-    let endTimeStr = recurringShiftStrings.endTime.split(':');
-    let endTime = moment({ h: endTimeStr[0], m: endTimeStr[1] });
-
-    $('#dtp-recshift-edit-endtime').datetimepicker('minDate', startTime);
-    $('#dtp-recshift-edit-starttime').datetimepicker('maxDate', endTime);
-
-    let startDate = recurringShiftStrings.recurringStartDate;
-    let endDate = recurringShiftStrings.recurringEndDate;
-
-    $('#dtp-admincalendar-edit-recshift-enddate').datetimepicker('minDate', startDate)
-    $('#dtp-admincalendar-edit-recshift-all-date').datetimepicker('maxDate', endDate)
-
-    $("#dtp-admincalendar-edit-recshift-all-date").on("change.datetimepicker", function (e) {
-        const endDateInput = document.getElementById('edit-recshift-enddate');
-        let originalDate = moment(endDateInput.value);
-        $('#dtp-admincalendar-edit-recshift-enddate').datetimepicker('minDate', e.date);
-        endDateInput.value = originalDate.format('YYYY-MM-DD');
-    });
-
-    $("#dtp-admincalendar-edit-recshift-enddate").on("change.datetimepicker", function (e) {
-        const startDateInput = document.getElementById('edit-recshift-all-startdate');
-        let originalDate = moment(startDateInput.value);
-        $('.datetimepicker-date-start').datetimepicker('maxDate', e.date);
-        startDateInput.value = originalDate.format('YYYY-MM-DD');
-    });
-
-    $("#dtp-recshift-edit-starttime").on("change.datetimepicker", function (e) {
-        const endTimeInput = document.getElementsById('edit-recshift-endtime');
-        let originalDate = moment(endTimeInput.value, 'HH:mm');
-        $('dtp-recshift-edit-endtime').datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-        endTimeInput.value = originalDate.format('HH:mm');
-    });
-
-    $("#dtp-recshift-edit-endtime").on("change.datetimepicker", function (e) {
-        const startTimeInput = startTimeDiv.getElementsById('edit-recshift-starttime')[0];
-        let originalDate = moment(startTimeInput.value, 'HH:mm');
-        $('dtp-recshift-edit-starttime').datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-        startTimeInput.value = originalDate.format('HH:mm');
-    });
+    }        
 
     // embeds id of selected shift into modal form
     document.getElementById("edit-recshift-id").value = selectedShift.id;

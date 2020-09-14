@@ -1,9 +1,9 @@
 ﻿@media (min-width: 1660px) {
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr .1fr 2fr 2fr 1fr 1fr;
+        grid-template-columns: 2fr 4fr 2fr 1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-start date-separator search-end search-position search-button add-time";
+        grid-template-areas: "search-name search-range search-position search-button add-time";
         gap: .5rem;
     }
 }
@@ -11,9 +11,9 @@
 @media (max-width: 1659px ) {
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr .5fr 2fr 2fr 1fr 1fr;
+        grid-template-columns: 2fr 4.5fr 2fr 1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-start date-separator search-end search-position search-button add-time";
+        grid-template-areas: "search-name search-range search-position search-button add-time";
         gap: .5rem;
     }
 }
@@ -21,9 +21,9 @@
 @media (max-width: 1414px) {
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr .5fr 2fr 2fr 1fr 1fr;
+        grid-template-columns: 2fr 4.5fr 2fr 1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-start date-separator search-end search-position search-button add-time";
+        grid-template-areas: "search-name search-range search-position search-button add-time";
         gap: .5rem;
     }
 }
@@ -35,9 +35,9 @@
 
     #container {
         display: grid;
-        grid-template-columns: 2fr 2fr .5fr 2fr 2fr 1fr 1fr;
+        grid-template-columns: 2fr 4.5fr 2fr 1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "search-name search-start date-separator search-end search-position search-button add-time";
+        grid-template-areas: "search-name search-range search-position search-button add-time";
         gap: .5rem;
     }
 }
@@ -46,16 +46,8 @@
     grid-area: search-name;
 }
 
-#search-start {
-    grid-area: search-start;
-}
-
-#search-end {
-    grid-area: search-end;
-}
-
-#date-separator {
-    grid-area: date-separator;
+#search-range {
+    grid-area: search-range;
 }
 
 #search-position {

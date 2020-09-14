@@ -40,10 +40,10 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
         [Required]
-        [Display(Name = "First name (Required)")]
+        [Display(Name = "First Name (Required)")]
         public string FirstName { get; set; }
         [Required]
-        [Display(Name = "Last name (Required)")]
+        [Display(Name = "Last Name (Required)")]
         public string LastName { get; set; }
         [Required]
         [Display(Name = "Address (Required)")]
@@ -52,43 +52,43 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "City (Required)")]
         public string City { get; set; }
         [Required]
-        [Display(Name = "Postal code (Required)")]
+        [Display(Name = "Postal Code (Required)")]
         [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         public string PostalCode { get; set; }
         [Required]
         [Display(Name = "Main phone (Required)")]
         [Phone]
         public string MainPhone { get; set; }
-        [Display(Name = "Alternate phone 1 (Optional)")]
+        [Display(Name = "Alternate Phone 1 (Optional)")]
         [Phone]
         public string AlternatePhone1 { get; set; }
-        [Display(Name = "Alternate phone 2 (Optional)")]
+        [Display(Name = "Alternate Phone 2 (Optional)")]
         [Phone]
         public string AlternatePhone2 { get; set; }
         [Required]
-        [Display(Name = "Birth date (Required)")]
+        [Display(Name = "Birth Date (Required)")]
         [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
         [Required]
-        [Display(Name = "Full name of emergency contact (Required)")]
+        [Display(Name = "Full Name of Emergency Contact (Required)")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [Display(Name = "Emergency contact phone 1 (Required)")]
+        [Display(Name = "Emergency Contact Phone 1 (Required)")]
         [Phone]
         public string EmergencyPhone1 { get; set; }
-        [Display(Name = "Emergency contact phone 2 (Optional)")]
+        [Display(Name = "Emergency Contact Phone 2 (Optional)")]
         [Phone]
         public string EmergencyPhone2 { get; set; }
         [Required]
-        [Display(Name = "Relationship to emergency contact (Required)")]
+        [Display(Name = "Relationship to Emergency Contact (Required)")]
         public string EmergencyRelationship { get; set; }
-        [Display(Name = "Food safe")]
+        [Display(Name = "Food Safe")]
         public bool FoodSafe { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "Level")]
         public string FirstAidCprLevel { get; set; }
-        [Display(Name = "First aid/Cpr")]
+        [Display(Name = "First Aid/Cpr")]
         public bool FirstAidCpr { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FirstAidCprExpiry { get; set; }
@@ -117,10 +117,10 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
         [Required]
-        [Display(Name = "First name (Required)")]
+        [Display(Name = "First Name (Required)")]
         public string FirstName { get; set; }
         [Required]
-        [Display(Name = "Last name (Required)")]
+        [Display(Name = "Last Name (Required)")]
         public string LastName { get; set; }
         [Required]
         [Display(Name = "Address (Required)")]
@@ -129,55 +129,55 @@ namespace MHFoodBank.Common.Dtos
         [Display(Name = "City (Required)")]
         public string City { get; set; }
         [Required]
-        [Display(Name = "Postal code (Required)")]
+        [Display(Name = "Postal Code (Required)")]
         [RegularExpression(Constants.Regex.postalCode, ErrorMessage = "Postal code must match one of the following expressions: LNLNLN, LNL-NLN, LNL NLN.")]
         public string PostalCode { get; set; }
         [Required]
-        [Display(Name = "Main phone (Required)")]
+        [Display(Name = "Main Phone (Required)")]
         [Phone]
         public string MainPhone { get; set; }
-        [Display(Name = "Alternate phone 1 (Optional)")]
+        [Display(Name = "Alternate Phone 1 (Optional)")]
         [Phone]
         public string AlternatePhone1 { get; set; }
-        [Display(Name = "Alternate phone 2 (Optional)")]
+        [Display(Name = "Alternate Phone 2 (Optional)")]
         [Phone]
         public string AlternatePhone2 { get; set; }
         [Required]
-        [Display(Name = "Birth date (Required)")]
+        [Display(Name = "Birth Date (Required)")]
         [DataType(DataType.Date)]
         public DateTime Birthdate { get; set; }
         [Required]
-        [Display(Name = "Full name of emergency contact (Required)")]
+        [Display(Name = "Full Name of Emergency Contact (Required)")]
         public string EmergencyFullName { get; set; }
         [Required]
-        [Display(Name = "Emergency contact phone 1 (Required)")]
+        [Display(Name = "Emergency Contact Phone 1 (Required)")]
         [Phone]
         public string EmergencyPhone1 { get; set; }
-        [Display(Name = "Emergency contact phone 2 (Optional)")]
+        [Display(Name = "Emergency Contact Phone 2 (Optional)")]
         [Phone]
         public string EmergencyPhone2 { get; set; }
         [Required]
-        [Display(Name = "Relationship to emergency contact (Required)")]
+        [Display(Name = "Relationship to Emergency Contact (Required)")]
         public string EmergencyRelationship { get; set; }
-        [Display(Name = "Food safe")]
+        [Display(Name = "Food Safe")]
         public bool FoodSafe { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FoodSafeExpiry { get; set; }
         [Display(Name = "Level")]
         public string FirstAidCprLevel { get; set; }
-        [Display(Name = "First aid/Cpr")]
+        [Display(Name = "First Aid/Cpr")]
         public bool FirstAidCpr { get; set; }
         [DataType(DataType.Date)]
         public DateTime? FirstAidCprExpiry { get; set; }
         [Display(Name = "Other Certificates")]
         public string OtherCertificates { get; set; }
-        [Display(Name = "Education and training")]
+        [Display(Name = "Education and Training")]
         public string EducationTraining { get; set; }
-        [Display(Name = "Skills, interests and hobbies")]
+        [Display(Name = "Skills, Interests and Hobbies")]
         public string SkillsInterestsHobbies { get; set; }
-        [Display(Name = "Previous volunteer experience")]
+        [Display(Name = "Previous Volunteer Experience")]
         public string VolunteerExperience { get; set; }
-        [Display(Name = "Other boards you've appeared on")]
+        [Display(Name = "Other Boards You've Appeared On")]
         public string OtherBoards { get; set; }
         public bool VolunteerConfidentiality { get; set; }
         public bool VolunteerEthics { get; set; }

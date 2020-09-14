@@ -3,7 +3,7 @@
         display: grid;
         grid-template-columns: 1fr .1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "add-time-start add-time-separator add-time-end";
+        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "datetime-fields datetime-fields datetime-fields";
         gap: .5rem;
     }
 }
@@ -13,7 +13,7 @@
         display: grid;
         grid-template-columns: 1fr .1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "add-time-start add-time-separator add-time-end";
+        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "datetime-fields datetime-fields datetime-fields";
         gap: .5rem;
     }
 }
@@ -23,7 +23,7 @@
         display: grid;
         grid-template-columns: 1fr .1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "add-time-start add-time-separator add-time-end";
+        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "datetime-fields datetime-fields datetime-fields";
         gap: .5rem;
     }
 }
@@ -37,12 +37,7 @@
         display: grid;
         grid-template-columns: 1fr .1fr 1fr;
         grid-template-rows: auto;
-        grid-template-areas: 
-            "add-time-position-label . add-time-volunteer-label"
-            "add-time-position . add-time-volunteer"
-            ". . ."
-            "add-time-start-label . add-time-end-label"
-            "add-time-start add-time-separator add-time-end";
+        grid-template-areas: "add-time-position-label . add-time-volunteer-label" "add-time-position . add-time-volunteer" ". . ." "add-time-start-label . add-time-end-label" "datetime-fields datetime-fields datetime-fields";
         gap: .5rem;
     }
 }
@@ -55,16 +50,8 @@
     grid-area: add-time-volunteer;
 }
 
-#add-time-start {
-    grid-area: add-time-start;
-}
-
-#add-time-end {
-    grid-area: add-time-end;
-}
-
-#add-time-separator {
-    grid-area: add-time-separator;
+#datetime-fields {
+    grid-area: datetime-fields;
 }
 
 #add-time-position-label {

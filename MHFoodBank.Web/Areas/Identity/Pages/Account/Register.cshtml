@@ -50,12 +50,12 @@
                 <!--Personal Information-->
                 <div class="row justify-content-center">
                     <div class="col-md-6 form-group text-left">
-                        <label asp-for="Volunteer.FirstName"></label>
+                        <label asp-for="Volunteer.FirstName">First Name</label>
                         <input asp-for="Volunteer.FirstName" class="form-control" />
                         <span asp-validation-for="Volunteer.FirstName" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 form-group text-left">
-                        <label asp-for="Volunteer.LastName"></label>
+                        <label asp-for="Volunteer.LastName">Last Name</label>
                         <input asp-for="Volunteer.LastName" class="form-control" />
                         <span asp-validation-for="Volunteer.LastName" class="text-danger"></span>
                     </div>
@@ -81,7 +81,7 @@
                     </div>
                     <div class="col-md-4 form-group">
                         <label asp-for="Volunteer.Birthdate"></label>
-                        <input asp-for="Volunteer.Birthdate" class="form-control" />
+                        <input value="@DateTime.Now" asp-for="Volunteer.Birthdate" class="form-control" />
                         <span asp-validation-for="Volunteer.Birthdate" class="text-danger"></span>
                     </div>
                 </div>
@@ -191,28 +191,10 @@
                     <label>Monday</label>
                     <div>
                         <div class="monday-fields">
-                            <div class="row ml-1 monday-field">
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-monday-1-1" data-target-input="nearest">
-                                        <input name="monday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-monday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-monday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row mt-1 ml-1 monday-field time-field form-group">
+                                <input name="monday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-monday-2-1" data-target-input="nearest">
-                                        <input name="monday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-monday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-monday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                                <input name="monday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="monday" type="button" value="Add Another Time" onclick="addField('monday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -222,27 +204,10 @@
                     <label>Tuesday</label>
                     <div>
                         <div class="tuesday-fields">
-                            <div class="row ml-1 tuesday-field">
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-tuesday-1-1" data-target-input="nearest">
-                                        <input name="tuesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-tuesday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-tuesday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 tuesday-field time-field form-group">
+                                <input name="tuesday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-tuesday-2-1" data-target-input="nearest">
-                                        <input name="tuesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-tuesday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-tuesday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="tuesday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="tuesday" type="button" value="Add Another Time" onclick="addField('tuesday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -252,26 +217,10 @@
                     <label>Wednesday</label>
                     <div>
                         <div class="wednesday-fields">
-                            <div class="row ml-1 wednesday-field">
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-wednesday-1-1" data-target-input="nearest">
-                                        <input name="wednesday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-wednesday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-wednesday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 wednesday-field time-field form-group">
+                                <input name="wednesday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-wednesday-2-1" data-target-input="nearest">
-                                        <input name="wednesday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-wednesday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-wednesday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="wednesday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="wednesday" type="button" value="Add Another Time" onclick="addField('wednesday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -281,26 +230,10 @@
                     <label>Thursday</label>
                     <div>
                         <div class="thursday-fields">
-                            <div class="row ml-1 thursday-field">
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-thursday-1-1" data-target-input="nearest">
-                                        <input name="thursday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-thursday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-thursday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 thursday-field time-field form-group">
+                                <input name="thursday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-thursday-2-1" data-target-input="nearest">
-                                        <input name="thursday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-thursday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-thursday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="thursday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="thursday" type="button" value="Add Another Time" onclick="addField('thursday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -310,26 +243,10 @@
                     <label>Friday</label>
                     <div>
                         <div class="friday-fields">
-                            <div class="row ml-1 friday-field">
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-friday-1-1" data-target-input="nearest">
-                                        <input name="friday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-friday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-friday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 friday-field time-field form-group">
+                                <input name="friday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-friday-2-1" data-target-input="nearest">
-                                        <input name="friday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-friday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-friday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="friday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="friday" type="button" value="Add Another Time" onclick="addField('friday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -339,26 +256,10 @@
                     <label>Saturday</label>
                     <div>
                         <div class="saturday-fields">
-                            <div class="row ml-1 saturday-field">
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-saturday-1-1" data-target-input="nearest">
-                                        <input name="saturday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-saturday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-saturday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 saturday-field time-field form-group">
+                                <input name="saturday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-saturday-2-1" data-target-input="nearest">
-                                        <input name="saturday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-saturday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-saturday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="saturday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="saturday" type="button" value="Add Another Time" onclick="addField('saturday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" /><br />
@@ -368,26 +269,10 @@
                     <label>Sunday</label>
                     <div>
                         <div class="sunday-fields">
-                            <div class="row ml-1 sunday-field">
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-start" id="dtp-sunday-1-1" data-target-input="nearest">
-                                        <input name="sunday-1-1" type="text" class="form-control datetimepicker-input start-time" data-target="#dtp-sunday-1-1" />
-                                        <div class="input-group-append" data-target="#dtp-sunday-1-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row ml-1 sunday-field time-field form-group">
+                                <input name="sunday-1-1" type="text" class="col-md-3 form-control time start" />
                                 <span class="col-md-1 justify-content-center">to</span>
-
-                                <div class="form-group">
-                                    <div class="input-group date datetimepicker-time-end" id="dtp-sunday-2-1" data-target-input="nearest">
-                                        <input name="sunday-2-1" type="text" class="form-control datetimepicker-input end-time" data-target="#dtp-sunday-2-1" />
-                                        <div class="input-group-append" data-target="#dtp-sunday-2-1" data-toggle="datetimepicker">
-                                            <div class="input-group-text"><i class="far fa-clock"></i></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <input name="sunday-2-1" type="text" class="col-md-3 form-control time end" />
                             </div>
                         </div>
                         <input id="sunday" type="button" value="Add Another Time" onclick="addField('sunday')" class="add-field btn-light btn-sm btn ml-1 mt-1 mb-2" />
@@ -534,43 +419,19 @@
 <script src="~/js/checkboxes.js"></script>
 
 <script>
-
-    $('.datetimepicker-time-start').datetimepicker({
-        format: 'HH:mm',
+    $('.time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'G:i',
+        'show2400': true,
+        'maxTime': '23:59',
+        'step': '15',
+        'disableTextInput': true
     });
 
-    $('.datetimepicker-time-end').datetimepicker({
-        format: 'HH:mm',
+    // initialize datepair
+    $('.time-field').datepair({
+        'defaultTimeDelta': '60000'
     });
-
-    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
-        const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-    });
-
-    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
-        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0];
-        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-    });
-
-    $('.datetimepicker-date-start').datetimepicker({
-        format: 'YYYY-MM-DD',
-    });
-
-    $('.datetimepicker-date-end').datetimepicker({
-        format: 'YYYY-MM-DD',
-    });
-
-    $(".datetimepicker-date-start").on("change.datetimepicker", function (e) {
-        const endDateDiv = this.parentElement.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-date-end')[0];
-        $(endDateDiv).datetimepicker('minDate', moment(e.date, 'YYYY-MM-DD'));
-    });
-
-    $(".datetimepicker-date-end").on("change.datetimepicker", function (e) {
-        const startDateDiv = this.parentElement.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-date-start')[0];
-        $(startDateDiv).datetimepicker('maxDate', moment(e.date, 'YYYY-MM-DD'));
-    });
-
 
     toggleCertificates('firstaid-check', ['firstaid-date', 'firstaid-level'], 'firstaid-container');
     toggleCertificates('foodsafe-check', ['foodsafe-date'], 'foodsafe-container');

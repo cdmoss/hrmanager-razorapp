@@ -5,25 +5,32 @@ function makeEntryEditable(id, isCurrent) {
     originalEntryValues = {
         volunteer: document.getElementById("entry-volunteer-" + id).value,
         position: document.getElementById("entry-position-" + id).value,
-        start: document.getElementById("entry-starttime-" + id).value,
+        startDate: document.getElementById("entry-startdate-" + id).value,
+        startTime: document.getElementById("entry-starttime-" + id).value,
     }
 
     if (!isCurrent) {
-        originalEntryValues.end = document.getElementById("entry-endtime-" + id).value
+        originalEntryValues.endDate = document.getElementById("entry-enddate-" + id).value
+        originalEntryValues.endTime = document.getElementById("entry-endtime-" + id).value
+
     }
 
     let volunteerField = document.getElementById("entry-volunteer-" + id);
     let positionField = document.getElementById("entry-position-" + id);
-    let startField = document.getElementById("entry-starttime-" + id);
-    let endField = document.getElementById("entry-endtime-" + id);
+    let startDateField = document.getElementById("entry-startdate-" + id);
+    let startTimeField = document.getElementById("entry-starttime-" + id);
+    let endDateField = document.getElementById("entry-enddate-" + id);
+    let endTimeField = document.getElementById("entry-endtime-" + id);
 
     let entryFields = [];
 
     entryFields.push(volunteerField);
     entryFields.push(positionField);
-    entryFields.push(startField);
+    entryFields.push(startDateField);
+    entryFields.push(startTimeField);
     if (!isCurrent) {
-        entryFields.push(endField);
+        entryFields.push(endDateField);
+        entryFields.push(endTimeField);
     }
 
     entryFields.forEach(function (field) {
@@ -63,8 +70,10 @@ function cancelEntryEdit(id) {
 
     document.getElementById("entry-volunteer-" + id).value = originalEntryValues.volunteer;
     document.getElementById("entry-position-" + id).value = originalEntryValues.position
-    document.getElementById("entry-starttime-" + id).value = originalEntryValues.start;
-    document.getElementById("entry-endtime-" + id).value = originalEntryValues.end;
+    document.getElementById("entry-startdate-" + id).value = originalEntryValues.startDate;
+    document.getElementById("entry-starttime-" + id).value = originalEntryValues.startTime;
+    document.getElementById("entry-enddate-" + id).value = originalEntryValues.endDate;
+    document.getElementById("entry-endtime-" + id).value = originalEntryValues.endTime;
 
     let unselectedButtons = Array.from(document.getElementsByClassName("unselected-buttons"));
 

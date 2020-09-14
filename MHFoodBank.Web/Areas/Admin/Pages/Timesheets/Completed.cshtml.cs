@@ -40,11 +40,19 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public DateTime SearchedStartDate { get; set; }
         [BindProperty]
+        public TimeSpan SearchedStartTime { get; set; }
+        [BindProperty]
         public DateTime SearchedEndDate { get; set; }
+        [BindProperty]
+        public TimeSpan SearchedEndTime { get; set; }
         [BindProperty]
         public DateTime EntryStartDate { get; set; }
         [BindProperty]
+        public TimeSpan EntryStartTime { get; set; }
+        [BindProperty]
         public DateTime EntryEndDate { get; set; }
+        [BindProperty]
+        public TimeSpan EntryEndTime { get; set; }
         [BindProperty]
         public List<ClockedTimeReadDto> ClockedTimes { get; set; }
         [BindProperty]
@@ -71,9 +79,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await PrepareModel();
 
             SearchedStartDate = DateTime.Now.Date;
+            SearchedStartTime = DateTime.Now.Date.TimeOfDay;
             SearchedEndDate = DateTime.Now.Date.AddDays(1);
+            SearchedEndTime = DateTime.Now.Date.TimeOfDay;
             EntryStartDate = DateTime.Now;
+            EntryStartTime = DateTime.Now.Date.TimeOfDay;
             EntryEndDate = DateTime.Now.AddHours(5);
+            EntryEndTime = DateTime.Now.AddHours(5).TimeOfDay;
         }
 
         public async Task<IActionResult> OnPostSaveChanges(int id)
@@ -96,7 +108,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 // return error
             }
+            var startDate = Convert.ToDateTime(Request.Form["entry-startdate-" + id]);
             var startTime = Convert.ToDateTime(Request.Form["entry-starttime-" + id]);
+
+            var endDate = Convert.ToDateTime(Request.Form["entry-enddate-" + id]);
             var endTime = Convert.ToDateTime(Request.Form["entry-endtime-" + id]);
 
             clockedTime.Volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.Id == volunteerId);
@@ -122,7 +137,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostAddEntry()
         {
-            string volunteerIdStr = VolunteerNameForAdd.Substring(0, 1);
+            string volunteerIdStr = VolunteerNameForAdd.Split(' ')[0];
             int volunteerId = 0;
             if (int.TryParse(volunteerIdStr, out int volIdParsed))
             {
@@ -140,12 +155,15 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(p => p.Id == volunteerId);
             var position = await _context.Positions.FirstOrDefaultAsync(p => p.Name == PositionNameForAdd);
 
+            var start = EntryStartDate + EntryStartTime;
+            var end = EntryEndDate + EntryEndTime;
+
             ClockedTime clock = new ClockedTime()
             {
                 Position = position,
                 Volunteer = volunteer,
-                StartTime = EntryStartDate,
-                EndTime = EntryEndDate
+                StartTime = start,
+                EndTime = end
             };
 
             _context.ClockedTime.Add(clock);
@@ -169,9 +187,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             int searchedPosId = SearchedPositionId;
             await PrepareModel();
 
+            var startDate = SearchedStartDate + SearchedStartTime;
+            var endDate = SearchedEndDate + SearchedEndTime;
+
             var searcher = new Searcher(_context);
             var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
-            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, searchedPosition, SearchedStartDate, SearchedEndDate);
+            ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, searchedPosition, startDate, endDate);
         }
 
         private async Task PrepareModel()

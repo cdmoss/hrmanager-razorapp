@@ -13,28 +13,23 @@ let fieldCount = {
 function removeField(button, day) {
     fieldCount[day]--;
 
-    const removeButtonIdIndex = Number(button.id.charAt(button.id.length - 1));
+    const fieldIndex = Number(button.id.charAt(button.id.length - 1));
     const wrapper = Array.from($("." + day + "-field"));
 
-    let fieldsAfterRemoveField = wrapper.slice(removeButtonIdIndex);
+    let fieldsAfterRemoveField = wrapper.slice(fieldIndex);
 
     fieldsAfterRemoveField.forEach(function (field){
-        const initialIdString = field.getElementsByClassName('input-group')[0].id;
-        const newFieldIndex = Number(initialIdString.charAt(initialIdString.length - 1)) - 1;
-        const dtpDiv = Array.from(field.getElementsByClassName('input-group'));
-        const dtpRemove = field.getElementsByTagName('BUTTON')[0];
+        const inputs = field.getElementsByTagName('INPUT');
+        const inputName = inputs[0].name;
+        const newFieldIndex = Number(inputName.charAt(inputName.length - 1)) - 1;
 
-        dtpRemove.id = "remove-" + day + "-" + newFieldIndex;
+        for (var i = 0; i < 2; i++) {
+            inputs[i].name = inputs[i].name.substring(0, inputs[i].name.length - 1) + newFieldIndex
+        }
 
-        dtpDiv.forEach(function (div){
-            div.id = div.id.slice(0, div.id.length - 1) + newFieldIndex;
-            const input = div.getElementsByTagName('INPUT')[0];
-            const dtpButton = div.getElementsByClassName('input-group-append')[0];
-            input.name = input.name.slice(0, input.name.length - 1) + newFieldIndex;
-            input.setAttribute('data-target', '#' + div.id);
-            dtpButton.setAttribute('data-target', '#' + div.id);
-        });
+        const removeButton = field.getElementsByTagName('BUTTON')[0];
 
+        removeButton.id = "remove-" + day + "-" + newFieldIndex;
     });
 
     button.parentElement.remove();
@@ -46,41 +41,23 @@ function addField(day) {
         if (fieldCount[day] < 5) { //max input box allowed
             fieldCount[day]++;
             removeButton = "remove-" + day + "-" + fieldCount[day];
-            $(wrapper).append("<div class='row ml-1 " + day + "-field'><div class='form-group'><div class='input-group date datetimepicker-time-start' id='dtp-" + day + "-1-" + fieldCount[day] + "' data-target-input='nearest'><input name='" + day + "-1-" + fieldCount[day] + "' type='text' class='form-control datetimepicker-input' data-target='#dtp-" + day + "-1-" + fieldCount[day] + "' /><div class='input-group-append' data-target='#dtp-" + day + "-1-" + fieldCount[day] + "' data-toggle='datetimepicker'><div class='input-group-text'><i class='far fa-clock'></i></div></div></div></div ><span class='col-md-1 justify-content-center'>to</span><div class='form-group'><div class='input-group date datetimepicker-time-end' id='dtp-" + day + "-2-" + fieldCount[day] + "' data-target-input='nearest'><input name='" + day + "-2-" + fieldCount[day] + "' type='text' class='form-control datetimepicker-input' data-target='#dtp-" + day + "-2-" + fieldCount[day] + "' /><div class='input-group-append' data-target='#dtp-" + day + "-2-" + fieldCount[day] + "' data-toggle='datetimepicker'><div class='input-group-text'><i class='far fa-clock'></i></div></div></div></div><button type='button' id='" + removeButton + "' class='btn btn-light ml-2 form-group'><i class='fas fa-trash'></i></button></div>"); //add input box
+            $(wrapper).append("<div class='row mt-1 ml-1 form-group " + day + "-field time-field'><input name='" + day + "-1-" + fieldCount[day] + "' type='text' class='col-md-3 form-control time start' /><span class='col-md-1 justify-content-center'>to</span><input name='" + day + "-2-" + fieldCount[day] +"' type='text' class='col-md-3 form-control time end' /><button type='button' id='" + removeButton + "' class='btn btn-light ml-2'><i class='fas fa-trash'></i></button></div >");
 
-            $(".datetimepicker-time-start").datetimepicker({
-                format: "HH:mm"
+            $('.time').timepicker({
+                'showDuration': true,
+                'timeFormat': 'G:i',
+                'show2400': true,
+                'maxTime': '23:59',
+                'defaultTimeDelta': '60000',
+                'step': '15',
+                'disableTextInput': true
             });
 
-            $(".datetimepicker-time-end").datetimepicker({
-                format: "HH:mm"
-            });
-
-            $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
-                const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-                $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-            });
-
-            $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
-                const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0]
-                $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-            });
+            // initialize datepair
+            $('.time-field').datepair();
 
             let newRemove = document.getElementById(removeButton);
             newRemove.onclick = removeField.bind(this, newRemove, day);
         }
 
 }
-
-// availability validators
-$.validator.addMethod("endtime_greater_starttime",
-    function (value, element) {
-        return Date.parse($(".end-time").val()) > Date.parse($(".start-time").val());
-    },
-    "End time must be after start time.");
-
-$("#availability").validate();
-$(".time").rules("add",
-    {
-        endtime_greater_starttime: true
-    });

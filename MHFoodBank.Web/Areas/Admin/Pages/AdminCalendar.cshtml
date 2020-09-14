@@ -14,7 +14,6 @@
     <link href='~/fullcalendar/packages/timegrid/main.css' rel='stylesheet' />
     <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
     <link href="~/css/admincalendar.css" rel="stylesheet" />
-    <link href="~/lib/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.css" rel="stylesheet" />
 }
 
 @section Scripts {
@@ -22,13 +21,11 @@
     <script src='~/fullcalendar/packages/interaction/main.js'></script>
     <script src='~/fullcalendar/packages/daygrid/main.js'></script>
     <script src='~/fullcalendar/packages/timegrid/main.js'></script>
+    <script src="~/lib/datepicker/datepicker.js"></script>
     <script src='~/fullcalendar/packages/list/main.js'></script>
     <script src="~/fullcalendar/vendor/rrule.js"></script>
+    <script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
     <script src="~/fullcalendar/packages/rrule/main.js"></script>
-    <script src="~/lib/datepair.js/datepair.js"></script>
-    <script src="~/lib/datepair.js/jquery.datepair.js"></script>
-    <script src="~/lib/jquery-timepicker/jquery.timepicker.js"></script>
-    <link href="~/lib/jquery-timepicker/jquery.timepicker.css" rel="stylesheet" />
 }
 <script src="~/js/admincalendar_events_recurring.js"></script>
 <script src="~/js/admincalendar_ui.js"></script>
@@ -68,33 +65,25 @@
             },
             select: function (arg) {
                 $('#add-shift-modal').modal();
-                startDate = moment(arg.start);
-                endDate = moment(arg.end);
 
-                $('#dtp-admincalendar-shift-end').datetimepicker('minDate', startDate);
-                $('#dtp-admincalendar-shift-start').datetimepicker('maxDate', endDate);
-
-                document.getElementById("add-shift-date").value = moment(startDate).format('yyyy-MM-DD');
-                document.getElementById("add-recshift-enddate").value = moment(endDate).format('yyyy-MM-DD');
+                document.getElementById("add-shift-date").value = moment(arg.start).format('yyyy-MM-DD');
+                document.getElementById("add-recshift-enddate").value = moment(arg.en).format('yyyy-MM-DD');
 
                 let startTime;
                 let endTime;
 
                 if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
                     // if an initial time isn't given via drag controls, set default times
-                    startTime = moment({ h: 8 }).format('HH:mm');
-                    endTime = moment({ h: 16, m: 30 }).format('HH:mm');
+                    startTime = "8:30";
+                    endTime = "16:30";
                 }
                 else {
-                    startTime = moment(startDate).format('HH:mm');
-                    endTime = moment(endDate).format('HH:mm');
+                    startTime = arg.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                    endTime = arg.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
                 }
 
-                $('#dtp-shift-add-endtime').datetimepicker('minDate', startTime);
-                $('#dtp-shift-add-starttime').datetimepicker('maxDate', endTime);
-
-                document.getElementById("add-shift-starttime").value = startTime;
-                document.getElementById("add-shift-endtime").value = endTime;
+                document.getElementById('add-shift-starttime').value = startTime;
+                document.getElementById('add-shift-endtime').value = endTime;
 
                 calendar.unselect();
             },
@@ -272,18 +261,11 @@
                     <h4 id="modalTitle" class="modal-title">Add Shift</h4>
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 </div>
-                <div id="modalBody" class="modal-body">
-                    <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date</label>
+                <div id="modalBody" class="modal-body datepair">
+                    <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date (yyyy-mm-dd)</label>
                     @*<input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">*@
 
-                    <div>
-                        <div class="input-group date datetimepicker-date-start" id="dtp-admincalendar-shift-start" data-target-input="nearest">
-                            <input id="add-shift-date" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-shift-start" />
-                            <div class="input-group-append" data-target="#dtp-admincalendar-shift-start" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
+                    <input id="add-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
 
                     <br />
                     <div>
@@ -293,18 +275,9 @@
                     <hr />
                     <div id="add-recshift-container" style="display: none">
 
-                        <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date</label>
-                        @*<input type="date" class="form-control dtp-notype" id="add-recshift-enddate" value="@DateTime.Now.Date.ToString("yyyy-MM-dd")" asp-for="@Model.SelectedShift.EndDate">
-                            <span asp-validation-for="@Model.SelectedShift.EndDate" class="text-danger"></span>*@
+                        <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date (yyyy-mm-dd)</label>
 
-                        <div>
-                            <div class="input-group date datetimepicker-date-end" id="dtp-admincalendar-shift-end" data-target-input="nearest">
-                                <input id="add-recshift-enddate" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndDate" data-target="#dtp-admincalendar-shift-end" />
-                                <div class="input-group-append" data-target="#dtp-admincalendar-shift-end" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
+                        <input id="add-recshift-enddate" type="text" class="form-control date end" asp-for="@Model.SelectedShift.EndDate" />
 
                         <hr />
 
@@ -339,16 +312,12 @@
                         </div>
                         <hr />
                     </div>
-                    <div id="add-shift-time-div">
-                        <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-
-                        <input type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
-
+                    <div class="time-field">
+                        <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
+                        <input id="add-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
                         <br />
-                        <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-
-
-                        <input type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+                        <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
+                        <input id="add-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
                     </div>
 
                     <hr />
@@ -368,19 +337,38 @@
                                required>
                     </div>
                     <hr />
-                    <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <input class="form-control"
-                           type="text"
-                           id="add-shift-position"
-                           asp-for="@Model.SelectedShiftPosition"
-                           list="positions"
-                           placeholder="Select a position..."
-                           required>
+                    <div>
+                        <input id="multiple-shift-add" type="checkbox" onclick="setShiftAsMultipleAdd()" />
+                        <label class="form-check-label">Add multiple shifts of with this date and time</label>
+                    </div>
+                    <div id="multiple-shifts-container" style="display: none;">
+                        <br/>
+                        @foreach (var position in Model.Positions)
+                        {
+                            <div class="d-flex mb-2">
+                                <label class="col-md-6">@position.Name</label>
+                                <input class="form-control col-md-2" type="number" asp-for="@Model.ShiftAmounts[position.Id]" required/>
+                            </div>
+                        }
+                    </div>
+                    <br/>
+                    <div id="position-container">
+                        <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
+                        <input class="form-control"
+                               type="text"
+                               id="add-shift-position"
+                               asp-for="@Model.SelectedShiftPosition"
+                               list="positions"
+                               placeholder="Select a position..."
+                               required>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button id="add-recshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add</button>
-                    <button id="add-shift-submit" class="btn btn-primary" asp-page-handler="AddShift">Add</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button id="add-manyshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyShifts">Add Shifts</button>
+                    <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyRecurringShifts">Add Recurring Shifts</button>
+                    <button id="add-recshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add Recurring Shift</button>
+                    <button id="add-shift-submit" class="btn btn-primary" asp-page-handler="AddShift">Add Shift</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -398,28 +386,19 @@
                 </div>
                 <div id="modalBody" class="modal-body">
                     <input type="hidden" id="edit-shift-id" asp-for="@Model.SelectedShift.Id">
-                    <label style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-                    @*<input asp-for="@Model.SelectedShift.StartDate" type="date" class="form-control" id="edit-shift-date" required>*@
-
-                    <div>
-                        <div class="input-group date datetimepicker-date-start" id="dtp-admincalendar-edit-shift-date" data-target-input="nearest">
-                            <input id="edit-shift-date" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-edit-shift-date" />
-                            <div class="input-group-append" data-target="#dtp-admincalendar-edit-shift-date" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
+                    <label style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
+                    <input id="edit-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
 
                     <hr />
 
-                    <div id="edit-shift-time-div">
-                        <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
+                    <div id="time-field">
+                        <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
 
                         <input id="edit-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
 
                         <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                        <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
 
                         <input id="edit-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
 
@@ -453,7 +432,7 @@
                     <button class="btn btn-primary" asp-page-handler="EditShift">Submit Change</button>
                     <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="handleDeletePrompt()">Delete</div>
                     <button class="btn btn-danger" id="edit-shift-delete-noprompt" asp-page-handler="DeleteShift">Delete</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -469,34 +448,13 @@
                     <h4 class="modal-title">Edit Recurring Shift</h4>
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body datepair">
                     <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
-                    <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date</label>
-
-                    @*<input type="text" class="form-control" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>*@
-
-                    <div>
-                        <div class="input-group date datetimepicker-date-start" id="dtp-admincalendar-edit-recshift-single-date" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" data-target="#dtp-admincalendar-edit-recshift-single-date" required>
-                            <div class="input-group-append" data-target="#dtp-admincalendar-edit-recshift-single-date" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
+                    <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
+                    <input type="text" class="form-control date" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
                     <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.OriginalStartDate" required>
-
-                    <div>
-                        <div class="input-group date datetimepicker-date-start" style="display: none;" id="dtp-admincalendar-edit-recshift-all-date" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" id="edit-recshift-all-startdate" asp-for="@Model.RecurrenceSetStartDate" data-target="#dtp-admincalendar-edit-recshift-all-date" required>
-                            <div class="input-group-append" data-target="#dtp-admincalendar-edit-recshift-all-date" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
-                    </div>
-
+                    <input type="text" style="display: none;" class="form-control date start" id="edit-recshift-all-startdate" asp-for="@Model.RecurrenceSetStartDate" required>
                     <hr />
-
                     <div>
                         <input onclick="toggleEditRecurringShiftControls()" type="radio" id="edit-recshift-display-single" asp-for="@Model.EditType" value="0" checked>
                         <label style="display: inline;" class="form-check-label">Selected Shift</label>
@@ -509,17 +467,7 @@
                     <div id="edit-recshift-container" style="display: none">
 
                         <label style="margin-top: 3px; padding-right: 10px;">End Recurring Set Date</label>
-                        @*<input type="date" class="form-control" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>*@
-
-                        <div>
-                            <div class="input-group date datetimepicker-date-end" id="dtp-admincalendar-edit-recshift-enddate" data-target-input="nearest">
-                                <input type="text" class="form-control datetimepicker-input" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" data-target="#dtp-admincalendar-edit-recshift-enddate" required>
-                                <div class="input-group-append" data-target="#dtp-admincalendar-edit-recshift-enddate" data-toggle="datetimepicker">
-                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                </div>
-                            </div>
-                        </div>
-
+                        <input type="text" class="form-control date end" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>
                         <hr />
 
                         <label style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
@@ -563,30 +511,12 @@
                     </div>
 
                     <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    @*<input type="text" class="time form-control" id="edit-recshift-starttime" asp-for="@Model.SelectedShift.StartTime" required>*@
-
-                    <div class="form-group">
-                        <div class="input-group date datetimepicker-time-start" id="dtp-recshift-edit-starttime" data-target-input="nearest">
-                            <input id="edit-recshift-starttime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.StartTime" data-target="#dtp-recshift-edit-starttime" />
-                            <div class="input-group-append" data-target="#dtp-recshift-edit-starttime" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="far fa-clock"></i></div>
-                            </div>
-                        </div>
-                    </div>
+                    <input id="edit-recshift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
 
                     <hr />
 
                     <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    @*<input type="text" class="time form-control" id="edit-recshift-endtime" asp-for="@Model.SelectedShift.EndTime" required>*@
-
-                    <div class="form-group">
-                        <div class="input-group date datetimepicker-time-end" id="dtp-recshift-edit-endtime" data-target-input="nearest">
-                            <input id="edit-recshift-endtime" type="text" class="form-control datetimepicker-input" asp-for="@Model.SelectedShift.EndTime" data-target="#dtp-recshift-edit-endtime" />
-                            <div class="input-group-append" data-target="#dtp-recshift-edit-endtime" data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="far fa-clock"></i></div>
-                            </div>
-                        </div>
-                    </div>
+                    <input id="edit-recshift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
 
                     <hr />
                     <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
@@ -615,7 +545,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="EditRecurringShift">Submit Change</button>
                     <button class="btn btn-danger" asp-page-handler="DeleteRecurringShift">Delete</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -639,7 +569,30 @@
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
                     <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<form class="shift-form" method="post">
+    <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
+    <div id="edit-recshift-single-confirm" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 id="modalTitle" class="modal-title">Attention</h4>
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                </div>
+                <div id="modalBody" class="modal-body">
+                    <p>This shift is part of a recurring set of shifts but its properties were changed from their original values.</p>
+                    <p>Would you like to completely delete this shift or restore its original properties?</p>
+                </div>
+                <div class="modal-footer">
+                    <button id="add-manyshift-submit" class="btn btn-primary" asp-page-handler="AddManyShifts">Add</button>
+                    <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
                 </div>
             </div>
         </div>
@@ -652,7 +605,7 @@
 <script>
 
     // initialize input widgets first
-    $('#add-shift-time-div .time').timepicker({
+    $('.time').timepicker({
         'showDuration': true,
         'timeFormat': 'G:i',
         'show2400': true,
@@ -663,46 +616,12 @@
     });
 
     // initialize datepair
-    $('#add-shift-time-div').datepair();
+    $('.time-field').datepair();
 
-    // initialize input widgets first
-    $('#edit-shift-time-div .time').timepicker({
-        'showDuration': true,
-        'timeFormat': 'G:i',
-        'show2400': true,
-        'maxTime': '23:59',
-        'defaultTimeDelta': '60000',
-        'step': '15',
-        'disableTextInput': true
-    });
-
-    // initialize datepair
-    $('#edit-shift-time-div').datepair();
-
-
-
-
-
-
-
-
-
-
-
-    $('.datetimepicker-time-start').datetimepicker({
-        format: 'HH:mm',
-    });
-
-    $('.datetimepicker-time-end').datetimepicker({
-        format: 'HH:mm',
-    });
-
-    $('.datetimepicker-date-start').datetimepicker({
-        format: 'YYYY-MM-DD',
-    });
-
-    $('.datetimepicker-date-end').datetimepicker({
-        format: 'YYYY-MM-DD',
+    $('.date').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true,
+        todayHighlight: true
     });
 
     let volunteers = new Array();
@@ -733,36 +652,4 @@
 
     document.getElementById('positions').innerHTML = options;
 
-    // this is what provides validation for add-shift modal. it could be moved to separate file
-    $(".datetimepicker-time-start").on("change.datetimepicker", function (e) {
-        const endTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-end')[0];
-        const endTimeInput = endTimeDiv.getElementsByTagName('INPUT')[0];
-        let originalDate = moment(endTimeInput.value, 'HH:mm');
-        $(endTimeDiv).datetimepicker('minDate', moment({ h: e.date.hour(), m: e.date.minutes() + 1 }));
-        endTimeInput.value = originalDate.format('HH:mm');
-    });
-
-    $(".datetimepicker-time-end").on("change.datetimepicker", function (e) {
-        const startTimeDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-time-start')[0];
-        const startTimeInput = startTimeDiv.getElementsByTagName('INPUT')[0];
-        let originalDate = moment(startTimeInput.value, 'HH:mm');
-        $(startTimeDiv).datetimepicker('maxDate', moment({ h: e.date.hour(), m: e.date.minutes() - 1 }));
-        startTimeInput.value = originalDate.format('HH:mm');
-    });
-
-    $(".datetimepicker-date-start").on("change.datetimepicker", function (e) {
-        const endDateDiv = this.parentElement.parentElement.getElementsByClassName('datetimepicker-date-end')[0];
-        const endDateInput = endDateDiv.getElementsByTagName('INPUT')[0];
-        let originalDate = moment(endDateInput.value, 'YYYY-MM-DD');
-        $(endDateDiv).datetimepicker('minDate', moment(e.date, 'YYYY-MM-DD'));
-        endDateInput.value = originalDate.format('YYYY-MM-DD');
-    });
-
-    $(".datetimepicker-date-end").on("change.datetimepicker", function (e) {
-        const startDateDiv = this.parentElement.parentElement.parentElement.getElementsByClassName('datetimepicker-date-start')[0];
-        const startDateInput = startDateDiv.getElementsByTagName('INPUT')[0];
-        let originalDate = moment(startDateInput.value, 'YYYY-MM-DD');
-        $(startDateDiv).datetimepicker('maxDate', moment(e.date, 'YYYY-MM-DD'));
-        startDateInput.value = originalDate.format('YYYY-MM-DD');
-    });
 </script>
