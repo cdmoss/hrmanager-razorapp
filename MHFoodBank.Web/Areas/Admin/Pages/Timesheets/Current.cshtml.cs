@@ -163,7 +163,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
                 .Include(p => p.Position)
                 .ToListAsync();
 
-            Positions = _context.Positions.Where(p => !p.Deleted).OrderByDescending(p => p.Name).ToList();
+            Positions = _context.Positions.Where(p => !p.Deleted).OrderBy(p => p.Name).ToList();
             SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
             Volunteers = _mapper.Map(volunteerDomainModels, Volunteers);
             clockedTimeDtos = _mapper.Map(clockedTimeDomainModels, clockedTimeDtos);
