@@ -86,9 +86,6 @@ namespace MHFoodBank.Web
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
             services.AddScoped<IPositionRepo, MySqlPositionRepo>();
 
-            //RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));
-            RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.MinuteInterval(1));
-
             services
                 .AddRazorPages()
                 .AddRazorPagesOptions(options =>
@@ -127,6 +124,8 @@ namespace MHFoodBank.Web
             GlobalConfiguration.Configuration.UseActivator(new CustomJobActivator(serviceProvider));
             app.UseHangfireDashboard();
             app.UseHangfireServer();
+
+            RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));
 
             app.UseEndpoints(endpoints =>
             {
