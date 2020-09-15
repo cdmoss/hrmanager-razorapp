@@ -58,6 +58,19 @@ namespace MHFoodBank.Web
                             TransactionTimeout = TimeSpan.FromMinutes(1)
                         }
                     )));
+            JobStorage.Current = new MySqlStorage(
+                        Configuration.GetConnectionString("HangfireConnection"),
+                        new MySqlStorageOptions
+                        {
+                            TransactionIsolationLevel = System.Data.IsolationLevel.ReadCommitted,
+                            QueuePollInterval = TimeSpan.FromSeconds(15),
+                            JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                            CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                            PrepareSchemaIfNecessary = true,
+                            DashboardJobListLimit = 50000,
+                            TransactionTimeout = TimeSpan.FromMinutes(1)
+                        }
+                    );
 
             services.AddOptions();
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
@@ -67,10 +80,14 @@ namespace MHFoodBank.Web
             services.AddScoped<IEmailSender, MailKitEmailSender>();
             services.AddScoped<IEmailConfirmationService, EmailConfirmationService>();
             services.AddScoped<IPasswordRecoveryService, PasswordRecoveryService>();
+            services.AddScoped<IEmailAvailableShiftService, EmailAvailableShiftService>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
             services.AddScoped<IPositionRepo, MySqlPositionRepo>();
+
+            //RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));
+            RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.MinuteInterval(1));
 
             services
                 .AddRazorPages()
@@ -83,7 +100,7 @@ namespace MHFoodBank.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager, FoodBankContext context)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager, FoodBankContext context, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -107,7 +124,9 @@ namespace MHFoodBank.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            GlobalConfiguration.Configuration.UseActivator(new CustomJobActivator(serviceProvider));
             app.UseHangfireDashboard();
+            app.UseHangfireServer();
 
             app.UseEndpoints(endpoints =>
             {

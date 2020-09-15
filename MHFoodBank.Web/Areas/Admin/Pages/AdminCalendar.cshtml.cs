@@ -677,9 +677,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task<IActionResult> OnPostSendNotifications()
         {
-            await PrepareModel(null);
+            //await PrepareModel(null);
 
-            return await SendNotifications();
+            return RedirectToPage();
         }
 
         private async Task<Shift> MapShiftData(ShiftReadEditDto dto, Shift shift)
@@ -735,97 +735,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             shift.CreateDescription();
 
             return shift;
-        }
-
-        private async Task<IActionResult> SendNotifications()
-        {
-            // if there are no shifts in db, redirect immediately
-            if (!_context.Shifts.Any())
-            {
-                return RedirectToPage();
-            }
-
-            // get all volunteers
-            List<AppUser> volunteersUserAccounts = await _context.Users.Where(u => u.VolunteerProfile != null).ToListAsync();
-
-            // for each volunteer, prepare a list of shifts that agrees with their availability
-            foreach (var volunteer in volunteersUserAccounts)
-            {
-                // if this volunteer has no availabilities, skip them
-                if (!volunteer.VolunteerProfile.Availabilities.Any())
-                {
-                    continue;
-                }
-
-                await _context.Entry(volunteer.VolunteerProfile).Collection(p => p.Availabilities).LoadAsync();
-                List<Shift> workableShifts = GetWorkableShiftsFromAvailabilites(volunteer.VolunteerProfile.Availabilities);
-                bool noWorkableShifts = !workableShifts.Any();
-
-                // skip the volunteer if they can't work any shifts
-                if (noWorkableShifts)
-                {
-                    continue;
-                }
-
-                string workableShiftsStr = "";
-
-                foreach (var shift in workableShifts)
-                {
-                    workableShiftsStr += ">   " + shift.StartDate.ToString("dddd, dd MMMM yyyy") + " - " + shift.StartTime + " until " + shift.EndTime + "\n";
-                }
-
-                await _emailSender.SendEmailAsync(volunteer.Email, "MHFB - Available open shifts", $"Hello { volunteer.VolunteerProfile.FirstName} { volunteer.VolunteerProfile.LastName}!\n\n"
-                 + $"According to your availability, you can volunteer for some currently open shifts:\n\n" +
-                           workableShiftsStr + "\nIf you can attend any of these shifts, sign up for them on your online account at <websitename> or email us at <email>.\n\n" +
-                           "Thanks again for volunteering at the Medicine Hat Food Bank,");
-
-            }
-            return RedirectToPage();
-        }
-
-        private List<Shift> GetWorkableShiftsFromAvailabilites(IList<Availability> availabilities)
-        {
-            // find all nonrecurring shifts that agree with the given availabilites
-            if (_context.Shifts.Any())
-            {
-                List<Shift> nonRecurringShifts = _context.Shifts
-                .Where(s =>
-                    !(s is RecurringShift) &&
-                    s.Volunteer == null &&
-                    s.StartDate > DateTime.Now &&
-                    availabilities
-                        .Any(a =>
-                            s.StartTime >= a.StartTime &&
-                            s.EndTime <= a.EndTime &&
-                            Enum.GetName(typeof(DayOfWeek), s.StartDate.DayOfWeek).ToLower() == a.AvailableDay)).ToList();
-
-                // find all recurring shifts that agree with the given availabilities
-                List<RecurringShift> recurringShifts = _context.RecurringShifts
-                    .Where(s =>
-                        s.Volunteer == null &&
-                        s.EndDate > DateTime.Now &&
-                        availabilities
-                            .Any(a =>
-                                s.StartTime >= a.StartTime &&
-                                s.EndTime <= a.EndTime)).ToList();
-
-                // merge the two lists of workable shifts
-                foreach (var recurringShift in recurringShifts)
-                {
-                    foreach (var shift in recurringShift.ConstituentShifts)
-                    {
-                        if (availabilities.Any(a =>
-                            a.AvailableDay == Enum.GetName(typeof(DayOfWeek), shift.StartDate.DayOfWeek).ToLower()))
-                        {
-                            nonRecurringShifts.Add(shift);
-                        }
-                    }
-                }
-
-                // order shifts by ascending date
-                return nonRecurringShifts.OrderBy(s => s.StartDate).ToList();
-            }
-            return null;
         }
 
         private async Task PrepareModel(string statusMessage)
