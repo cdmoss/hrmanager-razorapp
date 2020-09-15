@@ -339,11 +339,11 @@
                     <hr />
                     <div>
                         <input id="multiple-shift-add" type="checkbox" onclick="setShiftAsMultipleAdd()" />
-                        <label class="form-check-label">Add multiple shifts of with this date and time</label>
+                        <label class="form-check-label">Add multiple shifts with this date and time</label>
                     </div>
                     <div id="multiple-shifts-container" style="display: none;">
                         <br/>
-                        @foreach (var position in Model.Positions)
+                        @foreach (var position in Model.Positions.Where(p => p.Name != "All"))
                         {
                             <div class="d-flex mb-2">
                                 <label class="col-md-6">@position.Name</label>
