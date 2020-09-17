@@ -130,6 +130,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
 
         public async Task<IActionResult> OnPostAddNewStaff()
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             var newStaffProfile = _mapper.Map<VolunteerProfile>(NewStaff);
             newStaffProfile.IsStaff = true;
 
@@ -148,7 +153,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
             }
             else
             {
-                return RedirectToPage(new { statusMessage = $"Something went wrong when adding a the new staff member. Please try again or consult the admin." });
+                return RedirectToPage(new { statusMessage = $"Error: Something went wrong when adding the new staff member. Please try again or consult the admin." });
             }
         }
 

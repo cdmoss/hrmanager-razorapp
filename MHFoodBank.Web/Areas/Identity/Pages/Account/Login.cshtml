@@ -39,7 +39,7 @@
                         <div class="form-group">
                             <label asp-for="Input.Password"></label>
                             <input onclick="checkCapsLock()" asp-for="Input.Password" class="form-control pass" />
-                            <p class="text-center" style="display: none;" id="text">WARNING! Caps lock is ON.</p>
+                            <p class="text-center text" style="display: none;">WARNING! Caps lock is ON.</p>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
                         <div class="form-group text-center">

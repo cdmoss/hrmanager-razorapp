@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "3ikWVXBuZmAn7d8jfbbeUznI3jy4eZ4R7ds4wyvBXfZXUJ0QDmWdr2VEPiZ7m/ZKhJZqHv5j4NNK9JmD958LcA==",
+  "dgSpecHash": "WBk7fomxaKNOXZf0ncupNoNwwEW8y1VhJ0RbSErj6pA/njT8YpxXVAUfoxN5bilROgiskmH2CjWNeqMg+JUYUg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
   "expectedPackageFiles": [
@@ -118,6 +118,8 @@
     "C:\\Users\\Chase\\.nuget\\packages\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-arm64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\runtime.win-x64.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x64.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\runtime.win-x86.runtime.native.system.data.sqlclient.sni\\4.4.0\\runtime.win-x86.runtime.native.system.data.sqlclient.sni.4.4.0.nupkg.sha512",
+    "C:\\Users\\Chase\\.nuget\\packages\\syncfusion.ej2.aspnet.core\\18.2.0.58\\syncfusion.ej2.aspnet.core.18.2.0.58.nupkg.sha512",
+    "C:\\Users\\Chase\\.nuget\\packages\\syncfusion.licensing\\18.2.0.58\\syncfusion.licensing.18.2.0.58.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\system.appcontext\\4.3.0\\system.appcontext.4.3.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\system.buffers\\4.5.0\\system.buffers.4.5.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\system.collections\\4.3.0\\system.collections.4.3.0.nupkg.sha512",

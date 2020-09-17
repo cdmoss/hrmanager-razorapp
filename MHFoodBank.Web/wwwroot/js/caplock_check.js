@@ -2,7 +2,7 @@
 let input = document.getElementsByClassName("pass");
 
 // Get the warning text
-let text = document.getElementById("text");
+let text = document.getElementsByClassName("text");
 
 for (i = 0; i < input.length; i++) {
     // When the user presses any key on the keyboard, run the function
@@ -13,9 +13,11 @@ for (i = 0; i < input.length; i++) {
 
 function checkCapsLock() {
     // If "caps lock" is pressed, display the warning text
-    if (event.getModifierState("CapsLock")) {
-        text.style.display = "inline";
-    } else {
-        text.style.display = "none";
-    }
+    Array.from(text).forEach(function (input) {
+        if (event.getModifierState("CapsLock")) {
+            input.style.display = "inline";
+        } else {
+            input.style.display = "none";
+        }
+    });
 }

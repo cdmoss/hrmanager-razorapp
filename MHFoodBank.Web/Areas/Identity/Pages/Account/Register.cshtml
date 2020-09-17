@@ -34,15 +34,17 @@
                 <div class="row justify-content-center">
                     <div class="col-md-6 form-group text-left">
                         <label asp-for="Volunteer.Password">Password (Required)</label>
-                        <input onfocus="showRequirements()" onblur="hideRequirements()" asp-for="Volunteer.Password" class="form-control" />
-                        <span id="password-requirements" style="display: none;">
+                        <input onclick="checkCapsLock()" onfocus="showRequirements()" onblur="hideRequirements()" asp-for="Volunteer.Password" class="form-control pass" />
+                        <span id="password-requirements" class="text-danger" style="display: none;">
                             Must contain at least one letter, number and a special character (@@$!%*#?&)
                         </span>
+                        <p class="text-center text-danger text" style="display: none;">WARNING! Caps lock is ON.</p>
                         <span asp-validation-for="Volunteer.Password" class="text-danger"></span>
                     </div>
                     <div class="col-md-6 form-group text-left">
                         <label asp-for="Volunteer.ConfirmPassword">Confirm Password (Required)</label>
-                        <input asp-for="Volunteer.ConfirmPassword" class="form-control" />
+                        <input onclick="checkCapsLock()" asp-for="Volunteer.ConfirmPassword" class="form-control pass" />
+                        <p class="text-center text-danger text" style="display: none;">WARNING! Caps lock is ON.</p>
                         <span asp-validation-for="Volunteer.ConfirmPassword" class="text-danger"></span>
                     </div>
                 </div>
@@ -417,6 +419,7 @@
 
 <script src="~/js/availability.js"></script>
 <script src="~/js/checkboxes.js"></script>
+<script src="~/js/caplock_check.js"></script>
 
 <script>
     $('.time').timepicker({
