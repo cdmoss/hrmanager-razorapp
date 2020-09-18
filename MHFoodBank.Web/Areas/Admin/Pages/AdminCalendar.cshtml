@@ -1,4 +1,4 @@
-﻿@page
+﻿@page "{handler?}"
 @using MHFoodBank.Common
 @using MHFoodBank.Common.Dtos
 @using System.Web
@@ -33,7 +33,7 @@
 <script src="~/js/admincalendar_events_single.js"></script>
 <script src="~/js/admincalendar_validate.js"></script>
 
-<script>
+@*<script>
     $('.shift-form').validate({
         rules: {
             RecurrenceSetStartDate: {
@@ -169,7 +169,7 @@
         $('#calendar').addClass("h-75");
     });
 
-</script>
+</script>*@
 <div class="ml-5 mr-5">
     <partial name="_AdminStatusMessage" for="StatusMessage" />
     <form method="post" id="container">
@@ -195,7 +195,9 @@
     </form>
     <hr />
     <div>
-        <ejs-schedule id="schedule"></ejs-schedule>
+        <ejs-schedule id="schedule" selectedDate="DateTime.Now">
+            <e-schedule-eventsettings dataSource="@Model.Shifts"></e-schedule-eventsettings>
+        </ejs-schedule>
     </div>
 </div>
 
@@ -255,7 +257,7 @@
 </form>
 
 <!--modal for adding a shift-->
-<form class="shift-form" method="post">
+@*<form class="shift-form" method="post">
     <div id="add-shift-modal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -264,10 +266,10 @@
                     <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
                 </div>
                 <div id="modalBody" class="modal-body datepair">
-                    <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date (yyyy-mm-dd)</label>
+                    <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date (yyyy-mm-dd)</label>*@
                     @*<input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">*@
 
-                    <input id="add-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
+                    @*<input id="add-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
 
                     <br />
                     <div>
@@ -375,10 +377,10 @@
             </div>
         </div>
     </div>
-</form>
+</form>*@
 
 <!--modal for editing a shift-->
-<form class="shift-form" method="post">
+@*<form class="shift-form" method="post">
     <div id="edit-shift-modal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -439,10 +441,10 @@
             </div>
         </div>
     </div>
-</form>
+</form>*@
 
 <!--modal for editing a recurring shift-->
-<form class="shift-form" method="post">
+@*form class="shift-form" method="post">
     <div id="edit-recshift-modal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -552,10 +554,10 @@
             </div>
         </div>
     </div>
-</form>
+</form>*@
 
 <!--modal for choosing between deleting a individual recshift completely or returning it to original-->
-<form class="shift-form" method="post">
+@*<form class="shift-form" method="post">
     <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
     <div id="edit-recshift-single-confirm" class="modal fade">
         <div class="modal-dialog">
@@ -576,9 +578,9 @@
             </div>
         </div>
     </div>
-</form>
+</form>*@
 
-<form class="shift-form" method="post">
+@*<form class="shift-form" method="post">
     <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
     <div id="edit-recshift-single-confirm" class="modal fade">
         <div class="modal-dialog">
@@ -602,7 +604,7 @@
 </form>
 
 <datalist id="volunteers"></datalist>
-<datalist id="positions"></datalist>
+<datalist id="positions"></datalist>*@
 
 <script>
 

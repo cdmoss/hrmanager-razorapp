@@ -14,7 +14,7 @@
         cursor: pointer;
     }
 </style>
-<script>
+@*<script>
 
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
@@ -134,8 +134,8 @@
             $('#calendar').addClass("h-75");
         });
 
-</script>
-<div class="ml-5 mr-5">
+</script>*@
+@*<div class="ml-5 mr-5">
     <partial name="_VolunteerStatusMessage" for="StatusMessage" />
     @if (Model.Approved == ApprovalStatus.Approved)
     {
@@ -177,9 +177,9 @@
                             </select>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-primary" id="btn-workThisShift" asp-page-handler="WorkShift">Work This Shift</button>
+                            <button class="btn btn-primary" id="btn-workThisShift" asp-page-handler="WorkShift">Work This Shift</button>*@
                             @*<button class="btn btn-primary" id="btn-requestShiftChange" asp-page-handler="RequestChange">Request Shift Change</button>*@
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            @*<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -191,4 +191,4 @@
     {
         <h3>We will email you once your application has been approved, then you will you be able to view the calendar and sign up for shifts.</h3>
     }
-</div>
+</div>*@
