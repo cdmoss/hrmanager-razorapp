@@ -23,7 +23,8 @@ using Microsoft.EntityFrameworkCore.Internal;
 using MHFoodBank.Web.Services;
 using MHFoodBank.Common;
 using Microsoft.AspNetCore.Identity;
-using Syncfusion.EJ2;
+using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -77,7 +78,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         // populates the calendar with shifts currently in the db
         // Testing to see if we can just use recurring shift read edit dtos
-        public List<ShiftReadEditDto> Shifts { get; set; }
         #endregion
 
         private readonly IMapper _mapper;
@@ -90,11 +90,79 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _emailSender = emailSender;
         }
 
-        public async Task OnGet([FromBody]DataManager dataManager)
+        public async Task OnGet()
         {
             await PrepareModel(null);
+        }
 
-            Shifts = new List<ShiftReadEditDto>();
+        private async Task PrepareModel(string statusMessage)
+        {
+            // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
+            var volunteerDomainModels = await _context.VolunteerProfiles
+                .Include(p => p.Positions)
+                .Where(v => v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
+            var shiftDomainModels = await _context.Shifts
+                .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
+                .Include(p => p.PositionWorked).ToListAsync();
+
+            ShiftMapper map = new ShiftMapper(_mapper);
+            //Shifts = map.MapShiftsToDtos(shiftDomainModels);
+
+            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
+
+            // get positions
+            Positions = _context.Positions.Where(p => !p.Deleted).OrderBy(p => p.Name).ToList();
+            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
+
+            ShiftAmounts = new Dictionary<int, int>();
+
+            foreach (var position in Positions)
+            {
+                ShiftAmounts.Add(position.Id, 0);
+            }
+
+            // update status message
+            StatusMessage = statusMessage;
+        }
+
+        public async Task OnPostSearch()
+        {
+            //store in local variable so it doesn't get overwritten by prepare model
+            int searchedPosId = SearchedPositionId;
+            await PrepareModel(null);
+
+            var searcher = new Searcher(_context);
+            var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
+            //Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, searchedPosition);
+        }
+
+        public async Task<JsonResult> OnPostAddPosition()
+        {
+            // get entered name and check if a position with that name exists
+
+            bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
+            bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
+
+            //if (positionAlreadyExists)
+            //{
+            //    return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
+            //}
+            //else if (noPositionNameEntered)
+            //{
+            //    return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
+            //}
+
+            Position position = new Position { Name = NewPositionName };
+            await _context.Positions.AddAsync(position);
+            await _context.SaveChangesAsync();
+
+            //return RedirectToPage(new { statusMessage = $"You successfully added {position.Name} to the list of positions." });
+            return null;
+        }
+
+        public JsonResult OnPostGetData()
+        {
+            var Shifts = new List<ShiftReadEditDto>();
             Shifts.Add(new ShiftReadEditDto
             {
                 Id = 1,
@@ -123,77 +191,10 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 StartTime = new DateTime(2020, 9, 16, 13, 0, 0),
                 EndTime = new DateTime(2020, 9, 16, 14, 30, 0)
             });
-            //await PrepareModel(statusMessage);
-
-            //return Page();
+            return new JsonResult(Shifts);
         }
 
-        private async Task PrepareModel(string statusMessage)
-        {
-            // get shifts, recurring shifts and volunteers in domain model form then map them to dtos
-            var volunteerDomainModels = await _context.VolunteerProfiles
-                .Include(p => p.Positions)
-                .Where(v => v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
-            var shiftDomainModels = await _context.Shifts
-                .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
-                .Include(p => p.PositionWorked).ToListAsync();
-
-            ShiftMapper map = new ShiftMapper(_mapper);
-            Shifts = map.MapShiftsToDtos(shiftDomainModels);
-
-            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
-
-            // get positions
-            Positions = _context.Positions.Where(p => !p.Deleted).OrderBy(p => p.Name).ToList();
-            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
-
-            ShiftAmounts = new Dictionary<int, int>();
-
-            foreach (var position in Positions)
-            {
-                ShiftAmounts.Add(position.Id, 0);
-            }
-
-            // update status message
-            StatusMessage = statusMessage;
-        }
-
-        public async Task OnPostSearch()
-        {
-            //store in local variable so it doesn't get overwritten by prepare model
-            int searchedPosId = SearchedPositionId;
-            await PrepareModel(null);
-
-            var searcher = new Searcher(_context);
-            var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
-            Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, searchedPosition);
-        }
-
-        public async Task<JsonResult> OnPostAddPosition()
-        {
-            // get entered name and check if a position with that name exists
-
-            bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
-            bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
-
-            //if (positionAlreadyExists)
-            //{
-            //    return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
-            //}
-            //else if (noPositionNameEntered)
-            //{
-            //    return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
-            //}
-
-            Position position = new Position { Name = NewPositionName };
-            await _context.Positions.AddAsync(position);
-            await _context.SaveChangesAsync();
-
-            //return RedirectToPage(new { statusMessage = $"You successfully added {position.Name} to the list of positions." });
-            return null;
-        }
-
-        public async Task<JsonResult> OnPostEditPosition()
+        public async Task<IActionResult> OnPostEditPosition()
         {
             bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
             bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);

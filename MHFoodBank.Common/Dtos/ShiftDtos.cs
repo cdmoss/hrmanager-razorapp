@@ -15,6 +15,9 @@ namespace MHFoodBank.Common.Dtos
         public Position PositionWorked { get; set; }
         public VolunteerMinimalDto Volunteer { get; set; }
         public string Description { get; set; }
+        public bool IsRecurrence { get; set; }
+        public bool IsAllDay { get; set; }
+        public ResourceFields ResourceFields { get; set; }
         public string RecurrenceRule { get; set; }
         public string RecurrenceException { get; set; }
         public int? RecurrenceID { get; set; }

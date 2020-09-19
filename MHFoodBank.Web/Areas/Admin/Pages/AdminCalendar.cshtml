@@ -34,142 +34,142 @@
 <script src="~/js/admincalendar_validate.js"></script>
 
 @*<script>
-    $('.shift-form').validate({
-        rules: {
-            RecurrenceSetStartDate: {
-                compareDates: ['add-shift-date', 'add-recshift-enddate']
-            }
-        }
-    });
-
-    // calendar stuff
-    document.addEventListener('DOMContentLoaded', function () {
-        let calendarEl = document.getElementById('calendar');
-        let calendar = new FullCalendar.Calendar(calendarEl, {
-            timeZone: 'local',
-            height: 725,
-            nowIndicator: true,
-            plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'],
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-            },
-            navLinks: true, // can click day/week names to navigate views
-            selectable: true,
-            selectMirror: true,
-            allDaySlot: false,
-            firstDay: 0,
-            eventClick: function (shiftInfo) {
-                handleEventClick(shiftInfo)
-            },
-            select: function (arg) {
-                $('#add-shift-modal').modal();
-
-                document.getElementById("add-shift-date").value = moment(arg.start).format('yyyy-MM-DD');
-                document.getElementById("add-recshift-enddate").value = moment(arg.en).format('yyyy-MM-DD');
-
-                let startTime;
-                let endTime;
-
-                if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
-                    // if an initial time isn't given via drag controls, set default times
-                    startTime = "8:30";
-                    endTime = "16:30";
+        $('.shift-form').validate({
+            rules: {
+                RecurrenceSetStartDate: {
+                    compareDates: ['add-shift-date', 'add-recshift-enddate']
                 }
-                else {
-                    startTime = arg.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                    endTime = arg.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-                }
-
-                document.getElementById('add-shift-starttime').value = startTime;
-                document.getElementById('add-shift-endtime').value = endTime;
-
-                calendar.unselect();
-            },
-            weekNumbers: true,
-            weekNumbersWithinDays: true,
-            weekNumberCalculation: 'ISO',
-            eventLimit: true, // allow "more" link when too many events
-            eventSources: [
-                {
-                    events: [
-                        @foreach (var s in Model.Shifts.Where(s => s.Volunteer != null))
-                        {
-                            <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                    {
-                                        <text>
-                                    // rrule converts the end date into utc here, so a one day offset is applied, see line 90 in RecurringShift.cs
-                                            rrule: '@s.RecurrenceRule',
-                                            duration: '@((s.EndTime - s.StartTime).ToString())',
-                                        </text>
-                                    }
-                                    else
-                                    {
-                                        <text>
-                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T";@y}@s.StartTime',
-                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
-                                    }
-
-                                    posWorked: '@(s.PositionWorked.Name)',
-                                    vol: '@s.Volunteer.FullNameWithID',
-                                    // this is set so that the recurring shift modal is displayed even though this is an individual shift
-                                    wasPartOfRecurring: '@s.ParentRecurringShiftId'
-
-                                },
-                            </text>
-                        }
-                    ],
-                },
-                {
-                    events: [
-                        @foreach (var s in Model.Shifts.Where(s => s.Volunteer == null))
-                            {
-                            <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                    {
-                                        <text>
-                                            rrule: '@s.RecurrenceRule',
-                                            duration: '@((s.EndTime - s.StartTime).ToString())',
-                                        </text>
-                                    }
-                                    else
-                                    {
-                                        <text>
-                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
-                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
-                                    }
-                                    posWorked: '@(s.PositionWorked.Name)',
-                                    vol: 'Open',
-                                    wasPartOfRecurring: '@s.ParentRecurringShiftId'
-                                },
-                            </text>
-                            }
-                    ],
-                    color: '#06A893',
-                }
-            ],
-            eventTimeFormat: {
-                hour: "2-digit",
-                minute: "2-digit",
-                meridiem: false,
-                hour12: false
             }
         });
-        calendar.render();
-        $('#calendar').addClass("h-75");
-    });
 
-</script>*@
+        // calendar stuff
+        document.addEventListener('DOMContentLoaded', function () {
+            let calendarEl = document.getElementById('calendar');
+            let calendar = new FullCalendar.Calendar(calendarEl, {
+                timeZone: 'local',
+                height: 725,
+                nowIndicator: true,
+                plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'],
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+                },
+                navLinks: true, // can click day/week names to navigate views
+                selectable: true,
+                selectMirror: true,
+                allDaySlot: false,
+                firstDay: 0,
+                eventClick: function (shiftInfo) {
+                    handleEventClick(shiftInfo)
+                },
+                select: function (arg) {
+                    $('#add-shift-modal').modal();
+
+                    document.getElementById("add-shift-date").value = moment(arg.start).format('yyyy-MM-DD');
+                    document.getElementById("add-recshift-enddate").value = moment(arg.en).format('yyyy-MM-DD');
+
+                    let startTime;
+                    let endTime;
+
+                    if (arg.startStr.indexOf('T') < 0 || arg.endStr.indexOf('T') < 0) {
+                        // if an initial time isn't given via drag controls, set default times
+                        startTime = "8:30";
+                        endTime = "16:30";
+                    }
+                    else {
+                        startTime = arg.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                        endTime = arg.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+                    }
+
+                    document.getElementById('add-shift-starttime').value = startTime;
+                    document.getElementById('add-shift-endtime').value = endTime;
+
+                    calendar.unselect();
+                },
+                weekNumbers: true,
+                weekNumbersWithinDays: true,
+                weekNumberCalculation: 'ISO',
+                eventLimit: true, // allow "more" link when too many events
+                eventSources: [
+                    {
+                        events: [
+                            @foreach (var s in Model.Shifts.Where(s => s.Volunteer != null))
+                            {
+                                <text>
+                                    {
+                                        id: '@s.Id',
+                                        title: '@s.Description',
+                                        @if (s.RecurrenceRule != null)
+                                        {
+                                            <text>
+                                        // rrule converts the end date into utc here, so a one day offset is applied, see line 90 in RecurringShift.cs
+                                                rrule: '@s.RecurrenceRule',
+                                                duration: '@((s.EndTime - s.StartTime).ToString())',
+                                            </text>
+                                        }
+                                        else
+                                        {
+                                            <text>
+                                                start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T";@y}@s.StartTime',
+                                                end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                            </text>
+                                        }
+
+                                        posWorked: '@(s.PositionWorked.Name)',
+                                        vol: '@s.Volunteer.FullNameWithID',
+                                        // this is set so that the recurring shift modal is displayed even though this is an individual shift
+                                        wasPartOfRecurring: '@s.ParentRecurringShiftId'
+
+                                    },
+                                </text>
+                            }
+                        ],
+                    },
+                    {
+                        events: [
+                            @foreach (var s in Model.Shifts.Where(s => s.Volunteer == null))
+                                {
+                                <text>
+                                    {
+                                        id: '@s.Id',
+                                        title: '@s.Description',
+                                        @if (s.RecurrenceRule != null)
+                                        {
+                                            <text>
+                                                rrule: '@s.RecurrenceRule',
+                                                duration: '@((s.EndTime - s.StartTime).ToString())',
+                                            </text>
+                                        }
+                                        else
+                                        {
+                                            <text>
+                                                start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
+                                                end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
+                                            </text>
+                                        }
+                                        posWorked: '@(s.PositionWorked.Name)',
+                                        vol: 'Open',
+                                        wasPartOfRecurring: '@s.ParentRecurringShiftId'
+                                    },
+                                </text>
+                                }
+                        ],
+                        color: '#06A893',
+                    }
+                ],
+                eventTimeFormat: {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    meridiem: false,
+                    hour12: false
+                }
+            });
+            calendar.render();
+            $('#calendar').addClass("h-75");
+        });
+
+    </script>*@
 <div class="ml-5 mr-5">
     <partial name="_AdminStatusMessage" for="StatusMessage" />
     <form method="post" id="container">
@@ -194,10 +194,20 @@
         </div>
     </form>
     <hr />
+
+    @{ 
+        List<ShiftReadEditDto> shift = new List<ShiftReadEditDto>();
+        shift.Add(new ShiftReadEditDto
+        { Id = 1, StartTime = DateTime.Now,
+            EndTime = DateTime.Now.AddHours(1), Description = "", IsAllDay = false, IsRecurrence = false });
+    }
+
     <div>
-        <ejs-schedule id="schedule" selectedDate="DateTime.Now">
-            <e-schedule-eventsettings dataSource="@Model.Shifts"></e-schedule-eventsettings>
-        </ejs-schedule>
+        <ej-schedule id="Schedule1" width="100%" height="525px" current-date="DateTime.Now" read-only="true">
+            <e-appointment-settings datasource="shift" id='"ShiftId"' subject='"Description"' start-time='"StartTime"' end-time='"EndTime"' all-day='"IsAllDay"' recurrence='"IsRecurrence"' recurrence-rule='"RecurrenceRule"'>
+                @*<e-datamanager url="/Home/GetData" adaptor="UrlAdaptor"></e-datamanager>*@
+            </e-appointment-settings>
+        </ej-schedule>
     </div>
 </div>
 
@@ -267,344 +277,344 @@
                 </div>
                 <div id="modalBody" class="modal-body datepair">
                     <label style="margin-top: 3px; padding-right: 10px;" for="add-shift-date">Shift Date (yyyy-mm-dd)</label>*@
-                    @*<input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">*@
+@*<input type="date" class="form-control" id="add-shift-date" asp-for="@Model.SelectedShift.StartDate">*@
 
-                    @*<input id="add-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
+@*<input id="add-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
 
-                    <br />
-                    <div>
-                        <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
-                        <label class="form-check-label" for="dateRecurr">Make this shift a recurring shift</label>
-                    </div>
-                    <hr />
-                    <div id="add-recshift-container" style="display: none">
-
-                        <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date (yyyy-mm-dd)</label>
-
-                        <input id="add-recshift-enddate" type="text" class="form-control date end" asp-for="@Model.SelectedShift.EndDate" />
-
-                        <hr />
-
-                        <label id="lblSelectDays" style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-sunday" asp-for="Sunday" />
-                            <label class="form-check-label">Sunday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-monday" asp-for="Monday" />
-                            <label class="form-check-label">Monday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-tuesday" asp-for="Tuesday" />
-                            <label class="form-check-label">Tuesday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-wednesday" asp-for="Wednesday" />
-                            <label class="form-check-label">Wednesday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-thursday" asp-for="Thursday" />
-                            <label class="form-check-label">Thursday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-friday" asp-for="Friday" />
-                            <label class="form-check-label">Friday</label>
-                        </div>
-                        <div class="col-md-6 form-check">
-                            <input id="add-recshift-weekday-saturday" asp-for="Saturday" />
-                            <label class="form-check-label">Saturday</label>
-                        </div>
-                        <hr />
-                    </div>
-                    <div class="time-field">
-                        <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
-                        <input id="add-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
                         <br />
-                        <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
-                        <input id="add-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
-                    </div>
+                        <div>
+                            <input onclick="toggleAddRecurringShiftControls()" type="checkbox" id="add-recshift-display" name="dateRecurr">
+                            <label class="form-check-label" for="dateRecurr">Make this shift a recurring shift</label>
+                        </div>
+                        <hr />
+                        <div id="add-recshift-container" style="display: none">
 
-                    <hr />
-                    <div>
-                        <input id="open-shift-add" type="checkbox" onclick="setShiftAsOpenAdd()" />
-                        <label class="form-check-label">Make this shift open</label>
-                    </div>
-                    <br />
-                    <div id="volunteer-container-add">
-                        <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
-                        <input class="form-control"
-                               type="text"
-                               id="add-shift-volunteer"
-                               asp-for="@Model.SelectedShiftVolunteer"
-                               list="volunteers"
-                               placeholder="Select a volunteer..."
-                               required>
-                    </div>
-                    <hr />
-                    <div>
-                        <input id="multiple-shift-add" type="checkbox" onclick="setShiftAsMultipleAdd()" />
-                        <label class="form-check-label">Add multiple shifts with this date and time</label>
-                    </div>
-                    <div id="multiple-shifts-container" style="display: none;">
-                        <br/>
-                        @foreach (var position in Model.Positions.Where(p => p.Name != "All"))
-                        {
-                            <div class="d-flex mb-2">
-                                <label class="col-md-6">@position.Name</label>
-                                <input class="form-control col-md-2" type="number" asp-for="@Model.ShiftAmounts[position.Id]" required/>
+                            <label style="margin-top: 3px; padding-right: 10px;" for="add-recshift-enddate">End Date (yyyy-mm-dd)</label>
+
+                            <input id="add-recshift-enddate" type="text" class="form-control date end" asp-for="@Model.SelectedShift.EndDate" />
+
+                            <hr />
+
+                            <label id="lblSelectDays" style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-sunday" asp-for="Sunday" />
+                                <label class="form-check-label">Sunday</label>
                             </div>
-                        }
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-monday" asp-for="Monday" />
+                                <label class="form-check-label">Monday</label>
+                            </div>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-tuesday" asp-for="Tuesday" />
+                                <label class="form-check-label">Tuesday</label>
+                            </div>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-wednesday" asp-for="Wednesday" />
+                                <label class="form-check-label">Wednesday</label>
+                            </div>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-thursday" asp-for="Thursday" />
+                                <label class="form-check-label">Thursday</label>
+                            </div>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-friday" asp-for="Friday" />
+                                <label class="form-check-label">Friday</label>
+                            </div>
+                            <div class="col-md-6 form-check">
+                                <input id="add-recshift-weekday-saturday" asp-for="Saturday" />
+                                <label class="form-check-label">Saturday</label>
+                            </div>
+                            <hr />
+                        </div>
+                        <div class="time-field">
+                            <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
+                            <input id="add-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
+                            <br />
+                            <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
+                            <input id="add-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+                        </div>
+
+                        <hr />
+                        <div>
+                            <input id="open-shift-add" type="checkbox" onclick="setShiftAsOpenAdd()" />
+                            <label class="form-check-label">Make this shift open</label>
+                        </div>
+                        <br />
+                        <div id="volunteer-container-add">
+                            <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
+                            <input class="form-control"
+                                   type="text"
+                                   id="add-shift-volunteer"
+                                   asp-for="@Model.SelectedShiftVolunteer"
+                                   list="volunteers"
+                                   placeholder="Select a volunteer..."
+                                   required>
+                        </div>
+                        <hr />
+                        <div>
+                            <input id="multiple-shift-add" type="checkbox" onclick="setShiftAsMultipleAdd()" />
+                            <label class="form-check-label">Add multiple shifts with this date and time</label>
+                        </div>
+                        <div id="multiple-shifts-container" style="display: none;">
+                            <br/>
+                            @foreach (var position in Model.Positions.Where(p => p.Name != "All"))
+                            {
+                                <div class="d-flex mb-2">
+                                    <label class="col-md-6">@position.Name</label>
+                                    <input class="form-control col-md-2" type="number" asp-for="@Model.ShiftAmounts[position.Id]" required/>
+                                </div>
+                            }
+                        </div>
+                        <br/>
+                        <div id="position-container">
+                            <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
+                            <input class="form-control"
+                                   type="text"
+                                   id="add-shift-position"
+                                   asp-for="@Model.SelectedShiftPosition"
+                                   list="positions"
+                                   placeholder="Select a position..."
+                                   required>
+                        </div>
                     </div>
-                    <br/>
-                    <div id="position-container">
-                        <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                        <input class="form-control"
-                               type="text"
-                               id="add-shift-position"
-                               asp-for="@Model.SelectedShiftPosition"
-                               list="positions"
-                               placeholder="Select a position..."
-                               required>
+                    <div class="modal-footer">
+                        <button id="add-manyshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyShifts">Add Shifts</button>
+                        <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyRecurringShifts">Add Recurring Shifts</button>
+                        <button id="add-recshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add Recurring Shift</button>
+                        <button id="add-shift-submit" class="btn btn-primary" asp-page-handler="AddShift">Add Shift</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="add-manyshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyShifts">Add Shifts</button>
-                    <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddManyRecurringShifts">Add Recurring Shifts</button>
-                    <button id="add-recshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add Recurring Shift</button>
-                    <button id="add-shift-submit" class="btn btn-primary" asp-page-handler="AddShift">Add Shift</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </div>
-</form>*@
+    </form>*@
 
 <!--modal for editing a shift-->
 @*<form class="shift-form" method="post">
-    <div id="edit-shift-modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Shift</h4>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
-                </div>
-                <div id="modalBody" class="modal-body">
-                    <input type="hidden" id="edit-shift-id" asp-for="@Model.SelectedShift.Id">
-                    <label style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
-                    <input id="edit-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
-
-                    <hr />
-
-                    <div id="time-field">
-                        <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
-
-                        <input id="edit-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
+        <div id="edit-shift-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Shift</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                    </div>
+                    <div id="modalBody" class="modal-body">
+                        <input type="hidden" id="edit-shift-id" asp-for="@Model.SelectedShift.Id">
+                        <label style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
+                        <input id="edit-shift-date" type="text" class="form-control date start" asp-for="@Model.SelectedShift.StartDate" />
 
                         <hr />
 
-                        <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
+                        <div id="time-field">
+                            <label style="margin-top: 3px; padding-right: 10px;">Start Time (24hr)</label>
 
-                        <input id="edit-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+                            <input id="edit-shift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
 
-                        <hr />
-                    </div>
-                    <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <input class="form-control"
-                           type="text"
-                           id="edit-shift-position"
-                           asp-for="@Model.SelectedShiftPosition"
-                           list="positions"
-                           required>
+                            <hr />
 
-                    <hr />
-                    <div>
-                        <input id="open-shift-edit" type="checkbox" onclick="setShiftAsOpenEdit()" />
-                        <label class="form-check-label">Make shift open</label>
-                    </div>
-                    <br />
-                    <div id="volunteer-container-edit">
-                        <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
+                            <label style="margin-top: 3px; padding-right: 10px;">End Time (24hr)</label>
+
+                            <input id="edit-shift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+
+                            <hr />
+                        </div>
+                        <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
                         <input class="form-control"
                                type="text"
-                               id="edit-shift-volunteer"
-                               asp-for="@Model.SelectedShiftVolunteer"
-                               list="volunteers"
+                               id="edit-shift-position"
+                               asp-for="@Model.SelectedShiftPosition"
+                               list="positions"
                                required>
+
+                        <hr />
+                        <div>
+                            <input id="open-shift-edit" type="checkbox" onclick="setShiftAsOpenEdit()" />
+                            <label class="form-check-label">Make shift open</label>
+                        </div>
+                        <br />
+                        <div id="volunteer-container-edit">
+                            <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
+                            <input class="form-control"
+                                   type="text"
+                                   id="edit-shift-volunteer"
+                                   asp-for="@Model.SelectedShiftVolunteer"
+                                   list="volunteers"
+                                   required>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" asp-page-handler="EditShift">Submit Change</button>
-                    <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="handleDeletePrompt()">Delete</div>
-                    <button class="btn btn-danger" id="edit-shift-delete-noprompt" asp-page-handler="DeleteShift">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" asp-page-handler="EditShift">Submit Change</button>
+                        <div class="btn btn-danger" id="edit-shift-delete-prompt" onclick="handleDeletePrompt()">Delete</div>
+                        <button class="btn btn-danger" id="edit-shift-delete-noprompt" asp-page-handler="DeleteShift">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>*@
+    </form>*@
 
 <!--modal for editing a recurring shift-->
 @*form class="shift-form" method="post">
-    <div id="edit-recshift-modal" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Recurring Shift</h4>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
-                </div>
-                <div class="modal-body datepair">
-                    <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
-                    <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
-                    <input type="text" class="form-control date" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
-                    <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.OriginalStartDate" required>
-                    <input type="text" style="display: none;" class="form-control date start" id="edit-recshift-all-startdate" asp-for="@Model.RecurrenceSetStartDate" required>
-                    <hr />
-                    <div>
-                        <input onclick="toggleEditRecurringShiftControls()" type="radio" id="edit-recshift-display-single" asp-for="@Model.EditType" value="0" checked>
-                        <label style="display: inline;" class="form-check-label">Selected Shift</label>
-                        <input onclick="toggleEditRecurringShiftControls()" type="radio" id="edit-recshift-display-all" asp-for="@Model.EditType" value="1">
-                        <label style="display: inline;" class="form-check-label">All Shifts</label>
+        <div id="edit-recshift-modal" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Edit Recurring Shift</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
                     </div>
-
-                    <hr />
-
-                    <div id="edit-recshift-container" style="display: none">
-
-                        <label style="margin-top: 3px; padding-right: 10px;">End Recurring Set Date</label>
-                        <input type="text" class="form-control date end" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>
+                    <div class="modal-body datepair">
+                        <input type="hidden" id="edit-recshift-id" asp-for="@Model.SelectedShift.Id">
+                        <label id="edit-recshift-startdate-label" style="margin-top: 3px; padding-right: 10px;">Shift Date (yyyy-mm-dd)</label>
+                        <input type="text" class="form-control date" id="edit-recshift-single-final-startdate" asp-for="@Model.SelectedShift.StartDate" required>
+                        <input type="hidden" id="edit-recshift-single-initial-startdate" asp-for="@Model.OriginalStartDate" required>
+                        <input type="text" style="display: none;" class="form-control date start" id="edit-recshift-all-startdate" asp-for="@Model.RecurrenceSetStartDate" required>
                         <hr />
-
-                        <label style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-sunday" asp-for="Sunday" />
-                            <label class="form-check-label">Sunday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-monday" asp-for="Monday" />
-                            <label class="form-check-label">Monday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-tuesday" asp-for="Tuesday" />
-                            <label class="form-check-label">Tuesday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-wednesday" asp-for="Wednesday" />
-                            <label class="form-check-label">Wednesday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-thursday" asp-for="Thursday" />
-                            <label class="form-check-label">Thursday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-friday" asp-for="Friday" />
-                            <label class="form-check-label">Friday</label>
-                        </div>
-
-                        <div class="col-md-6 form-check">
-                            <input id="edit-recshift-weekday-saturday" asp-for="Saturday" />
-                            <label class="form-check-label">Saturday</label>
+                        <div>
+                            <input onclick="toggleEditRecurringShiftControls()" type="radio" id="edit-recshift-display-single" asp-for="@Model.EditType" value="0" checked>
+                            <label style="display: inline;" class="form-check-label">Selected Shift</label>
+                            <input onclick="toggleEditRecurringShiftControls()" type="radio" id="edit-recshift-display-all" asp-for="@Model.EditType" value="1">
+                            <label style="display: inline;" class="form-check-label">All Shifts</label>
                         </div>
 
                         <hr />
-                    </div>
 
-                    <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
-                    <input id="edit-recshift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
+                        <div id="edit-recshift-container" style="display: none">
 
-                    <hr />
+                            <label style="margin-top: 3px; padding-right: 10px;">End Recurring Set Date</label>
+                            <input type="text" class="form-control date end" id="edit-recshift-enddate" asp-for="@Model.SelectedShift.EndDate" required>
+                            <hr />
 
-                    <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                    <input id="edit-recshift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+                            <label style="margin-top: 3px; padding-right: 10px;">Select Days of Week</label>
 
-                    <hr />
-                    <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                    <input class="form-control"
-                           type="text"
-                           id="edit-recshift-position"
-                           asp-for="@Model.SelectedShiftPosition"
-                           list="positions"
-                           required>
-                    <hr />
-                    <div>
-                        <input id="open-shift-edit-rec" type="checkbox" onclick="setRecurringShiftAsOpen()" />
-                        <label class="form-check-label">Make shift open</label>
-                    </div>
-                    <br />
-                    <div id="volunteer-container-edit-rec">
-                        <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-sunday" asp-for="Sunday" />
+                                <label class="form-check-label">Sunday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-monday" asp-for="Monday" />
+                                <label class="form-check-label">Monday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-tuesday" asp-for="Tuesday" />
+                                <label class="form-check-label">Tuesday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-wednesday" asp-for="Wednesday" />
+                                <label class="form-check-label">Wednesday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-thursday" asp-for="Thursday" />
+                                <label class="form-check-label">Thursday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-friday" asp-for="Friday" />
+                                <label class="form-check-label">Friday</label>
+                            </div>
+
+                            <div class="col-md-6 form-check">
+                                <input id="edit-recshift-weekday-saturday" asp-for="Saturday" />
+                                <label class="form-check-label">Saturday</label>
+                            </div>
+
+                            <hr />
+                        </div>
+
+                        <label style="margin-top: 3px; padding-right: 10px;">Start Time</label>
+                        <input id="edit-recshift-starttime" type="text" class="form-control time start" asp-for="@Model.SelectedShift.StartTime" />
+
+                        <hr />
+
+                        <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
+                        <input id="edit-recshift-endtime" type="text" class="form-control time end" asp-for="@Model.SelectedShift.EndTime" />
+
+                        <hr />
+                        <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
                         <input class="form-control"
                                type="text"
-                               id="edit-recshift-volunteer"
-                               asp-for="@Model.SelectedShiftVolunteer"
-                               list="volunteers"
+                               id="edit-recshift-position"
+                               asp-for="@Model.SelectedShiftPosition"
+                               list="positions"
                                required>
+                        <hr />
+                        <div>
+                            <input id="open-shift-edit-rec" type="checkbox" onclick="setRecurringShiftAsOpen()" />
+                            <label class="form-check-label">Make shift open</label>
+                        </div>
+                        <br />
+                        <div id="volunteer-container-edit-rec">
+                            <label style="margin-top: 3px; padding-right: 10px;">Select Volunteer</label>
+                            <input class="form-control"
+                                   type="text"
+                                   id="edit-recshift-volunteer"
+                                   asp-for="@Model.SelectedShiftVolunteer"
+                                   list="volunteers"
+                                   required>
+                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" asp-page-handler="EditRecurringShift">Submit Change</button>
-                    <button class="btn btn-danger" asp-page-handler="DeleteRecurringShift">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" asp-page-handler="EditRecurringShift">Submit Change</button>
+                        <button class="btn btn-danger" asp-page-handler="DeleteRecurringShift">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>*@
+    </form>*@
 
 <!--modal for choosing between deleting a individual recshift completely or returning it to original-->
 @*<form class="shift-form" method="post">
-    <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
-    <div id="edit-recshift-single-confirm" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="modalTitle" class="modal-title">Attention</h4>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
-                </div>
-                <div id="modalBody" class="modal-body">
-                    <p>This shift is part of a recurring set of shifts but its properties were changed from their original values.</p>
-                    <p>Would you like to completely delete this shift or restore its original properties?</p>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
-                    <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+        <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
+        <div id="edit-recshift-single-confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="modalTitle" class="modal-title">Attention</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                    </div>
+                    <div id="modalBody" class="modal-body">
+                        <p>This shift is part of a recurring set of shifts but its properties were changed from their original values.</p>
+                        <p>Would you like to completely delete this shift or restore its original properties?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" asp-page-handler="RestoreShiftPropertiesToOriginal">Restore Properties</button>
+                        <button class="btn btn-danger" asp-page-handler="DeleteShiftFromRecurringSet">Delete</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>*@
+    </form>*@
 
 @*<form class="shift-form" method="post">
-    <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
-    <div id="edit-recshift-single-confirm" class="modal fade">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 id="modalTitle" class="modal-title">Attention</h4>
-                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
-                </div>
-                <div id="modalBody" class="modal-body">
-                    <p>This shift is part of a recurring set of shifts but its properties were changed from their original values.</p>
-                    <p>Would you like to completely delete this shift or restore its original properties?</p>
-                </div>
-                <div class="modal-footer">
-                    <button id="add-manyshift-submit" class="btn btn-primary" asp-page-handler="AddManyShifts">Add</button>
-                    <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+        <input type="hidden" id="edit-recshift-single-confirm-id" asp-for="@Model.SelectedShift.Id" />
+        <div id="edit-recshift-single-confirm" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="modalTitle" class="modal-title">Attention</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">Close</span></button>
+                    </div>
+                    <div id="modalBody" class="modal-body">
+                        <p>This shift is part of a recurring set of shifts but its properties were changed from their original values.</p>
+                        <p>Would you like to completely delete this shift or restore its original properties?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="add-manyshift-submit" class="btn btn-primary" asp-page-handler="AddManyShifts">Add</button>
+                        <button id="add-manyrecshift-submit" style="display: none;" class="btn btn-primary" asp-page-handler="AddRecurringShift">Add</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="handleDeletePromptDismiss()">Cancel</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-
+    </form>
+*@
 <datalist id="volunteers"></datalist>
-<datalist id="positions"></datalist>*@
+<datalist id="positions"></datalist>
 
 <script>
 

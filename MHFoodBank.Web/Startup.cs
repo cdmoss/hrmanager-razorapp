@@ -15,6 +15,7 @@ using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
 using MHFoodBank.Api.Repositories;
 using MHFoodBank.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace MHFoodBank.Web
 {
@@ -110,6 +111,8 @@ namespace MHFoodBank.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzE5MzQ4QDMxMzgyZTMyMmUzMEI2L0VJSnNCS1ZaaUh1WjUyditEWUsvMzZHaDJmc1IzQTBKZkxaTGM2Vzg9");
 
             DbSeeder.Seed(roleManager, userManager, context, env);
 
