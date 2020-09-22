@@ -13,14 +13,10 @@
     <None Remove="wwwroot\lib\NewFolder\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Compile Remove="Migrations\20200918215940_init.cs" />
-    <Compile Remove="Migrations\20200918215940_init.Designer.cs" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="DevExtreme.Web" Version="20.1.7" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.11" />
     <PackageReference Include="Hangfire.Core" Version="1.7.11" />
     <PackageReference Include="Hangfire.MySql.Core_MySql.Data" Version="2.1.10" />
@@ -36,8 +32,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.8" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
-    <PackageReference Include="Syncfusion.EJ.AspNet.Core" Version="18.2.0.58" />
-    <PackageReference Include="Syncfusion.Licensing" Version="18.2.0.58" />
+    <PackageReference Include="Syncfusion.EJ2.AspNet.Core" Version="18.2.0.58" />
   </ItemGroup>
 
 

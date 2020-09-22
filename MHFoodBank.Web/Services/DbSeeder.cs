@@ -229,12 +229,12 @@ namespace MHFoodBank.Web.Data
                 try
                 {
                     Position all = new Position() { Name = "All" };
-                    Position warehouse = new Position() { Name = "Warehouse" };
-                    Position frontstock = new Position() { Name = "Front Stock" };
-                    Position janitorial = new Position() { Name = "Janitorial" };
+                    Position warehouse = new Position() { Name = "Warehouse", Color = "#009933" };
+                    Position frontstock = new Position() { Name = "Front Stock", Color = "#0066ff" };
+                    Position janitorial = new Position() { Name = "Janitorial", Color = "#009999" };
                     Position generalmaintenance = new Position() { Name = "General Maintenance" };
-                    Position specialevents = new Position() { Name = "Special Events" };
-                    Position communityrelations = new Position() { Name = "Community Relations" };
+                    Position specialevents = new Position() { Name = "Special Events", Color = "#cc0099" };
+                    Position communityrelations = new Position() { Name = "Community Relations", Color = "#ff6600" };
 
                     context.Add(all);
                     context.Add(warehouse);

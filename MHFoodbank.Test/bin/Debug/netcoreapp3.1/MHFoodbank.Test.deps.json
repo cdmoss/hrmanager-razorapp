@@ -42,6 +42,7 @@
           }
         }
       },
+      "cldrjs/0.4.4": {},
       "coverlet.collector/1.2.0": {},
       "Dapper/1.50.5": {
         "dependencies": {
@@ -54,6 +55,13 @@
             "assemblyVersion": "1.50.5.0",
             "fileVersion": "1.50.5.0"
           }
+        }
+      },
+      "DevExtreme.Web/20.1.7": {
+        "dependencies": {
+          "JSZip": "3.1.2",
+          "jQuery": "3.5.1",
+          "jquery-globalize": "1.1.1"
         }
       },
       "Google.Protobuf/3.5.1": {
@@ -129,13 +137,19 @@
           }
         }
       },
-      "jQuery/3.2.1": {},
+      "jQuery/3.5.1": {},
+      "jquery-globalize/1.1.1": {
+        "dependencies": {
+          "cldrjs": "0.4.4"
+        }
+      },
       "jQuery.Fullcalendar/3.9.0": {
         "dependencies": {
           "Moment.js": "2.18.2",
-          "jQuery": "3.2.1"
+          "jQuery": "3.5.1"
         }
       },
+      "JSZip/3.1.2": {},
       "MailKit/2.7.0": {
         "dependencies": {
           "MimeKit": "2.8.0",
@@ -2352,6 +2366,7 @@
       "MHFoodBank.Web/1.0.0": {
         "dependencies": {
           "AutoMapper.Extensions.Microsoft.DependencyInjection": "7.0.0",
+          "DevExtreme.Web": "20.1.7",
           "Hangfire.AspNetCore": "1.7.11",
           "Hangfire.Core": "1.7.11",
           "Hangfire.MySql.Core_MySql.Data": "2.1.10",
@@ -2368,7 +2383,6 @@
           "Microsoft.VisualStudio.Web.CodeGeneration.Design": "3.1.4",
           "Pomelo.EntityFrameworkCore.MySql": "3.1.1",
           "Syncfusion.EJ2.AspNet.Core": "18.2.0.58",
-          "Syncfusion.Licensing": "18.2.0.58",
           "jQuery.Fullcalendar": "3.9.0"
         },
         "runtime": {
@@ -2397,6 +2411,13 @@
       "path": "automapper.extensions.microsoft.dependencyinjection/7.0.0",
       "hashPath": "automapper.extensions.microsoft.dependencyinjection.7.0.0.nupkg.sha512"
     },
+    "cldrjs/0.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-QTJ2r9FpA1XOFPRguhHAFjJZZJVil5TFOUCTLpN02BjQtgXgVDpt5VFyxQp/uNwEh0InNWLdIugl2Ls1IBqfXg==",
+      "path": "cldrjs/0.4.4",
+      "hashPath": "cldrjs.0.4.4.nupkg.sha512"
+    },
     "coverlet.collector/1.2.0": {
       "type": "package",
       "serviceable": true,
@@ -2410,6 +2431,13 @@
       "sha512": "sha512-1vPpX7WQmQCIb7rwlGOUoVs/yWZhVKvdhuG7WrJV+V+qsP8btnrrCqVWHENAlJxBAnUw5rhWfmuba9/Egei9MA==",
       "path": "dapper/1.50.5",
       "hashPath": "dapper.1.50.5.nupkg.sha512"
+    },
+    "DevExtreme.Web/20.1.7": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-N26wfu7ZdW63FWG3MuVOvlBwMOCQAmd4/9RhLly71BVeiawxMxn9cEqjxjWcUgc6RCndaKfxrJFhyaoPnJMwJw==",
+      "path": "devextreme.web/20.1.7",
+      "hashPath": "devextreme.web.20.1.7.nupkg.sha512"
     },
     "Google.Protobuf/3.5.1": {
       "type": "package",
@@ -2439,12 +2467,19 @@
       "path": "hangfire.mysql.core_mysql.data/2.1.10",
       "hashPath": "hangfire.mysql.core_mysql.data.2.1.10.nupkg.sha512"
     },
-    "jQuery/3.2.1": {
+    "jQuery/3.5.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Sc4jRcsItNXUoNmnPtD9DEnHCy5d4u0GOdDSKYL+b7PKtwajKO1YBJA55241G2M9KRCwSbtxV4ti3gb4n/pIew==",
-      "path": "jquery/3.2.1",
-      "hashPath": "jquery.3.2.1.nupkg.sha512"
+      "sha512": "sha512-ji6sm/AI0vjASXAA/AG9Yf5ypALAqIDXFFKPHMAnFL8kp3xqULIWhACjg/OXZP88C56frYlIej2nrdBnhTMYQQ==",
+      "path": "jquery/3.5.1",
+      "hashPath": "jquery.3.5.1.nupkg.sha512"
+    },
+    "jquery-globalize/1.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tkRqYLIONjwamztg1rG+xyh2asA0ARLOPorfF3N9JW8fWr+srtPAeUNLFHF6NZAQ7Avnkzgi2OC505lK5avFag==",
+      "path": "jquery-globalize/1.1.1",
+      "hashPath": "jquery-globalize.1.1.1.nupkg.sha512"
     },
     "jQuery.Fullcalendar/3.9.0": {
       "type": "package",
@@ -2452,6 +2487,13 @@
       "sha512": "sha512-soyfwNQ4ZCyJRi08TeC8t96fNbs+yfJblzvBIfAqv12B/UZ1WkioDo3PCO92qQLITvXyj4kSWSaxQFA99xQPww==",
       "path": "jquery.fullcalendar/3.9.0",
       "hashPath": "jquery.fullcalendar.3.9.0.nupkg.sha512"
+    },
+    "JSZip/3.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yES0T93sQ4DXchqpKyWFIqSoo1HKQj7a6Gf8bEC3IzFvgNzEh2MP9gMcTYkWw2N7jhZvo7n6FukvmtkrH8i4Pw==",
+      "path": "jszip/3.1.2",
+      "hashPath": "jszip.3.1.2.nupkg.sha512"
     },
     "MailKit/2.7.0": {
       "type": "package",

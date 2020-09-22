@@ -13,24 +13,31 @@ namespace MHFoodBank.Common
     public class Shift
     {
         public int Id { get; set; }
-        public string Description { get; set; }
+        public string Subject { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
-        public Position PositionWorked { get; set; }
+        public int? PositionId { get; set; }
+        public Position Position { get; set; }
+        public int? VolunteerProfileId { get; set; }
         public VolunteerProfile Volunteer { get; set; }
+        public string Description { get; set; }
+        public bool IsRecurrence { get; set; }
+        public bool IsAllDay { get; set; }
         public string RecurrenceRule { get; set; }
         public string RecurrenceException { get; set; }
         public int? RecurrenceID { get; set; }
+        public bool IsBlock { get; set; }
+        public string Resource { get; set; }
 
-        public void CreateDescription()
+        public void CreateTitle()
         {
             if (Volunteer != null)
             {
-                Description = Volunteer.FirstName + " " + Volunteer.LastName + " - " + PositionWorked.Name;
+                Subject = Volunteer.FirstName + " " + Volunteer.LastName + " - " + Position.Name;
             }
             else
             {
-                Description = "Open" + " - " + PositionWorked.Name;
+                Subject = "Open" + " - " + Position.Name;
             }
         }
     }

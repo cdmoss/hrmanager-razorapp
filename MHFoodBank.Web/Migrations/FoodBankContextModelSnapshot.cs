@@ -159,6 +159,9 @@ namespace MHFoodBank.Web.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Color")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("tinyint(1)");
 
@@ -254,7 +257,16 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("PositionWorkedId")
+                    b.Property<bool>("IsAllDay")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsBlock")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsRecurrence")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<int?>("PositionId")
                         .HasColumnType("int");
 
                     b.Property<string>("RecurrenceException")
@@ -266,17 +278,23 @@ namespace MHFoodBank.Web.Migrations
                     b.Property<string>("RecurrenceRule")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
+                    b.Property<string>("Resource")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int?>("VolunteerId")
+                    b.Property<string>("Subject")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<int?>("VolunteerProfileId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PositionWorkedId");
+                    b.HasIndex("PositionId");
 
-                    b.HasIndex("VolunteerId");
+                    b.HasIndex("VolunteerProfileId");
 
                     b.ToTable("Shifts");
                 });
@@ -655,13 +673,13 @@ namespace MHFoodBank.Web.Migrations
 
             modelBuilder.Entity("MHFoodBank.Common.Shift", b =>
                 {
-                    b.HasOne("MHFoodBank.Common.Position", "PositionWorked")
+                    b.HasOne("MHFoodBank.Common.Position", "Position")
                         .WithMany()
-                        .HasForeignKey("PositionWorkedId");
+                        .HasForeignKey("PositionId");
 
                     b.HasOne("MHFoodBank.Common.VolunteerProfile", "Volunteer")
                         .WithMany("Shifts")
-                        .HasForeignKey("VolunteerId")
+                        .HasForeignKey("VolunteerProfileId")
                         .OnDelete(DeleteBehavior.SetNull);
                 });
 

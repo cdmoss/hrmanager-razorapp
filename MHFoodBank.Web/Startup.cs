@@ -89,12 +89,13 @@ namespace MHFoodBank.Web
 
             services
                 .AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", ""))
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(options =>
+                    options
+                    .UseMemberCasing()
+                    .SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
 
-            services
-                .AddControllers();
+                .AddRazorPagesOptions(options =>
+                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", ""));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -129,7 +130,6 @@ namespace MHFoodBank.Web
             app.UseHangfireServer();
 
             RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

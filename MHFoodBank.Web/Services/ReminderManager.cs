@@ -49,7 +49,7 @@ namespace MHFoodBank.Web.Data
                                 volunteer.LastName,
                                 shift.StartTime.ToString(),
                                 shift.EndTime.ToString(),
-                                shift.PositionWorked.Name),
+                                shift.Position.Name),
                             date.AddHours(-12));
 
                         _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = date, HangfireJobId = idForRecurring });
@@ -64,7 +64,7 @@ namespace MHFoodBank.Web.Data
                         volunteer.LastName,
                         shift.StartTime.ToString(),
                         shift.EndTime.ToString(),
-                        shift.PositionWorked.Name),
+                        shift.Position.Name),
                     ((DateTime)shiftDate).AddHours(-12));
 
                     _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartTime, HangfireJobId = id });
@@ -79,7 +79,7 @@ namespace MHFoodBank.Web.Data
                         volunteer.LastName, 
                         shift.StartTime.ToString(), 
                         shift.EndTime.ToString(), 
-                        shift.PositionWorked.Name), 
+                        shift.Position.Name), 
                     shift.StartTime.AddHours(-12));
 
                 _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartTime, HangfireJobId = id });

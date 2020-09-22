@@ -25,6 +25,7 @@ using MHFoodBank.Common;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.Text.Json;
+using Syncfusion.EJ2.Base;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
@@ -43,21 +44,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         #region model properties
         // for choosing a volunteer when editing/adding a shift
+        public List<Position> PositionsWithAll { get; set; }
         public List<Position> Positions { get; set; }
-        public string SelectedShiftPosition { get; set; }
-        public string SelectedShiftVolunteer { get; set; }
-        public DateTime OriginalStartDate { get; set; }
-        // Created this property to grab the original start date for the whole recurring set.
-        // This is needed along side selectedshift.startdate in the edit rec shift modal for the changing between single shift
-        // and whole recurring set start date.
-        public DateTime RecurrenceSetStartDate { get; set; }
-        public ShiftReadEditDto SelectedShift { get; set; } = new ShiftReadEditDto();
-        // for choosing a volunteer when editing/adding a shift
+        public string[] ResourceNames { get; set; } = new string[] { "Positions" };
         public List<VolunteerMinimalDto> Volunteers { get; set; }
         public string SearchedName { get; set; }
         public int SearchedPositionId { get; set; }
         // position that was selected in the edit/delete position window
         public string SelectedPositionName { get; set; }
+        public string SelectedPositionColor { get; set; }
+        public string NewPositionColor { get; set; }
         public string NewPositionName { get; set; }
         // give user feedback after action
         public string StatusMessage { get; set; }
@@ -103,7 +99,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 .Where(v => v != null && v.ApprovalStatus == ApprovalStatus.Approved).ToListAsync();
             var shiftDomainModels = await _context.Shifts
                 .Include(p => p.Volunteer).ThenInclude(v => v.Availabilities)
-                .Include(p => p.PositionWorked).ToListAsync();
+                .Include(p => p.Position).ToListAsync();
 
             ShiftMapper map = new ShiftMapper(_mapper);
             //Shifts = map.MapShiftsToDtos(shiftDomainModels);
@@ -111,8 +107,9 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
 
             // get positions
-            Positions = _context.Positions.Where(p => !p.Deleted).OrderBy(p => p.Name).ToList();
-            SearchedPositionId = Positions.FirstOrDefault(p => p.Name == "All").Id;
+            Positions = _context.Positions.Where(p => !p.Deleted && p.Name != "All").OrderBy(p => p.Name).ToList();
+            PositionsWithAll = _context.Positions.Where(p => !p.Deleted).OrderBy(p => p.Name).ToList();
+            SearchedPositionId = PositionsWithAll.FirstOrDefault(p => p.Name == "All").Id;
 
             ShiftAmounts = new Dictionary<int, int>();
 
@@ -123,6 +120,114 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
             // update status message
             StatusMessage = statusMessage;
+        }
+
+        public JsonResult OnPostGetShifts()
+        {
+            var shifts = _context.Shifts.ToList();
+            return new JsonResult(_mapper.Map<List<ShiftReadEditDto>>(shifts));
+        }
+
+        public async Task<JsonResult> OnPostInsertShift([FromBody] CRUDModel<ShiftReadEditDto> shiftDto)
+        {
+            var newShiftDto = (shiftDto.Action == "insert") ? shiftDto.Value : shiftDto.Added[0];
+            newShiftDto.StartTime = newShiftDto.StartTime.AddHours(-6);
+            newShiftDto.EndTime = newShiftDto.EndTime.AddHours(-6);
+            int intMax = _context.Shifts.ToList().Count > 0 ? _context.Shifts.ToList().Max(p => p.Id) : 1;
+            var newShift = _mapper.Map<Shift>(newShiftDto);
+            _context.Shifts.Add(newShift);
+            await _context.SaveChangesAsync();
+            var data = await _context.Shifts.ToListAsync();
+            return new JsonResult(data);
+        }
+
+        public async Task<JsonResult> OnPostUpdateShifts([FromBody] CRUDModel<ShiftReadEditDto> shiftDto)
+        {
+            if (shiftDto != null)
+            {
+                if (shiftDto.Action == "insert" || (shiftDto.Action == "batch" && shiftDto.Added.Count > 0)) // this block of code will execute while inserting the appointments
+                {
+                    var newShiftDto = (shiftDto.Action == "insert") ? shiftDto.Value : shiftDto.Added[0];
+                    newShiftDto.StartTime = newShiftDto.StartTime.AddHours(-6);
+                    newShiftDto.EndTime = newShiftDto.EndTime.AddHours(-6);
+                    int intMax = _context.Shifts.ToList().Count > 0 ? _context.Shifts.ToList().Max(p => p.Id) : 1;
+                    var newShift = _mapper.Map<Shift>(newShiftDto);
+                    if (newShift.VolunteerProfileId == 0)
+                    {
+                        newShift.VolunteerProfileId = null;
+                    }
+
+                    var chosenPosition = await _context.Positions.Where(p => p.Id == newShift.PositionId).FirstOrDefaultAsync();
+                    var chosenVolunteer = newShift.VolunteerProfileId != null ? await _context.VolunteerProfiles
+                        .Where(p => p.Id == newShift.VolunteerProfileId).FirstOrDefaultAsync() : null;
+
+                    newShift.Subject = newShift.VolunteerProfileId == null ?
+                        $"Open - {chosenPosition.Name}" :
+                        $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+
+
+
+                    _context.Shifts.Add(newShift);
+                    await _context.SaveChangesAsync();
+
+                    // schedule email notification for shift
+                    if (newShift.VolunteerProfileId != null)
+                    {
+                        var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
+                        _reminderManager.ScheduleReminder(volunteerAccount.Email, newShift.Volunteer, newShift);
+                    }
+                }
+                if (shiftDto.Action == "update" || (shiftDto.Action == "batch" && shiftDto.Changed.Count > 0)) // this block of code will execute while updating the appointment
+                {
+                    var value = (shiftDto.Action == "update") ? shiftDto.Value : shiftDto.Changed[0];
+                    var newShift = await _context.Shifts.FirstOrDefaultAsync(c => c.Id == Convert.ToInt32(value.Id));
+                    if (newShift != null)
+                    {
+                        newShift.StartTime = value.StartTime.AddHours(-6);
+                        newShift.EndTime = value.EndTime.AddHours(-6);
+                        newShift.PositionId = value.PositionId;
+                        newShift.VolunteerProfileId = value.VolunteerProfileId;
+                        newShift.IsAllDay = value.IsAllDay;
+                        newShift.RecurrenceRule = value.RecurrenceRule;
+                        newShift.RecurrenceID = value.RecurrenceID;
+                        newShift.RecurrenceException = value.RecurrenceException;
+                        if (newShift.VolunteerProfileId == 0)
+                        {
+                            newShift.VolunteerProfileId = null;
+                        }
+
+                        var chosenPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == newShift.PositionId);
+                        var chosenVolunteer = newShift.VolunteerProfileId != null ? await _context.VolunteerProfiles
+                            .FirstOrDefaultAsync(p => p.Id == newShift.VolunteerProfileId) : null;
+
+                        newShift.Subject = newShift.VolunteerProfileId == null ?
+                        $"Open - {chosenPosition.Name}" :
+                            $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+                    }
+                    await _context.SaveChangesAsync();
+                }
+                if (shiftDto.Action == "remove" || (shiftDto.Action == "batch" && shiftDto.Deleted.Count > 0)) // this block of code will execute while removing the appointment
+                {
+                    if (shiftDto.Action == "remove")
+                    {
+                        int key = Convert.ToInt32(shiftDto.Key);
+                        var newShift = await _context.Shifts.Where(c => c.Id == key).FirstOrDefaultAsync();
+                        if (newShift != null) _context.Shifts.Remove(newShift);
+                    }
+                    else
+                    {
+                        foreach (var shifts in shiftDto.Deleted)
+                        {
+                            var newShift = await _context.Shifts.Where(c => c.Id == shifts.Id).FirstOrDefaultAsync();
+                            if (shifts != null) _context.Shifts.Remove(newShift);
+                        }
+                    }
+                    await _context.SaveChangesAsync();
+                };
+            }
+
+            var shiftDomainModels = await _context.Shifts.ToListAsync();
+            return new JsonResult(shiftDomainModels);
         }
 
         public async Task OnPostSearch()
@@ -136,23 +241,23 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             //Shifts = searcher.FilterShiftsBySearch(Shifts, SearchedName, searchedPosition);
         }
 
-        public async Task<JsonResult> OnPostAddPosition()
+        public async Task<IActionResult> OnPostAddPosition()
         {
             // get entered name and check if a position with that name exists
 
             bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
             bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
 
-            //if (positionAlreadyExists)
-            //{
-            //    return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
-            //}
-            //else if (noPositionNameEntered)
-            //{
-            //    return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
-            //}
+            if (positionAlreadyExists)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
+            }
+            else if (noPositionNameEntered)
+            {
+                return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
+            }
 
-            Position position = new Position { Name = NewPositionName };
+            Position position = new Position { Name = NewPositionName, Color = NewPositionColor };
             await _context.Positions.AddAsync(position);
             await _context.SaveChangesAsync();
 
@@ -160,107 +265,73 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             return null;
         }
 
-        public JsonResult OnPostGetData()
-        {
-            var Shifts = new List<ShiftReadEditDto>();
-            Shifts.Add(new ShiftReadEditDto
-            {
-                Id = 1,
-                Description = "Explosion of Betelgeuse Star",
-                StartTime = new DateTime(2020, 9, 17, 9, 30, 0),
-                EndTime = new DateTime(2020, 9, 17, 11, 0, 0)
-            });
-            Shifts.Add(new ShiftReadEditDto
-            {
-                Id = 2,
-                Description = "Thule Air Crash Report",
-                StartTime = new DateTime(2020, 9, 18, 12, 0, 0),
-                EndTime = new DateTime(2020, 9, 18, 14, 0, 0)
-            });
-            Shifts.Add(new ShiftReadEditDto
-            {
-                Id = 3,
-                Description = "Blue Moon Eclipse",
-                StartTime = new DateTime(2020, 9, 15, 9, 30, 0),
-                EndTime = new DateTime(2020, 9, 15, 11, 0, 0)
-            });
-            Shifts.Add(new ShiftReadEditDto
-            {
-                Id = 4,
-                Description = "Meteor Showers in 2018",
-                StartTime = new DateTime(2020, 9, 16, 13, 0, 0),
-                EndTime = new DateTime(2020, 9, 16, 14, 30, 0)
-            });
-            return new JsonResult(Shifts);
-        }
-
         public async Task<IActionResult> OnPostEditPosition()
         {
-            bool positionAlreadyExists = _context.Positions.Any(p => string.Equals(NewPositionName, p.Name));
+            bool positionAlreadyExists = await _context.Positions.AnyAsync(p => string.Equals(NewPositionName, p.Name));
             bool noPositionNameEntered = string.IsNullOrWhiteSpace(NewPositionName);
 
             if (positionAlreadyExists)
             {
-                //return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
+                return RedirectToPage(new { statusMessage = $"Error: A position with that name already exists." });
             }
             else if (noPositionNameEntered)
             {
-                //return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
+                return RedirectToPage(new { statusMessage = $"Error: You must enter a name for the position." });
             }
 
-            var selectedPosition = _context.Positions.FirstOrDefault(p => p.Name == SelectedPositionName);
+            var selectedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Name == SelectedPositionName);
 
-            //string resultStatus = await EditPosition(selectedPosition);
-            //return RedirectToPage(new { statusMessage = resultStatus });
+            string resultStatus = await EditPosition(selectedPosition);
+            return RedirectToPage(new { statusMessage = resultStatus });
             return null;
         }
 
         public async Task<IActionResult> OnPostRemovePosition()
         {
             var selectedPosition = _context.Positions.FirstOrDefault(p => p.Name == SelectedPositionName);
-            //string resultStatus = await RemovePosition(selectedPosition);
-            //return RedirectToPage(new { statusMessage = resultStatus });
-            return null;
+            string resultStatus = await RemovePosition(selectedPosition);
+            return RedirectToPage(new { statusMessage = resultStatus });
         }
 
-        //private async Task<string> EditPosition(Position selectedPosition)
-        //{
-        //    if (selectedPosition != null)
-        //    {
-        //        string originalName = selectedPosition.Name;
+        private async Task<string> EditPosition(Position selectedPosition)
+        {
+            if (selectedPosition != null)
+            {
+                string originalName = selectedPosition.Name;
 
-        //        _context.Update(selectedPosition);
+                _context.Update(selectedPosition);
 
-        //        selectedPosition.Name = NewPositionName;
-        //        await _context.SaveChangesAsync();
-        //        return $"You successfully updated {originalName} to {selectedPosition.Name}.";
-        //    }
-        //    return $"Error: You must select a position.";
-        //}
+                selectedPosition.Name = SelectedPositionName;
+                selectedPosition.Color = SelectedPositionColor;
+                await _context.SaveChangesAsync();
+                return $"You successfully updated {originalName} to {selectedPosition.Name}.";
+            }
+            return $"Error: You must select a position.";
+        }
 
-        //private async Task<string> RemovePosition(Position selectedPosition)
-        //{
-        //    if (selectedPosition != null)
-        //    {
-        //        var positionVolunteers = await _context.PositionVolunteers.Where(s => s.Position == selectedPosition).ToListAsync();
-        //        var shiftsWithPosition = await _context.Shifts.Where(s => s.PositionWorked == selectedPosition).ToListAsync();
+        private async Task<string> RemovePosition(Position selectedPosition)
+        {
+            if (selectedPosition != null)
+            {
+                var positionVolunteers = await _context.PositionVolunteers.Where(s => s.Position == selectedPosition).ToListAsync();
+                var shiftsWithPosition = await _context.Shifts.Where(s => s.Position == selectedPosition).ToListAsync();
 
-        //        foreach (var pv in positionVolunteers)
-        //        {
-        //            pv.Position = null;
-        //        }
+                foreach (var pv in positionVolunteers)
+                {
+                    pv.Position = null;
+                }
 
-        //        foreach (var shift in shiftsWithPosition)
-        //        {
-        //            shift.PositionWorked = null;
-        //        }
+                foreach (var shift in shiftsWithPosition)
+                {
+                    shift.Position = null;
+                }
 
-        //        selectedPosition.Deleted = true;
-        //        await _context.SaveChangesAsync();
-        //        return $"You successfully removed {selectedPosition.Name} from the list of positions.";
-        //    }
-        //    return $"Error: You must select a position.";
-        //}
+                selectedPosition.Deleted = true;
+                await _context.SaveChangesAsync();
+                return $"You successfully removed {selectedPosition.Name} from the list of positions.";
+            }
+            return $"Error: You must select a position.";
+        }
 
         public async Task<IActionResult> OnPostAddShift()
         {
@@ -375,6 +446,16 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             //    }
 
             return null;
+        }
+
+        public class EditParams
+        {
+            public string key { get; set; }
+            public string action { get; set; }
+            public List<ShiftReadEditDto> added { get; set; }
+            public List<ShiftReadEditDto> changed { get; set; }
+            public List<ShiftReadEditDto> deleted { get; set; }
+            public ShiftReadEditDto value { get; set; }
         }
     }
 }
