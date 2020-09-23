@@ -433,10 +433,6 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcore
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.pdb
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.genruntimeconfig.cache
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.Licensing.dll
-C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
-C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
-C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.EJ.dll
-C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.EJ.AspNet.Core.dll
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.csproj.CoreCompileInputs.cache
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.MvcApplicationPartsAssemblyInfo.cache
@@ -445,3 +441,4 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcore
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\obj\Debug\netcoreapp3.1\MHFoodBank.Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.EJ2.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.Licensing.dll
+C:\Users\dofus\Downloads\FBWebsite-V3\MHFoodBank.Web\bin\Debug\netcoreapp3.1\Syncfusion.EJ2.dll

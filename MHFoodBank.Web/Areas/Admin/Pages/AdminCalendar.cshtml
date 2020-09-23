@@ -109,19 +109,34 @@
                 </tr>
                 <tr>
                     <td colspan="4">
+                        <br />
                         <div id="RecurrenceEditor"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="e-textlabel">Volunteer</td>
+                    <td class="e-textlabel e-float-text">Volunteer</td>
                     <td colspan="4">
                         <input type="text" id="VolunteerId" placeholder="Select a volunteer..." name="VolunteerProfileId" class="e-field" style="width: 100%" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="e-textlabel">Position</td>
-                    <td colspan="4">
+                    <td id="position-label" class="e-textlabel">Position</td>
+                    <td id="position-section" colspan="4">
                         <input type="text" id="PositionId" placeholder="Select a position..." name="PositionId" class="e-field" style="width: 100%" />
+                        <div id="multi-position-selector">
+                            @foreach (var position in Model.Positions)
+                            {
+                                <text><div style="display: flex;"><input style="width: 35%;" type="text" name="@position.Name-amount" class="position-amount" /><label style="width: 65%;" class="pl-2">@position.Name</label></div></text>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <div class="d-flex justify-content-start">
+                            <input type="text" id="multi-position-toggle" />
+                            <label class="e-textlabel pl-2">Make This Shift For Multiple Positions</label>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -194,6 +209,20 @@
                     recurrObject.appendTo(recurElement);
                     schedule.setRecurrenceEditor(recurrObject);
                 }
+                var multiPositionCheck = args.element.querySelector('#multi-position-toggle');
+                if (!multiPositionCheck.classList.contains('e-checkbox')) {
+                    multiPositionObject = new ej.buttons.CheckBox({
+                    });
+                    multiPositionObject.appendTo(multiPositionCheck);
+                }
+                var positionAmountInputs = args.element.getElementsByClassName('position-amount');
+                Array.from(positionAmountInputs).forEach(function(amountInput) {
+                    if (!amountInput.classList.contains('e-numerictextbox')) {
+                        numericTextBox = new ej.inputs.NumericTextBox({
+                        });
+                        numericTextBox.appendTo(amountInput);
+                    }
+                });
             }
         }
     </script>
@@ -279,6 +308,14 @@
 <datalist id="positions"></datalist>
 
 <script>
+
+    function multiPositionChecked() {
+        let multiPositionElement = document.getElementById("multi-position");
+        if (multiPositionElement.checked == true) {
+            document.getElementById("positions-section").display = "";
+        }
+    }
+
     let volunteers = new Array();
     @foreach (var volunteer in Model.Volunteers)
     {
