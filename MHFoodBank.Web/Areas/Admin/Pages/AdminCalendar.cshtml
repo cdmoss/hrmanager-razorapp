@@ -9,10 +9,8 @@
 @inject UserManager<AppUser> _userManager
 
 @model MHFoodBank.Web.Areas.Admin.Pages.AdminCalendar
-@{
-    Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Admin Calendar";
-}
+@{ Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
+                ViewData["Title"] = "Admin Calendar"; }
 
 @section Styles {
     <link href='~/fullcalendar/packages/core/main.css' rel='stylesheet' />
@@ -44,12 +42,10 @@
     <form method="post" id="container">
         @if (String.IsNullOrWhiteSpace(Model.SearchedName))
         {
-            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-        }
-        else
-        {
-            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-        }
+<input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" /> }
+            else
+            {
+<input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />}
         <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.PositionsWithAll, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
         </select>
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
@@ -62,17 +58,15 @@
     </form>
     <hr />
 
-    @{
-        var shiftManager = new DataManager
-        {
-            Url = "AdminCalendar?handler=GetShifts",
-            CrudUrl = "AdminCalendar?handler=UpdateShifts",
-            InsertUrl = "AdminCalendar?handler=InsertShift",
-            Adaptor = "UrlAdaptor",
-            CrossDomain = true,
-            Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
-        };
-    }
+    @{ var shiftManager = new DataManager
+                    {
+                        Url = "AdminCalendar?handler=GetShifts",
+                        CrudUrl = "AdminCalendar?handler=UpdateShifts",
+                        InsertUrl = "AdminCalendar?handler=InsertShift",
+                        Adaptor = "UrlAdaptor",
+                        CrossDomain = true,
+                        Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
+                    }; }
 
     <div style="height: 80vh;">
         <ejs-schedule id="schedule" selectedDate="DateTime.Now" currentView="TimelineWeek" showQuickInfo="false" width="100%" height="100%" popupOpen="onPopupOpen" editorTemplate="#ShiftEditorTemplate" actionBegin="onActionBegin">
@@ -126,8 +120,7 @@
                         <div id="multi-position-selector">
                             @foreach (var position in Model.Positions)
                             {
-                                <text><div style="display: flex;"><input style="width: 35%;" type="text" name="@position.Name-amount" class="position-amount" /><label style="width: 65%;" class="pl-2">@position.Name</label></div></text>
-                            }
+                <text><div style="display: flex;"><input type="text" name="@position.Name-amount" class="position-amount" /><label style="width: 100%;" class="pl-2">@position.Name</label></div></text>}
                         </div>
                     </td>
                 </tr>
@@ -219,6 +212,9 @@
                 Array.from(positionAmountInputs).forEach(function(amountInput) {
                     if (!amountInput.classList.contains('e-numerictextbox')) {
                         numericTextBox = new ej.inputs.NumericTextBox({
+                            max: 99,
+                            min: 0,
+                            format: 'n'
                         });
                         numericTextBox.appendTo(amountInput);
                     }
