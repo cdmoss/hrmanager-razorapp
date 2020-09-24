@@ -261,7 +261,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await _context.Positions.AddAsync(position);
             await _context.SaveChangesAsync();
 
-            //return RedirectToPage(new { statusMessage = $"You successfully added {position.Name} to the list of positions." });
+            return RedirectToPage(new { statusMessage = $"You successfully added {position.Name} to the list of positions." });
             return null;
         }
 

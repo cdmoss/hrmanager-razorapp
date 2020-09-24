@@ -211,9 +211,9 @@
                 <div id="modalBody" class="modal-body">
                     <label style="margin-top: 3px; padding-right: 10px;" for="position-add">Name</label>
                     <input type="text" class="form-control mb-2" id="add-position-name" asp-for="@Model.NewPositionName" required>
-                    <label style="margin-top: 3px; padding-right: 10px;" for="position-add asp-for=" @Model.NewPositionColor "">Color</label>
+                    <label style="margin-top: 3px; padding-right: 10px;" for="position-add" >Color</label>
                     <br />
-                    <input type="color" id="position-color" class=" w-25" />
+                    <input type="color" id="position-color" class=" w-25" asp-for="@Model.NewPositionColor" />
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="AddPosition">Add</button>
