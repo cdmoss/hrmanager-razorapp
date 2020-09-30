@@ -148,34 +148,63 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 if (shiftDto.Action == "insert" || (shiftDto.Action == "batch" && shiftDto.Added.Count > 0)) // this block of code will execute while inserting the appointments
                 {
                     var newShiftDto = (shiftDto.Action == "insert") ? shiftDto.Value : shiftDto.Added[0];
+                    newShiftDto.Id = 0;
                     newShiftDto.StartTime = newShiftDto.StartTime.AddHours(-6);
                     newShiftDto.EndTime = newShiftDto.EndTime.AddHours(-6);
-                    int intMax = _context.Shifts.ToList().Count > 0 ? _context.Shifts.ToList().Max(p => p.Id) : 1;
                     var newShift = _mapper.Map<Shift>(newShiftDto);
                     if (newShift.VolunteerProfileId == 0)
                     {
                         newShift.VolunteerProfileId = null;
                     }
 
-                    var chosenPosition = await _context.Positions.Where(p => p.Id == newShift.PositionId).FirstOrDefaultAsync();
-                    var chosenVolunteer = newShift.VolunteerProfileId != null ? await _context.VolunteerProfiles
-                        .Where(p => p.Id == newShift.VolunteerProfileId).FirstOrDefaultAsync() : null;
+                    bool multipleShifts = Convert.ToBoolean(shiftDto.Params["multiShifts"]);
+                    if (multipleShifts)
+                    {
+                        var positions = _context.Positions.Where(p => p.Name != "All").ToList();
+                        foreach (var pos in positions)
+                        {
+                            int positionAmount = Convert.ToInt32(shiftDto.Params[$"{pos.Name}-amount"]);
+                            for (int i = 0; i < positionAmount; i++)
+                            {
+                                newShift.Id = 0;
+                                newShift.Position = pos;
 
-                    newShift.Subject = newShift.VolunteerProfileId == null ?
-                        $"Open - {chosenPosition.Name}" :
-                        $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+                                var chosenPosition = pos;
+                                var chosenVolunteer = newShift.VolunteerProfileId != null ? await _context.VolunteerProfiles
+                                    .Where(p => p.Id == newShift.VolunteerProfileId).FirstOrDefaultAsync() : null;
 
+                                newShift.Subject = newShift.VolunteerProfileId == null ?
+                                    $"Open - {chosenPosition.Name}" :
+                                    $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
 
+                                _context.Shifts.Add(newShift);
 
-                    _context.Shifts.Add(newShift);
-                    await _context.SaveChangesAsync();
+                                await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var chosenPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == newShiftDto.PositionId);
+                        var chosenVolunteer = newShift.VolunteerProfileId != null ? await _context.VolunteerProfiles
+                            .Where(p => p.Id == newShift.VolunteerProfileId).FirstOrDefaultAsync() : null;
+
+                        newShift.Subject = newShift.VolunteerProfileId == null ?
+                            $"Open - {chosenPosition.Name}" :
+                            $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+
+                        _context.Shifts.Add(newShift);
+
+                        await _context.SaveChangesAsync();
+                    }
+
 
                     // schedule email notification for shift
-                    if (newShift.VolunteerProfileId != null)
-                    {
-                        var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
-                        _reminderManager.ScheduleReminder(volunteerAccount.Email, newShift.Volunteer, newShift);
-                    }
+                    //if (newShift.VolunteerProfileId != null)
+                    //{
+                    //    var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
+                    //    _reminderManager.ScheduleReminder(volunteerAccount.Email, newShift.Volunteer, newShift);
+                    //}
                 }
                 if (shiftDto.Action == "update" || (shiftDto.Action == "batch" && shiftDto.Changed.Count > 0)) // this block of code will execute while updating the appointment
                 {

@@ -9,10 +9,8 @@
 @inject UserManager<AppUser> _userManager
 
 @model MHFoodBank.Web.Areas.Admin.Pages.AdminCalendar
-@{
-    Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
-    ViewData["Title"] = "Admin Calendar";
-}
+@{ Layout = "~/Areas/Admin/Pages/Shared/_Layout.cshtml";
+                ViewData["Title"] = "Admin Calendar"; }
 
 @section Styles {
     <link href='~/fullcalendar/packages/core/main.css' rel='stylesheet' />
@@ -21,6 +19,18 @@
     <link href='~/fullcalendar/packages/list/main.css' rel='stylesheet' />
     <link href="~/css/admincalendar.css" rel="stylesheet" />
 }
+
+<style>
+    .e-numerictextbox {
+        text-align: center !important;
+    }
+
+    .multi-position-displaying {
+        padding-top: .75rem;
+        vertical-align: top;
+    }
+
+</style>
 
 @section Scripts {
     <script src='~/fullcalendar/packages/core/main.js'></script>
@@ -44,12 +54,10 @@
     <form method="post" id="container">
         @if (String.IsNullOrWhiteSpace(Model.SearchedName))
         {
-            <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-        }
-        else
-        {
-            <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-        }
+<input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" /> }
+            else
+            {
+<input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />}
         <select id="search-position" class="form-control" asp-items="@(new SelectList(Model.PositionsWithAll, "Id", "Name", Model.SearchedPositionId))" asp-for="@Model.SearchedPositionId" required>
         </select>
         <button id="search" class="btn btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
@@ -62,7 +70,7 @@
     </form>
     <hr />
 
-    @{
+    @{ 
         var shiftManager = new DataManager
         {
             Url = "AdminCalendar?handler=GetShifts",
@@ -71,7 +79,7 @@
             Adaptor = "UrlAdaptor",
             CrossDomain = true,
             Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
-        };
+        }; 
     }
 
     <div style="height: 80vh;">
@@ -109,19 +117,39 @@
                 </tr>
                 <tr>
                     <td colspan="4">
+                        <br />
                         <div id="RecurrenceEditor"></div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="e-textlabel">Volunteer</td>
+                    <td class="e-textlabel e-float-text">Volunteer</td>
                     <td colspan="4">
                         <input type="text" id="VolunteerId" placeholder="Select a volunteer..." name="VolunteerProfileId" class="e-field" style="width: 100%" />
                     </td>
                 </tr>
                 <tr>
-                    <td class="e-textlabel">Position</td>
-                    <td colspan="4">
+                    <td id="position-label" class="e-textlabel">Position</td>
+                    <td id="position-section" colspan="4">
                         <input type="text" id="PositionId" placeholder="Select a position..." name="PositionId" class="e-field" style="width: 100%" />
+                        <div id="multi-position-selector">
+                            @foreach (var position in Model.Positions)
+                            {
+                                <text>
+                                    <div class="d-flex">
+                                        <div class="w-25">
+                                            <input type="text" id="@position.Name-amount" name="@position.Name-amount" class="position-amount text-center" />
+                                        </div>
+                                        <div class="w-75 pl-5 d-flex align-items-center" >@position.Name</div>
+                                    </div>
+                                </text>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <input type="text" id="multi-position-toggle" name="MultipleShifts" onclick="toggleMultiPositionControls()"/>
+                        <label class="e-textlabel pl-2">Make This Shift For Multiple Positions</label>
                     </td>
                 </tr>
                 <tr>
@@ -136,12 +164,44 @@
 
     <!--This function configures the inputs on the editor window-->
     <script type="text/javascript">
+        function toggleMultiPositionControls() {
+            let multiPositionToggleState = document.getElementById('multi-position-toggle').checked;
+            if (multiPositionToggleState === true) {
+                document.getElementById('PositionId').disabled = true;
+                document.getElementById('PositionId').parentElement.style.display = 'none';
+                document.getElementById('multi-position-selector').style.display = 'block';
+                document.getElementById('position-label').classList.add('multi-position-displaying');
+            }
+            else {
+                document.getElementById('PositionId').disabled = false;
+                document.getElementById('PositionId').parentElement.style.display = 'inline-flex';
+                document.getElementById('PositionId').parentElement.style.width = '100%';
+                document.getElementById('multi-position-selector').style.display = 'none';
+                document.getElementById('position-label').classList.remove('multi-position-displaying');
+
+            }
+        }
+
         function onActionBegin(args) {
+            if (args.requestType === 'eventCreate') {
+                let multiShifts = document.getElementById('multi-position-toggle').checked;
+                let schedule = document.getElementById('schedule').ej2_instances[0];
+                let queryObj = new ej.data.Query().from('Events');
+                queryObj.addParams('multiShifts', multiShifts);
+                if (multiShifts == true) {
+                    @for (int i = 0; i < Model.Positions.Count(); i++)
+                    {
+                        <text>
+                        queryObj.addParams('@Model.Positions[i].Name-amount', document.getElementById('@Model.Positions[i].Name-amount').value);
+                        </text>
+                    }
+                }
+                schedule.dataModule.query = queryObj;
+            }
             @{
                 var user = await _userManager.GetUserAsync(User);
                 bool isStaff = await _userManager.IsInRoleAsync(user, "staff");
             }
-
             @if (isStaff)
             {
                 <text>
@@ -152,9 +212,12 @@
                 }
                 </text>
             }
-        };
+        }
+
         function onPopupOpen(args) {
             if (args.type === 'Editor') {
+                toggleMultiPositionControls();
+
                 var volunteers = @Html.Raw(Json.Serialize(Model.Volunteers));
                 volunteers.push({ "Id": 0, "FullNameWithID": "Open" });
                 var positions = @Html.Raw(Json.Serialize(Model.Positions));
@@ -194,6 +257,24 @@
                     recurrObject.appendTo(recurElement);
                     schedule.setRecurrenceEditor(recurrObject);
                 }
+                var multiPositionCheck = args.element.querySelector('#multi-position-toggle');
+                if (!multiPositionCheck.classList.contains('e-checkbox')) {
+                    multiPositionObject = new ej.buttons.CheckBox({
+                    });
+                    multiPositionObject.appendTo(multiPositionCheck);
+                }
+                var positionAmountInputs = args.element.getElementsByClassName('position-amount');
+                Array.from(positionAmountInputs).forEach(function(amountInput) {
+                    if (!amountInput.classList.contains('e-numerictextbox')) {
+                        numericTextBox = new ej.inputs.NumericTextBox({
+                            max: 99,
+                            min: 0,
+                            format: 'n',
+                            value: 0,
+                        });
+                        numericTextBox.appendTo(amountInput);
+                    }
+                });
             }
         }
     </script>
@@ -279,6 +360,14 @@
 <datalist id="positions"></datalist>
 
 <script>
+
+    function multiPositionChecked() {
+        let multiPositionElement = document.getElementById("multi-position");
+        if (multiPositionElement.checked == true) {
+            document.getElementById("positions-section").display = "";
+        }
+    }
+
     let volunteers = new Array();
     @foreach (var volunteer in Model.Volunteers)
     {
