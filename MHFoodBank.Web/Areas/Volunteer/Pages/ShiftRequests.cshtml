@@ -8,7 +8,7 @@
 }
 
 
-    <div class="ml-5 mr-5">
+    @*<div class="ml-5 mr-5">
         <div class="row justify-content-end">
             <form method="post">
                 <button class="btn btn-primary w-100" asp-page-handler="Calendar">Request Shift Change</button>
@@ -30,9 +30,9 @@
                 @foreach (var alert in Model.Alerts)
                 {
             <tr>
-                <td>@alert.OriginalShift.StartDate.ToString("yyyy-MM-dd"), @alert.OriginalShift.StartTime.ToString(@"hh\:mm") to @alert.OriginalShift.EndTime.ToString(@"hh\:mm")</td>
+                <td>@alert.OriginalShift.StartDate.ToString("yyyy-MM-dd"), @alert.OriginalShift.StartTime.ToString(@"hh\:mm") to @alert.OriginalShift.EndTime.ToString(@"hh\:mm")</td>*@
                 <!--Request To Change Shift-->
-                @if (alert.RequestedShift != null)
+                @*@if (alert.RequestedShift != null)
                 {
                     <td>Change to @alert.RequestedShift.StartDate.ToString("yyyy-MM-dd"), @alert.RequestedShift.StartTime.ToString(@"hh\:mm") to @alert.RequestedShift.EndTime.ToString(@"hh\:mm")</td>
                 }
@@ -71,6 +71,6 @@
                 }
             </table>
         }
-    </div>
+    </div>*@
 
 

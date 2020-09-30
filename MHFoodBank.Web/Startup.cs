@@ -15,6 +15,7 @@ using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
 using MHFoodBank.Api.Repositories;
 using MHFoodBank.Web.Services;
+using Microsoft.AspNetCore.Http;
 
 namespace MHFoodBank.Web
 {
@@ -88,12 +89,13 @@ namespace MHFoodBank.Web
 
             services
                 .AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", ""))
-                .AddNewtonsoftJson();
+                .AddNewtonsoftJson(options =>
+                    options
+                    .UseMemberCasing()
+                    .SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
 
-            services
-                .AddControllers();
+                .AddRazorPagesOptions(options =>
+                    options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", ""));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -111,6 +113,8 @@ namespace MHFoodBank.Web
                 app.UseHsts();
             }
 
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzE5MzQ4QDMxMzgyZTMyMmUzMEI2L0VJSnNCS1ZaaUh1WjUyditEWUsvMzZHaDJmc1IzQTBKZkxaTGM2Vzg9");
+
             DbSeeder.Seed(roleManager, userManager, context, env);
 
             app.UseHttpsRedirection();
@@ -126,7 +130,6 @@ namespace MHFoodBank.Web
             app.UseHangfireServer();
 
             RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

@@ -28,6 +28,9 @@
           "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.dll": {}
         }
       },
+      "cldrjs/0.4.4": {
+        "type": "package"
+      },
       "Dapper/1.50.5": {
         "type": "package",
         "dependencies": {
@@ -40,6 +43,14 @@
         },
         "runtime": {
           "lib/netstandard2.0/Dapper.dll": {}
+        }
+      },
+      "DevExtreme.Web/20.1.7": {
+        "type": "package",
+        "dependencies": {
+          "JSZip": "3.1.2",
+          "jQuery": "3.5.1",
+          "jquery-globalize": "1.1.1"
         }
       },
       "Google.Protobuf/3.5.1": {
@@ -122,8 +133,14 @@
           "lib/netstandard2.0/Hangfire.MySql.Core.dll": {}
         }
       },
-      "jQuery/3.2.1": {
+      "jQuery/3.5.1": {
         "type": "package"
+      },
+      "jquery-globalize/1.1.1": {
+        "type": "package",
+        "dependencies": {
+          "cldrjs": "0.4.4"
+        }
       },
       "jQuery.Fullcalendar/3.9.0": {
         "type": "package",
@@ -131,6 +148,9 @@
           "Moment.js": "2.18.2",
           "jQuery": "3.2.1"
         }
+      },
+      "JSZip/3.1.2": {
+        "type": "package"
       },
       "MailKit/2.7.0": {
         "type": "package",
@@ -3058,6 +3078,21 @@
         "lib/netstandard2.0/AutoMapper.Extensions.Microsoft.DependencyInjection.pdb"
       ]
     },
+    "cldrjs/0.4.4": {
+      "sha512": "QTJ2r9FpA1XOFPRguhHAFjJZZJVil5TFOUCTLpN02BjQtgXgVDpt5VFyxQp/uNwEh0InNWLdIugl2Ls1IBqfXg==",
+      "type": "package",
+      "path": "cldrjs/0.4.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "cldrjs.0.4.4.nupkg.sha512",
+        "cldrjs.nuspec",
+        "content/Scripts/cldr.js",
+        "content/Scripts/cldr/event.js",
+        "content/Scripts/cldr/supplemental.js",
+        "content/Scripts/cldr/unresolved.js"
+      ]
+    },
     "Dapper/1.50.5": {
       "sha512": "1vPpX7WQmQCIb7rwlGOUoVs/yWZhVKvdhuG7WrJV+V+qsP8btnrrCqVWHENAlJxBAnUw5rhWfmuba9/Egei9MA==",
       "type": "package",
@@ -3073,6 +3108,196 @@
         "lib/netstandard1.3/Dapper.xml",
         "lib/netstandard2.0/Dapper.dll",
         "lib/netstandard2.0/Dapper.xml"
+      ]
+    },
+    "DevExtreme.Web/20.1.7": {
+      "sha512": "N26wfu7ZdW63FWG3MuVOvlBwMOCQAmd4/9RhLly71BVeiawxMxn9cEqjxjWcUgc6RCndaKfxrJFhyaoPnJMwJw==",
+      "type": "package",
+      "path": "devextreme.web/20.1.7",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/net/Content/dx-diagram.css",
+        "content/net/Content/dx-diagram.min.css",
+        "content/net/Content/dx-gantt.css",
+        "content/net/Content/dx-gantt.min.css",
+        "content/net/Content/dx.carmine.compact.css",
+        "content/net/Content/dx.carmine.css",
+        "content/net/Content/dx.common.css",
+        "content/net/Content/dx.contrast.compact.css",
+        "content/net/Content/dx.contrast.css",
+        "content/net/Content/dx.dark.compact.css",
+        "content/net/Content/dx.dark.css",
+        "content/net/Content/dx.darkmoon.compact.css",
+        "content/net/Content/dx.darkmoon.css",
+        "content/net/Content/dx.darkviolet.compact.css",
+        "content/net/Content/dx.darkviolet.css",
+        "content/net/Content/dx.greenmist.compact.css",
+        "content/net/Content/dx.greenmist.css",
+        "content/net/Content/dx.ios7.default.css",
+        "content/net/Content/dx.light.compact.css",
+        "content/net/Content/dx.light.css",
+        "content/net/Content/dx.material.blue.dark.compact.css",
+        "content/net/Content/dx.material.blue.dark.css",
+        "content/net/Content/dx.material.blue.light.compact.css",
+        "content/net/Content/dx.material.blue.light.css",
+        "content/net/Content/dx.material.lime.dark.compact.css",
+        "content/net/Content/dx.material.lime.dark.css",
+        "content/net/Content/dx.material.lime.light.compact.css",
+        "content/net/Content/dx.material.lime.light.css",
+        "content/net/Content/dx.material.orange.dark.compact.css",
+        "content/net/Content/dx.material.orange.dark.css",
+        "content/net/Content/dx.material.orange.light.compact.css",
+        "content/net/Content/dx.material.orange.light.css",
+        "content/net/Content/dx.material.purple.dark.compact.css",
+        "content/net/Content/dx.material.purple.dark.css",
+        "content/net/Content/dx.material.purple.light.compact.css",
+        "content/net/Content/dx.material.purple.light.css",
+        "content/net/Content/dx.material.teal.dark.compact.css",
+        "content/net/Content/dx.material.teal.dark.css",
+        "content/net/Content/dx.material.teal.light.compact.css",
+        "content/net/Content/dx.material.teal.light.css",
+        "content/net/Content/dx.softblue.compact.css",
+        "content/net/Content/dx.softblue.css",
+        "content/net/Content/fonts/Roboto-300.ttf",
+        "content/net/Content/fonts/Roboto-300.woff",
+        "content/net/Content/fonts/Roboto-300.woff2",
+        "content/net/Content/fonts/Roboto-400.ttf",
+        "content/net/Content/fonts/Roboto-400.woff",
+        "content/net/Content/fonts/Roboto-400.woff2",
+        "content/net/Content/fonts/Roboto-500.ttf",
+        "content/net/Content/fonts/Roboto-500.woff",
+        "content/net/Content/fonts/Roboto-500.woff2",
+        "content/net/Content/fonts/Roboto-700.ttf",
+        "content/net/Content/fonts/Roboto-700.woff",
+        "content/net/Content/fonts/Roboto-700.woff2",
+        "content/net/Content/icons/dxicons.ttf",
+        "content/net/Content/icons/dxicons.woff",
+        "content/net/Content/icons/dxicons.woff2",
+        "content/net/Content/icons/dxiconsios.ttf",
+        "content/net/Content/icons/dxiconsios.woff",
+        "content/net/Content/icons/dxiconsios.woff2",
+        "content/net/Content/icons/dxiconsmaterial.ttf",
+        "content/net/Content/icons/dxiconsmaterial.woff",
+        "content/net/Content/icons/dxiconsmaterial.woff2",
+        "content/net/Scripts/devextreme-localization/dx.messages.de.js",
+        "content/net/Scripts/devextreme-localization/dx.messages.en.js",
+        "content/net/Scripts/devextreme-localization/dx.messages.ja.js",
+        "content/net/Scripts/devextreme-localization/dx.messages.ru.js",
+        "content/net/Scripts/dx-diagram.js",
+        "content/net/Scripts/dx-diagram.min.js",
+        "content/net/Scripts/dx-gantt.js",
+        "content/net/Scripts/dx-gantt.min.js",
+        "content/net/Scripts/dx.all.debug.js",
+        "content/net/Scripts/dx.all.js",
+        "content/net/Scripts/dx.aspnet.mvc.js",
+        "content/net/Scripts/dx.viz-web.debug.js",
+        "content/net/Scripts/dx.viz-web.js",
+        "content/net/Scripts/dx.viz.debug.js",
+        "content/net/Scripts/dx.viz.js",
+        "content/net/Scripts/dx.web.debug.js",
+        "content/net/Scripts/dx.web.js",
+        "content/net/Scripts/vectormap-data/africa.js",
+        "content/net/Scripts/vectormap-data/canada.js",
+        "content/net/Scripts/vectormap-data/eurasia.js",
+        "content/net/Scripts/vectormap-data/europe.js",
+        "content/net/Scripts/vectormap-data/usa.js",
+        "content/net/Scripts/vectormap-data/world.js",
+        "content/net/Scripts/vectormap-utils/dx.vectormaputils.debug.js",
+        "content/net/Scripts/vectormap-utils/dx.vectormaputils.js",
+        "content/net/Scripts/vectormap-utils/dx.vectormaputils.node.js",
+        "content/netcore/css/dx-diagram.css",
+        "content/netcore/css/dx-diagram.min.css",
+        "content/netcore/css/dx-gantt.css",
+        "content/netcore/css/dx-gantt.min.css",
+        "content/netcore/css/dx.carmine.compact.css",
+        "content/netcore/css/dx.carmine.css",
+        "content/netcore/css/dx.common.css",
+        "content/netcore/css/dx.contrast.compact.css",
+        "content/netcore/css/dx.contrast.css",
+        "content/netcore/css/dx.dark.compact.css",
+        "content/netcore/css/dx.dark.css",
+        "content/netcore/css/dx.darkmoon.compact.css",
+        "content/netcore/css/dx.darkmoon.css",
+        "content/netcore/css/dx.darkviolet.compact.css",
+        "content/netcore/css/dx.darkviolet.css",
+        "content/netcore/css/dx.greenmist.compact.css",
+        "content/netcore/css/dx.greenmist.css",
+        "content/netcore/css/dx.ios7.default.css",
+        "content/netcore/css/dx.light.compact.css",
+        "content/netcore/css/dx.light.css",
+        "content/netcore/css/dx.material.blue.dark.compact.css",
+        "content/netcore/css/dx.material.blue.dark.css",
+        "content/netcore/css/dx.material.blue.light.compact.css",
+        "content/netcore/css/dx.material.blue.light.css",
+        "content/netcore/css/dx.material.lime.dark.compact.css",
+        "content/netcore/css/dx.material.lime.dark.css",
+        "content/netcore/css/dx.material.lime.light.compact.css",
+        "content/netcore/css/dx.material.lime.light.css",
+        "content/netcore/css/dx.material.orange.dark.compact.css",
+        "content/netcore/css/dx.material.orange.dark.css",
+        "content/netcore/css/dx.material.orange.light.compact.css",
+        "content/netcore/css/dx.material.orange.light.css",
+        "content/netcore/css/dx.material.purple.dark.compact.css",
+        "content/netcore/css/dx.material.purple.dark.css",
+        "content/netcore/css/dx.material.purple.light.compact.css",
+        "content/netcore/css/dx.material.purple.light.css",
+        "content/netcore/css/dx.material.teal.dark.compact.css",
+        "content/netcore/css/dx.material.teal.dark.css",
+        "content/netcore/css/dx.material.teal.light.compact.css",
+        "content/netcore/css/dx.material.teal.light.css",
+        "content/netcore/css/dx.softblue.compact.css",
+        "content/netcore/css/dx.softblue.css",
+        "content/netcore/css/fonts/Roboto-300.ttf",
+        "content/netcore/css/fonts/Roboto-300.woff",
+        "content/netcore/css/fonts/Roboto-300.woff2",
+        "content/netcore/css/fonts/Roboto-400.ttf",
+        "content/netcore/css/fonts/Roboto-400.woff",
+        "content/netcore/css/fonts/Roboto-400.woff2",
+        "content/netcore/css/fonts/Roboto-500.ttf",
+        "content/netcore/css/fonts/Roboto-500.woff",
+        "content/netcore/css/fonts/Roboto-500.woff2",
+        "content/netcore/css/fonts/Roboto-700.ttf",
+        "content/netcore/css/fonts/Roboto-700.woff",
+        "content/netcore/css/fonts/Roboto-700.woff2",
+        "content/netcore/css/icons/dxicons.ttf",
+        "content/netcore/css/icons/dxicons.woff",
+        "content/netcore/css/icons/dxicons.woff2",
+        "content/netcore/css/icons/dxiconsios.ttf",
+        "content/netcore/css/icons/dxiconsios.woff",
+        "content/netcore/css/icons/dxiconsios.woff2",
+        "content/netcore/css/icons/dxiconsmaterial.ttf",
+        "content/netcore/css/icons/dxiconsmaterial.woff",
+        "content/netcore/css/icons/dxiconsmaterial.woff2",
+        "content/netcore/js/devextreme-localization/dx.messages.de.js",
+        "content/netcore/js/devextreme-localization/dx.messages.en.js",
+        "content/netcore/js/devextreme-localization/dx.messages.ja.js",
+        "content/netcore/js/devextreme-localization/dx.messages.ru.js",
+        "content/netcore/js/dx-diagram.js",
+        "content/netcore/js/dx-diagram.min.js",
+        "content/netcore/js/dx-gantt.js",
+        "content/netcore/js/dx-gantt.min.js",
+        "content/netcore/js/dx.all.debug.js",
+        "content/netcore/js/dx.all.js",
+        "content/netcore/js/dx.viz-web.debug.js",
+        "content/netcore/js/dx.viz-web.js",
+        "content/netcore/js/dx.viz.debug.js",
+        "content/netcore/js/dx.viz.js",
+        "content/netcore/js/dx.web.debug.js",
+        "content/netcore/js/dx.web.js",
+        "content/netcore/js/vectormap-data/africa.js",
+        "content/netcore/js/vectormap-data/canada.js",
+        "content/netcore/js/vectormap-data/eurasia.js",
+        "content/netcore/js/vectormap-data/europe.js",
+        "content/netcore/js/vectormap-data/usa.js",
+        "content/netcore/js/vectormap-data/world.js",
+        "content/netcore/js/vectormap-utils/dx.vectormaputils.debug.js",
+        "content/netcore/js/vectormap-utils/dx.vectormaputils.js",
+        "content/netcore/js/vectormap-utils/dx.vectormaputils.node.js",
+        "devextreme.web.20.1.7.nupkg.sha512",
+        "devextreme.web.nuspec",
+        "tools/install.ps1"
       ]
     },
     "Google.Protobuf/3.5.1": {
@@ -3186,27 +3411,46 @@
         "lib/netstandard2.0/Hangfire.MySql.Core.dll"
       ]
     },
-    "jQuery/3.2.1": {
-      "sha512": "Sc4jRcsItNXUoNmnPtD9DEnHCy5d4u0GOdDSKYL+b7PKtwajKO1YBJA55241G2M9KRCwSbtxV4ti3gb4n/pIew==",
+    "jQuery/3.5.1": {
+      "sha512": "ji6sm/AI0vjASXAA/AG9Yf5ypALAqIDXFFKPHMAnFL8kp3xqULIWhACjg/OXZP88C56frYlIej2nrdBnhTMYQQ==",
       "type": "package",
-      "path": "jquery/3.2.1",
+      "path": "jquery/3.5.1",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
-        "Content/Scripts/jquery-3.2.1-vsdoc.js",
-        "Content/Scripts/jquery-3.2.1.js",
-        "Content/Scripts/jquery-3.2.1.min.js",
-        "Content/Scripts/jquery-3.2.1.min.map",
-        "Content/Scripts/jquery-3.2.1.slim.js",
-        "Content/Scripts/jquery-3.2.1.slim.min.js",
-        "Content/Scripts/jquery-3.2.1.slim.min.map",
+        "Content/Scripts/jquery-3.5.1-vsdoc.js",
+        "Content/Scripts/jquery-3.5.1.js",
+        "Content/Scripts/jquery-3.5.1.min.js",
+        "Content/Scripts/jquery-3.5.1.min.map",
+        "Content/Scripts/jquery-3.5.1.slim.js",
+        "Content/Scripts/jquery-3.5.1.slim.min.js",
+        "Content/Scripts/jquery-3.5.1.slim.min.map",
         "Tools/common.ps1",
         "Tools/install.ps1",
-        "Tools/jquery-3.2.1.intellisense.js",
+        "Tools/jquery-3.5.1.intellisense.js",
         "Tools/uninstall.ps1",
-        "jquery.3.2.1.nupkg.sha512",
+        "jquery.3.5.1.nupkg.sha512",
         "jquery.nuspec"
+      ]
+    },
+    "jquery-globalize/1.1.1": {
+      "sha512": "tkRqYLIONjwamztg1rG+xyh2asA0ARLOPorfF3N9JW8fWr+srtPAeUNLFHF6NZAQ7Avnkzgi2OC505lK5avFag==",
+      "type": "package",
+      "path": "jquery-globalize/1.1.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Scripts/globalize.js",
+        "content/Scripts/globalize/currency.js",
+        "content/Scripts/globalize/date.js",
+        "content/Scripts/globalize/message.js",
+        "content/Scripts/globalize/number.js",
+        "content/Scripts/globalize/plural.js",
+        "content/Scripts/globalize/relative-time.js",
+        "content/Scripts/globalize/unit.js",
+        "jquery-globalize.1.1.1.nupkg.sha512",
+        "jquery-globalize.nuspec"
       ]
     },
     "jQuery.Fullcalendar/3.9.0": {
@@ -3315,6 +3559,20 @@
         "content/Scripts/locale/zh-tw.js",
         "jquery.fullcalendar.3.9.0.nupkg.sha512",
         "jquery.fullcalendar.nuspec"
+      ]
+    },
+    "JSZip/3.1.2": {
+      "sha512": "yES0T93sQ4DXchqpKyWFIqSoo1HKQj7a6Gf8bEC3IzFvgNzEh2MP9gMcTYkWw2N7jhZvo7n6FukvmtkrH8i4Pw==",
+      "type": "package",
+      "path": "jszip/3.1.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "content/Scripts/jszip.js",
+        "content/Scripts/jszip.min.js",
+        "jszip.3.1.2.nupkg.sha512",
+        "jszip.nuspec",
+        "nuget.exe"
       ]
     },
     "MailKit/2.7.0": {
@@ -9576,6 +9834,7 @@
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [
       "AutoMapper.Extensions.Microsoft.DependencyInjection >= 7.0.0",
+      "DevExtreme.Web >= 20.1.7",
       "Hangfire.AspNetCore >= 1.7.11",
       "Hangfire.Core >= 1.7.11",
       "Hangfire.MySql.Core_MySql.Data >= 2.1.10",
@@ -9592,7 +9851,6 @@
       "Microsoft.VisualStudio.Web.CodeGeneration.Design >= 3.1.4",
       "Pomelo.EntityFrameworkCore.MySql >= 3.1.1",
       "Syncfusion.EJ2.AspNet.Core >= 18.2.0.58",
-      "Syncfusion.Licensing >= 18.2.0.58",
       "jQuery.Fullcalendar >= 3.9.0"
     ]
   },
@@ -9645,6 +9903,10 @@
           "AutoMapper.Extensions.Microsoft.DependencyInjection": {
             "target": "Package",
             "version": "[7.0.0, )"
+          },
+          "DevExtreme.Web": {
+            "target": "Package",
+            "version": "[20.1.7, )"
           },
           "Hangfire.AspNetCore": {
             "target": "Package",
@@ -9703,10 +9965,6 @@
             "version": "[3.1.1, )"
           },
           "Syncfusion.EJ2.AspNet.Core": {
-            "target": "Package",
-            "version": "[18.2.0.58, )"
-          },
-          "Syncfusion.Licensing": {
             "target": "Package",
             "version": "[18.2.0.58, )"
           },

@@ -65,7 +65,7 @@ namespace MHFoodBank.Web.Services
 
                 foreach (var shift in workableShifts)
                 {
-                    workableShiftsStr += ">   " + shift.StartDate.ToString("dddd, dd MMMM yyyy") + " - " + shift.StartTime + " until " + shift.EndTime + "<br/>";
+                    workableShiftsStr += ">   " + shift.StartTime.ToString("dddd, dd MMMM yyyy") + " - " + shift.StartTime + " until " + shift.EndTime + "<br/>";
                 }
 
                 await _emailSender.SendEmailAsync(volunteer.Email, "Available open shifts - MHFB", $"Hello { volunteer.VolunteerProfile.FirstName} { volunteer.VolunteerProfile.LastName},\n\n"
@@ -78,56 +78,56 @@ namespace MHFoodBank.Web.Services
 
         public async Task<List<Shift>> GetWorkableShiftsFromAvailabilites(IList<Availability> availabilities)
         {
-            // find all nonrecurring shifts that agree with the given availabilites
-            if (_context.Shifts.Any())
-            {
-                List<Shift> nonRecurringShifts = new List<Shift>();
+            //// find all nonrecurring shifts that agree with the given availabilites
+            //if (_context.Shifts.Any())
+            //{
+            //    List<Shift> nonRecurringShifts = new List<Shift>();
 
-                foreach (var shift in _context.Shifts.Where(s => !(s is RecurringShift)))
-                {
-                    if (shift.Volunteer == null &&
-                    shift.StartDate > DateTime.Now &&
-                    availabilities
-                        .Any(a =>
-                            shift.StartTime >= a.StartTime &&
-                            shift.EndTime <= a.EndTime &&
-                            Enum.GetName(typeof(DayOfWeek), shift.StartDate.DayOfWeek).ToLower() == a.AvailableDay))
-                    {
-                        nonRecurringShifts.Add(shift);
-                    }
-                }
+            //    foreach (var shift in _context.Shifts.Where(s => string.IsNullOrEmpty(s.RecurrenceRule)))
+            //    {
+            //        if (shift.Volunteer == null &&
+            //        shift.StartTime > DateTime.Now &&
+            //        availabilities
+            //            .Any(a =>
+            //                shift.StartTime.TimeOfDay >= a.StartTime &&
+            //                shift.EndTime.TimeOfDay <= a.EndTime &&
+            //                Enum.GetName(typeof(DayOfWeek), shift.StartTime.DayOfWeek).ToLower() == a.AvailableDay))
+            //        {
+            //            nonRecurringShifts.Add(shift);
+            //        }
+            //    }
 
-                // find all recurring shifts that agree with the given availabilities
-                List<RecurringShift> recurringShifts = new List<RecurringShift>();
-                foreach (var shift in _context.RecurringShifts)
-                {
-                    if (shift.Volunteer == null &&
-                        shift.EndDate > DateTime.Now &&
-                        availabilities
-                            .Any(a =>
-                                shift.StartTime >= a.StartTime &&
-                                shift.EndTime <= a.EndTime))
-                    {
-                        recurringShifts.Add(shift);
-                    }
-                }
+            //    // find all recurring shifts that agree with the given availabilities
+            //    List<RecurringShift> recurringShifts = new List<RecurringShift>();
+            //    foreach (var shift in _context.RecurringShifts)
+            //    {
+            //        if (shift.Volunteer == null &&
+            //            shift.EndDate > DateTime.Now &&
+            //            availabilities
+            //                .Any(a =>
+            //                    shift.StartTime >= a.StartTime &&
+            //                    shift.EndTime <= a.EndTime))
+            //        {
+            //            recurringShifts.Add(shift);
+            //        }
+            //    }
 
-                // merge the two lists of workable shifts
-                foreach (var recurringShift in recurringShifts)
-                {
-                    foreach (var shift in recurringShift.ConstituentShifts)
-                    {
-                        if (availabilities.Any(a =>
-                            a.AvailableDay == Enum.GetName(typeof(DayOfWeek), shift.StartDate.DayOfWeek).ToLower()))
-                        {
-                            nonRecurringShifts.Add(shift);
-                        }
-                    }
-                }
+            //    // merge the two lists of workable shifts
+            //    foreach (var recurringShift in recurringShifts)
+            //    {
+            //        foreach (var shift in recurringShift.ConstituentShifts)
+            //        {
+            //            if (availabilities.Any(a =>
+            //                a.AvailableDay == Enum.GetName(typeof(DayOfWeek), shift.StartTime.DayOfWeek).ToLower()))
+            //            {
+            //                nonRecurringShifts.Add(shift);
+            //            }
+            //        }
+            //    }
 
-                // order shifts by ascending date
-                return nonRecurringShifts.OrderBy(s => s.StartDate).ToList();
-            }
+            //    // order shifts by ascending date
+            //    return nonRecurringShifts.OrderBy(s => s.StartTime).ToList();
+            //}
             return null;
         }
     }

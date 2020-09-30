@@ -21,6 +21,7 @@
     <PkgMicrosoft_CodeAnalysis_Analyzers Condition=" '$(PkgMicrosoft_CodeAnalysis_Analyzers)' == '' ">C:\Users\Chase\.nuget\packages\microsoft.codeanalysis.analyzers\2.9.4</PkgMicrosoft_CodeAnalysis_Analyzers>
     <PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets Condition=" '$(PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets)' == '' ">C:\Users\Chase\.nuget\packages\microsoft.visualstudio.azure.containers.tools.targets\1.10.8</PkgMicrosoft_VisualStudio_Azure_Containers_Tools_Targets>
     <PkgMicrosoft_EntityFrameworkCore_Tools Condition=" '$(PkgMicrosoft_EntityFrameworkCore_Tools)' == '' ">C:\Users\Chase\.nuget\packages\microsoft.entityframeworkcore.tools\3.1.2</PkgMicrosoft_EntityFrameworkCore_Tools>
-    <PkgjQuery Condition=" '$(PkgjQuery)' == '' ">C:\Users\Chase\.nuget\packages\jquery\3.2.1</PkgjQuery>
+    <PkgjQuery Condition=" '$(PkgjQuery)' == '' ">C:\Users\Chase\.nuget\packages\jquery\3.5.1</PkgjQuery>
+    <PkgDevExtreme_Web Condition=" '$(PkgDevExtreme_Web)' == '' ">C:\Users\Chase\.nuget\packages\devextreme.web\20.1.7</PkgDevExtreme_Web>
   </PropertyGroup>
 </Project>

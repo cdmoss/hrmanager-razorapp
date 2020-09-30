@@ -13,38 +13,31 @@ namespace MHFoodBank.Common.Services
         {
             var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
 
-            if (shift is RecurringShift recurringShift)
+            if (string.IsNullOrEmpty(shift.RecurrenceRule))
             {
                 string excludedDatesString = "";
 
-                for (int i = 0; i < recurringShift.ConstituentShifts.Count(); i++)
+                var childShiftDates = RecurrenceHelper.GetRecurrenceDateTimeCollection(shift.RecurrenceRule, shift.StartTime).ToList();
+
+                for (int i = 0; i < childShiftDates.Count(); i++)
                 {
-                    if (recurringShift.ConstituentShifts[i].StartDate >= currentDate || recurringShift.ConstituentShifts[i].StartDate <= currentDate)
+                    if (childShiftDates[i] >= currentDate)
                     {
                         for (int j = 0; j < i; j++)
                         {
-                            DateTime selectedShiftDate = recurringShift.ConstituentShifts[j].StartDate;
-                            TimeSpan selectedShiftTime = recurringShift.StartTime;
+                            DateTime selectedShiftDate = childShiftDates[j];
 
-                            DateTime combinedDateTime = new DateTime(
-                                selectedShiftDate.Year,
-                                selectedShiftDate.Month,
-                                selectedShiftDate.Day,
-                                selectedShiftTime.Hours,
-                                selectedShiftTime.Minutes,
-                                selectedShiftTime.Seconds);
-
-                            excludedDatesString += $"\\nEXDATE:{combinedDateTime.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
+                            excludedDatesString += $"\\nEXDATE:{selectedShiftDate.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
                         }
 
-                        recurringShift.RecurrenceRule += excludedDatesString;
+                        shift.RecurrenceRule += excludedDatesString;
                         return true;
                     }
                 }
             }
             else
             {
-                if (shift.StartDate >= currentDate || shift.StartDate <= currentDate)
+                if (shift.StartTime >= currentDate || shift.StartTime <= currentDate)
                 {
                     return true;
                 }

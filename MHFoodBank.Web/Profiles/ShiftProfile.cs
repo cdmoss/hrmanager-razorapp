@@ -13,10 +13,8 @@ namespace MHFoodBank.Api.Profiles
     {
         public ShiftProfile()
         {
-            CreateMap<ShiftReadEditDto, Shift>().ForMember(x => x.Volunteer, opt => opt.Ignore()).ForMember(v => v.PositionWorked, opt => opt.Ignore());
+            CreateMap<ShiftReadEditDto, Shift>().ForMember(x => x.Volunteer, opt => opt.Ignore()).ForMember(v => v.Position, opt => opt.Ignore());
             CreateMap<Shift, ShiftReadEditDto>();
-            CreateMap<ShiftReadEditDto, RecurringShift>().ForMember(x => x.Volunteer, opt => opt.Ignore()).ForMember(v => v.PositionWorked, opt => opt.Ignore());
-            CreateMap<RecurringShift, ShiftReadEditDto>();
         }
     }
 }

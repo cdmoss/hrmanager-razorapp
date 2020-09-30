@@ -20,8 +20,6 @@ namespace MHFoodBank.Web.Data
         public DbSet<Reference> References { get; set; }
         public DbSet<WorkExperience> WorkExperiences { get; set; }
         public DbSet<Shift> Shifts { get; set; }
-        public DbSet<RecurringShift> RecurringShifts { get; set; }
-        public DbSet<RecurringChildLink> ShiftLinks { get; set; }
         public DbSet<Availability> Availabilities { get; set; }
         public DbSet<Alert> Alerts { get; set; }
         public DbSet<ShiftRequestAlert> ShiftAlerts { get; set; }
@@ -50,7 +48,7 @@ namespace MHFoodBank.Web.Data
             modelBuilder.Entity<Shift>().HasOne(p => p.Volunteer).WithMany(b => b.Shifts).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<Alert>().HasOne(p => p.Volunteer).WithMany(b => b.Alerts).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<ShiftRequestAlert>().HasOne(p => p.OriginalShift).WithMany().OnDelete(DeleteBehavior.SetNull);
-            modelBuilder.Entity<Shift>().HasOne(p => p.ParentRecurringShift).WithMany(b => b.ExcludedShifts).OnDelete(DeleteBehavior.SetNull);
+            //modelBuilder.Entity<Shift>().HasOne(p => p.ParentRecurringShift).WithMany(b => b.ExcludedShifts).OnDelete(DeleteBehavior.SetNull);
             modelBuilder.Entity<PositionVolunteer>().HasOne(p => p.Volunteer).WithMany(b => b.Positions).OnDelete(DeleteBehavior.Cascade);
             modelBuilder.Entity<PositionVolunteer>().HasOne(p => p.Position).WithMany().OnDelete(DeleteBehavior.SetNull);
 

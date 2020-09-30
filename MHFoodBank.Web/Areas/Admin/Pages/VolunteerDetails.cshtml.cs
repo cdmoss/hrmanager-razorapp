@@ -123,7 +123,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Shared
             {
                 _context.Update(shift);
                 shift.Volunteer = null;
-                shift.CreateDescription();
             }
 
             string redirectLocation = "";

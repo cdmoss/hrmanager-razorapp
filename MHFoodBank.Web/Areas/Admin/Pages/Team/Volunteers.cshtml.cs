@@ -126,7 +126,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             {
                 _context.Update(shift);
                 shift.Volunteer = null;
-                shift.CreateDescription();
             }
 
             _context.Remove(user);
