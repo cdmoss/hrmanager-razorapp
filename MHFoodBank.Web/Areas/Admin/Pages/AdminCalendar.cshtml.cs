@@ -1,4 +1,4 @@
- using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -180,6 +180,20 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                                 _context.Shifts.Add(newShift);
 
                                 await _context.SaveChangesAsync();
+
+                                // schedule email notification for shift
+                                if (newShift.VolunteerProfileId != null)
+                                {
+                                    var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
+                                    if(string.IsNullOrEmpty(newShift.RecurrenceRule))
+                                    {
+                                        await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
+                                    }
+                                    else
+                                    {
+                                        await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
+                                    }
+                                }
                             }
                         }
                     }
@@ -196,20 +210,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                         _context.Shifts.Add(newShift);
 
                         await _context.SaveChangesAsync();
+
+                        // schedule email notification for shift
+                        if (newShift.VolunteerProfileId != null)
+                        {
+                            var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
+                            await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
+                        }
                     }
 
 
-                    // schedule email notification for shift
-                    //if (newShift.VolunteerProfileId != null)
-                    //{
-                    //    var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
-                    //    _reminderManager.ScheduleReminder(volunteerAccount.Email, newShift.Volunteer, newShift);
-                    //}
                 }
                 if (shiftDto.Action == "update" || (shiftDto.Action == "batch" && shiftDto.Changed.Count > 0)) // this block of code will execute while updating the appointment
                 {
                     var value = (shiftDto.Action == "update") ? shiftDto.Value : shiftDto.Changed[0];
                     var newShift = await _context.Shifts.FirstOrDefaultAsync(c => c.Id == Convert.ToInt32(value.Id));
+                    _reminderManager.CancelReminder(newShift);
                     if (newShift != null)
                     {
                         newShift.StartTime = value.StartTime.AddHours(-6);
@@ -232,8 +248,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                         newShift.Subject = newShift.VolunteerProfileId == null ?
                         $"Open - {chosenPosition.Name}" :
                             $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+
+                        await _context.SaveChangesAsync();
+
+                        await _context.Entry(chosenVolunteer.User).Reference(u => u).LoadAsync();
+                        await _reminderManager.ScheduleReminder(chosenVolunteer.User, newShift);
                     }
-                    await _context.SaveChangesAsync();
                 }
                 if (shiftDto.Action == "remove" || (shiftDto.Action == "batch" && shiftDto.Deleted.Count > 0)) // this block of code will execute while removing the appointment
                 {
@@ -241,14 +261,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     {
                         int key = Convert.ToInt32(shiftDto.Key);
                         var newShift = await _context.Shifts.Where(c => c.Id == key).FirstOrDefaultAsync();
-                        if (newShift != null) _context.Shifts.Remove(newShift);
+                        if (newShift != null)
+                        {
+                            _reminderManager.CancelReminder(newShift);
+                            _context.Shifts.Remove(newShift);
+                        }
                     }
                     else
                     {
                         foreach (var shifts in shiftDto.Deleted)
                         {
                             var newShift = await _context.Shifts.Where(c => c.Id == shifts.Id).FirstOrDefaultAsync();
-                            if (shifts != null) _context.Shifts.Remove(newShift);
+                            if (shifts != null)
+                            {
+                                _reminderManager.CancelReminder(newShift);
+                                _context.Shifts.Remove(newShift);
+                            }
                         }
                     }
                     await _context.SaveChangesAsync();
@@ -490,40 +518,40 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 }
 
 
-        //public async Task<IActionResult> OnPostAddManyRecurringShifts()
-        //{
-        //    // so mapshift data doesnt return null
-        //    SelectedShiftPosition = _context.Positions.ToList()[0].Name;
-        //    bool isOpen = false;
-        //    string volstr = "";
-        //    string startDateStr = "";
-        //    string endDateStr = "";
-        //    string startTimeStr = "";
-        //    string endTimeStr = "";
-        //    string weekdayStr = "";
-        //    foreach (var position in ShiftAmounts)
-        //    {
-        //        int shiftAmount = Convert.ToInt32(position.Value);
-        //        if (shiftAmount > 0)
-        //        {
-        //            for (int i = 0; i < shiftAmount; i++)
-        //            {
-        //                if (SelectedShift.StartDate > SelectedShift.EndDate)
-        //                {
-        //                    return await OnGet("Error: The start date must be before the end date.");
-        //                }
-        //                var shift = await MapShiftData(SelectedShift, new RecurringShift());
-        //                isOpen = SelectedShift.Volunteer == null;
-        //                startDateStr = shift.StartTime.ToString("D");
-        //                endDateStr = shift.EndDate.ToString("D");
-        //                startTimeStr = shift.StartTime.ToString();
-        //                endTimeStr = shift.EndTime.ToString();
-        //                if (!isOpen)
-        //                {
-        //                    volstr = shift.Volunteer.FirstName + " " + shift.Volunteer.LastName;
-        //                }
-        //                weekdayStr = shift.NormalizedWeekdays;
-        //                shift.PositionWorked = _context.Positions.FirstOrDefault(p => p.Id == position.Key);
+//public async Task<IActionResult> OnPostAddManyRecurringShifts()
+//{
+//    // so mapshift data doesnt return null
+//    SelectedShiftPosition = _context.Positions.ToList()[0].Name;
+//    bool isOpen = false;
+//    string volstr = "";
+//    string startDateStr = "";
+//    string endDateStr = "";
+//    string startTimeStr = "";
+//    string endTimeStr = "";
+//    string weekdayStr = "";
+//    foreach (var position in ShiftAmounts)
+//    {
+//        int shiftAmount = Convert.ToInt32(position.Value);
+//        if (shiftAmount > 0)
+//        {
+//            for (int i = 0; i < shiftAmount; i++)
+//            {
+//                if (SelectedShift.StartDate > SelectedShift.EndDate)
+//                {
+//                    return await OnGet("Error: The start date must be before the end date.");
+//                }
+//                var shift = await MapShiftData(SelectedShift, new RecurringShift());
+//                isOpen = SelectedShift.Volunteer == null;
+//                startDateStr = shift.StartTime.ToString("D");
+//                endDateStr = shift.EndDate.ToString("D");
+//                startTimeStr = shift.StartTime.ToString();
+//                endTimeStr = shift.EndTime.ToString();
+//                if (!isOpen)
+//                {
+//                    volstr = shift.Volunteer.FirstName + " " + shift.Volunteer.LastName;
+//                }
+//                weekdayStr = shift.NormalizedWeekdays;
+//                shift.PositionWorked = _context.Positions.FirstOrDefault(p => p.Id == position.Key);
 
 //                if (shift.Description == "vol")
 //                {
