@@ -3217,25 +3217,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dofus\\.nuget\\packages\\": {},
-    "D:\\Microsoft\\Xamarin\\NuGet\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Chase\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+      "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
       "projectName": "MHFoodBank.TimeClock",
-      "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
-      "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
+      "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+      "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "D:\\Microsoft\\Xamarin\\NuGet\\",
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        "C:\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -3249,8 +3247,8 @@
       "frameworks": {
         "netstandard2.1": {
           "projectReferences": {
-            "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
-              "projectPath": "C:\\Users\\dofus\\Downloads\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
+            "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+              "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
             }
           }
         }
@@ -3296,7 +3294,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

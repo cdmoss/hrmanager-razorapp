@@ -126,7 +126,7 @@ namespace MHFoodBank.Web
             app.UseAuthorization();
 
             GlobalConfiguration.Configuration.UseActivator(new CustomJobActivator(serviceProvider));
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/jobs");
             app.UseHangfireServer();
 
             RecurringJob.AddOrUpdate<IEmailAvailableShiftService>(x => x.SendNotifications(), Cron.Weekly(DayOfWeek.Saturday));

@@ -42,9 +42,10 @@ namespace MHFoodBank.Web.Data
             await _context.Entry(volunteer).Reference(v => v.VolunteerProfile).LoadAsync();
             if (!shift.IsRecurrence)
             {
+                // AddHours(-6) instead of -12 corrects the hangfire UTC conversion
                 var id = BackgroundJob.Schedule(() =>
                 _emailSender.SendEmailAsync(volunteer.Email, "Volunteering Reminder - MHFB", CreateEmail(volunteer, shift)),
-                shift.StartTime.AddHours(-12));
+                shift.StartTime.Date.AddHours(-6));
 
                 _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = shift.StartTime, HangfireJobId = id });
             }
@@ -113,7 +114,7 @@ namespace MHFoodBank.Web.Data
         {
             return $"Hello {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName}!\n\n" +
                        $"We are reminding you that are scheduled to volunteer at Medicine Hat Food Bank tomorrow. " +
-                       $"The shift is scheduled from {shift.StartTime} until {shift.EndTime} and the position is {shift.Position}.\n\n" +
+                       $"The shift is scheduled from {shift.StartTime} until {shift.EndTime} and the position is {shift.Position.Name}.\n\n" +
                        "Thanks again for volunteering at the Medicine Hat Food Bank.";
         }
     }

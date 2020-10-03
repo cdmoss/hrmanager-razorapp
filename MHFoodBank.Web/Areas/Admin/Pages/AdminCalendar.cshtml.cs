@@ -185,14 +185,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                                 if (newShift.VolunteerProfileId != null)
                                 {
                                     var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
-                                    if(string.IsNullOrEmpty(newShift.RecurrenceRule))
-                                    {
-                                        await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
-                                    }
-                                    else
-                                    {
-                                        await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
-                                    }
+                                    await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
                                 }
                             }
                         }
@@ -211,8 +204,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
                         await _context.SaveChangesAsync();
 
-                        // schedule email notification for shift
-                        if (newShift.VolunteerProfileId != null)
+                        // schedule email notification for shift if shift is after todays date
+                        if (newShift.VolunteerProfileId != null && newShift.StartTime > DateTime.Now.AddHours(12))
                         {
                             var volunteerAccount = await _context.Users.FirstOrDefaultAsync(u => u.VolunteerProfile.Id == newShift.VolunteerProfileId);
                             await _reminderManager.ScheduleReminder(volunteerAccount, newShift);
@@ -228,6 +221,13 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                     _reminderManager.CancelReminder(newShift);
                     if (newShift != null)
                     {
+                        // cancel old reminder if old version of shift had a volunteer
+                        if (newShift.VolunteerProfileId != null)
+                        {
+                            _reminderManager.CancelReminder(newShift);
+                        }
+
+                        newShift.VolunteerProfileId = value.VolunteerProfileId;
                         newShift.StartTime = value.StartTime.AddHours(-6);
                         newShift.EndTime = value.EndTime.AddHours(-6);
                         newShift.PositionId = value.PositionId;
@@ -251,8 +251,12 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
                         await _context.SaveChangesAsync();
 
-                        await _context.Entry(chosenVolunteer.User).Reference(u => u).LoadAsync();
-                        await _reminderManager.ScheduleReminder(chosenVolunteer.User, newShift);
+                        // create new reminder if new version of shift has volunteer
+                        if (newShift.VolunteerProfileId != null)
+                        {
+                            await _context.Entry(chosenVolunteer).Reference(v => v.User).LoadAsync();
+                            await _reminderManager.ScheduleReminder(chosenVolunteer.User, newShift);
+                        }
                     }
                 }
                 if (shiftDto.Action == "remove" || (shiftDto.Action == "batch" && shiftDto.Deleted.Count > 0)) // this block of code will execute while removing the appointment
