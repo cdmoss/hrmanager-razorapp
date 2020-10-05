@@ -1,194 +1,57 @@
 ﻿@page
 @model MHFoodBank.Web.Areas.Volunteer.Pages.VolunteerCalendarModel
 @using MHFoodBank.Common;
-@using MHFoodBank.Common.Dtos; 
+@using MHFoodBank.Common.Dtos;
+@using Microsoft.AspNetCore.Antiforgery;
+@using Syncfusion.EJ2
+@inject IAntiforgery antiForgery
 @{
     ViewData["Title"] = "VolunteerCalendar";
     Layout = "~/Areas/Volunteer/Pages/Shared/_Layout.cshtml";
 }
 
-    <script src="https://momentjs.com/downloads/moment.js"></script>
-
-<style>
-    .fc-content {
-        cursor: pointer;
-    }
-</style>
-@*<script>
-
-        document.addEventListener('DOMContentLoaded', function () {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                height: 750,
-                nowIndicator: true,
-                plugins: ['interaction', 'dayGrid', 'timeGrid', 'list', 'rrule'],
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                },
-                eventClick: function (shiftinfo, jsEvent, view) {
-                    var arrDate = new Date(shiftinfo.event.start);
-                    var arrEndDate = new Date(shiftinfo.event.end);
-                    var isShiftOpen = shiftinfo.event.extendedProps.vol === 'Open';
-                    var isBeforeToday = arrDate < moment();
-                    var selectedShiftStartDate = shiftinfo.event.start;
-
-                    $('#shift-modal-assigned').modal();
-                    document.getElementById("clicked-shift-date").value = moment(selectedShiftStartDate).format('yyyy-MM-DD');
-                    document.getElementById("assigned-shift-id").value = shiftinfo.event.id;
-                    document.getElementById("assigned-shift-date").value = moment(arrDate).format('yyyy-MM-DD');
-                    document.getElementById("assigned-shift-starttime").value = moment(arrDate).format('HH:mm');
-                    document.getElementById("assigned-shift-endtime").value = moment(arrEndDate).format('HH:mm');
-                    document.getElementById("assigned-shift-position").value = shiftinfo.event.extendedProps.posWorked;
-
-                    if(isBeforeToday) {
-                        $('#btn-requestShiftChange').prop('style', 'display: none');
-                        $('#btn-workThisShift').prop('style', 'display: none');
-                    }
-                    else if (!isShiftOpen) {
-                        $('#btn-requestShiftChange').prop('style', 'display: block');
-                        $('#btn-workThisShift').prop('style', 'display: none');
-                    }
-                    else {
-                        $('#btn-requestShiftChange').prop('style', 'display: none');
-                        $('#btn-workThisShift').prop('style', 'display: block');
-                    }
-                },
-                navLinks: true, // can click day/week names to navigate views
-                selectMirror: true,
-                allDaySlot: false,
-                weekNumbers: true,
-                firstDay: 0,
-                weekNumbersWithinDays: true,
-                weekNumberCalculation: 'ISO',
-                eventLimit: true, // allow "more" link when too many events
-                eventSources: [
-                    {
-                        events: [
-                            @foreach (var s in Model.AssignedShifts.Where(s => s.Volunteer != null))
-                            {
-                            <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                    {
-                                        <text>
-                                            rrule: '@s.RecurrenceRule',
-                                            duration: '@((s.EndTime - s.StartTime).ToString())',
-                                        </text>
-                                    }
-                                    else
-                                    {
-                                        <text>
-                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
-                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
-                                    }
-                                    posWorked: '@(s.PositionWorked.Id)',
-                                    vol: '@s.Volunteer.Id'
-                                },
-                            </text>
-                            }
-                        ],
-                    },
-                    {
-                        events: [
-                            @foreach (var s in Model.OpenShifts)
-                            {
-                            <text>
-                                {
-                                    id: '@s.Id',
-                                    title: '@s.Description',
-                                    @if (s.RecurrenceRule != null)
-                                    {
-                                        <text>
-                                            rrule: '@s.RecurrenceRule',
-                                            duration: '@((s.EndTime - s.StartTime).ToString())',
-                                        </text>
-                                    }
-                                    else
-                                    {
-                                        <text>
-                                            start: '@s.StartDate.ToString("yyyy-MM-dd")@{string y = "T"; @y}@s.StartTime',
-                                            end: '@s.StartDate.ToString("yyyy-MM-dd")@y@s.EndTime',
-                                        </text>
-                                    }
-                                    posWorked: '@(s.PositionWorked.Id)',
-                                    vol: 'Open'
-                                },
-                            </text>
-                            }
-                        ],
-                        color: '#06A893'
-                    }
-                ],
-                eventTimeFormat: {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    meridiem: false
-                }
-            });
-            calendar.render();
-            $('#calendar').addClass("h-75");
-        });
-
-</script>*@
-@*<div class="ml-5 mr-5">
-    <partial name="_VolunteerStatusMessage" for="StatusMessage" />
-    @if (Model.Approved == ApprovalStatus.Approved)
+@{
+    var myShiftManager = new DataManager
     {
-        <div class="row justify-content-start">
-            <h5 class="col-md-5 ">Click on a shift to make a shift change request.</h5>
+        Url = "VolunteerCalendar?handler=GetMyShifts",
+        Adaptor = "UrlAdaptor",
+        CrossDomain = true,
+        Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
+    };
+
+    var openShiftManager = new DataManager
+    {
+        Url = "VolunteerCalendar?handler=GetOpenShifts",
+        Adaptor = "UrlAdaptor",
+        CrossDomain = true,
+        Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
+    };
+}
+
+<div style="width: 97%; margin: auto;">
+    <ul class="nav nav-tabs" id="schedules" role="tablist">
+        <li class="nav-item">
+            <a data-toggle="tab" id="open-tab-tab" href="#open-tab" role="tab" class="nav-link active" aria-controls="open-tab" aria-selected="false">Open Shifts</a>
+        </li>
+        <li class="nav-item">
+            <a data-toggle="tab" id="my-tab-tab" href="#my-tab" role="tab" class="nav-link" aria-controls="my-tab" aria-selected="true">My Shifts</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+        <div id="open-tab" style="height: 85vh;" class="tab-pane fade show active" role="tabpanel" aria-labelledby="open-tab-tab">
+            <ejs-schedule id="open-schedule" selectedDate="DateTime.Now" width="100%" height="100%">
+                <e-schedule-eventsettings dataSource="openShiftManager">
+                </e-schedule-eventsettings>
+            </ejs-schedule>
         </div>
-        <hr />
-        <form method="post">
-            <div id="shift-modal-assigned" class="modal fade">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 id="modalTitle" class="modal-title">Viewing Shift</h4>
-                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span class="sr-only">close</span></button>
-                        </div>
-                        <div id="modalBody" class="modal-body">
-                            <input type="hidden" id="clicked-shift-date" asp-for="@Model.ClickedShiftDate" />
-                            <input type="hidden" id="assigned-shift-id" asp-for="@Model.SelectedShift.Id">
+        <div id="my-tab" style="height: 85vh;" class="tab-pane fade" role="tabpanel" aria-labelledby="my-tab-tab">
+            <ejs-schedule id="my-schedule" selectedDate="DateTime.Now" width="100%" height="100%" readonly="true">
+                <e-schedule-eventsettings dataSource="myShiftManager">
+                </e-schedule-eventsettings>
+            </ejs-schedule>
+        </div>
+    </div>
+</div>
 
-                            <label style="margin-top: 3px; padding-right: 10px;" for="assigned-0shift-date">Shift Date</label>
-                            <input value="" type="date" class="form-control" id="assigned-shift-date" asp-for="@Model.SelectedShift.StartDate" readonly>
-
-                            <hr />
-
-                            <label style="margin-top: 3px; padding-right: 10px;" for="assigned-shift-starttime">Start Time</label>
-                            <input type="text" class="time form-control" id="assigned-shift-starttime" asp-for="@Model.SelectedShift.StartTime" readonly>
-                            <hr />
-
-                            <label style="margin-top: 3px; padding-right: 10px;">End Time</label>
-                            <input type="text" class="time form-control" id="assigned-shift-endtime" asp-for="@Model.SelectedShift.EndTime" readonly>
-
-                            <hr />
-                            <label style="margin-top: 3px; padding-right: 10px;">Position Worked</label>
-                            <select class="form-control" asp-items="@(new SelectList(Model.Positions.Where(p => p.Name != "All"), "Id", "Name"))"
-                                    id="assigned-shift-position"
-                                    asp-for="@Model.SelectedPositionId"
-                                    readonly
-                                    disabled>
-                            </select>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-primary" id="btn-workThisShift" asp-page-handler="WorkShift">Work This Shift</button>*@
-                            @*<button class="btn btn-primary" id="btn-requestShiftChange" asp-page-handler="RequestChange">Request Shift Change</button>*@
-                            @*<button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div id='calendar'></div>
-    }
-    else
-    {
-        <h3>We will email you once your application has been approved, then you will you be able to view the calendar and sign up for shifts.</h3>
-    }
-</div>*@
+@*selectedDate="DateTime.Now" showQuickInfo="false" width="100%" height="100%" popupOpen="onPopupOpen" editorTemplate="#ShiftEditorTemplate" actionBegin="onActionBegin"*@

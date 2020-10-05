@@ -15,7 +15,7 @@ namespace MHFoodBank.Web.Data
 {
     public interface IReminderManager
     {
-        Task ScheduleReminder(AppUser volunteer, Shift shift);
+        void ScheduleReminder(AppUser volunteer, Shift shift);
         void CancelReminder(Shift shift, DateTime? shiftDate = null);
         string CreateEmail(AppUser user, Shift shift);
     }
@@ -37,9 +37,9 @@ namespace MHFoodBank.Web.Data
         // in the instance that a single shift from a recurring set needs to have its reminder scheduled
         // (e.g. when a shift is having its original properties restored),
         // the datetime of the selected shift will be passed in
-        public async Task ScheduleReminder(AppUser volunteer, Shift shift)
+        public void ScheduleReminder(AppUser volunteer, Shift shift)
         {
-            await _context.Entry(volunteer).Reference(v => v.VolunteerProfile).LoadAsync();
+            _context.Entry(volunteer).Reference(v => v.VolunteerProfile).Load();
             if (!shift.IsRecurrence)
             {
                 // AddHours(-6) instead of -12 corrects the hangfire UTC conversion
@@ -51,16 +51,26 @@ namespace MHFoodBank.Web.Data
             }
             else
             {
+                // then schedule a reminder for each child shift that needs one
                 var childShiftDates = RecurrenceHelper.GetRecurrenceDateTimeCollection(shift.RecurrenceRule, shift.StartTime);
                 foreach (var date in childShiftDates)
                 {
-                    var idForRecurring = BackgroundJob.Schedule(() =>
-                    _emailSender.SendEmailAsync(volunteer.Email, "Volunteering Reminder - MHFB", CreateEmail(volunteer, shift)),
-                    shift.StartTime.AddHours(-12));
+                    // only schedule a reminder if the date is the next day or after, and if there isn't already a scheduled reminder
+                    // there might already be a scheduled reminder since the caller might removing a shift from a recurring set
+                    bool isFutureShift = date > DateTime.Now.AddDays(1).Date;
+                    bool noScheduledReminder = !_context.Reminders.Any(r => r.ShiftId == shift.Id && r.ShiftDate == date); 
+                    if (isFutureShift && noScheduledReminder)
+                    {
+                        var idForRecurring = BackgroundJob.Schedule(() =>
+                        _emailSender.SendEmailAsync(volunteer.Email, "Volunteering Reminder - MHFB", CreateEmail(volunteer, shift)),
+                        date.AddHours(-6));
 
-                    _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = date, HangfireJobId = idForRecurring });
+                        _context.Add(new Reminder() { ShiftId = shift.Id, ShiftDate = date, HangfireJobId = idForRecurring });
+                    }
                 }
             }
+
+            _context.SaveChanges();
         }
 
         // in the instance that a single shift from a recurring set needs to have its reminder canceled,
@@ -72,17 +82,32 @@ namespace MHFoodBank.Web.Data
             {
                 if (shift.IsRecurrence)
                 {
-                    List<Reminder> remindersForRecurringShift = _context.Reminders.Where(r => r.ShiftId == shift.Id).ToList();
-                    foreach (var reminder in remindersForRecurringShift)
+                    bool cancellingSingleShift = shiftDate != null;
+                    if (cancellingSingleShift)
                     {
-                        BackgroundJob.Delete(reminder.HangfireJobId);
-                        _context.Reminders.Remove(reminder);
+                        var reminderForSelectedShift = _context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shiftDate);
+                        if (reminderForSelectedShift != null)
+                        {
+                            BackgroundJob.Delete(reminderForSelectedShift.HangfireJobId);
+                            _context.Reminders.Remove(reminderForSelectedShift);
+                            _context.SaveChanges();
+                        }
+                    }
+                    else
+                    {
+                        List<Reminder> remindersForRecurringShift = _context.Reminders.Where(r => r.ShiftId == shift.Id).ToList();
+                        foreach (var reminder in remindersForRecurringShift)
+                        {
+                            BackgroundJob.Delete(reminder.HangfireJobId);
+                            _context.Reminders.Remove(reminder);
+                            _context.SaveChanges();
+                        }
                     }
                 }
                 else
                 {
                     Reminder reminder;
-                    if (shift.IsRecurrence)
+                    if (shift.RecurrenceID != null)
                     {
                         reminder = _context.Reminders.FirstOrDefault(r => r.ShiftId == shift.Id && r.ShiftDate == shiftDate);
                     }
@@ -95,6 +120,7 @@ namespace MHFoodBank.Web.Data
                     {
                         BackgroundJob.Delete(reminder.HangfireJobId);
                         _context.Reminders.Remove(reminder);
+                        _context.SaveChanges();
                     }
                     else
                     {
@@ -114,7 +140,7 @@ namespace MHFoodBank.Web.Data
         {
             return $"Hello {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName}!\n\n" +
                        $"We are reminding you that are scheduled to volunteer at Medicine Hat Food Bank tomorrow. " +
-                       $"The shift is scheduled from {shift.StartTime} until {shift.EndTime} and the position is {shift.Position.Name}.\n\n" +
+                       $"The shift is scheduled from {shift.StartTime.TimeOfDay} until {shift.EndTime.TimeOfDay} and the position is {shift.Position.Name}.\n\n" +
                        "Thanks again for volunteering at the Medicine Hat Food Bank.";
         }
     }

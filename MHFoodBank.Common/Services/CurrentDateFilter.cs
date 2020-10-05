@@ -11,9 +11,7 @@ namespace MHFoodBank.Common.Services
     {
         public bool CheckIfShiftDateIsAfterToday(Shift shift)
         {
-            var currentDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day);
-
-            if (string.IsNullOrEmpty(shift.RecurrenceRule))
+            if (!string.IsNullOrEmpty(shift.RecurrenceRule))
             {
                 string excludedDatesString = "";
 
@@ -21,7 +19,7 @@ namespace MHFoodBank.Common.Services
 
                 for (int i = 0; i < childShiftDates.Count(); i++)
                 {
-                    if (childShiftDates[i] >= currentDate)
+                    if (childShiftDates[i] >= DateTime.Now.Date)
                     {
                         for (int j = 0; j < i; j++)
                         {
@@ -37,7 +35,7 @@ namespace MHFoodBank.Common.Services
             }
             else
             {
-                if (shift.StartTime >= currentDate || shift.StartTime <= currentDate)
+                if (shift.StartTime >= DateTime.Now.Date)
                 {
                     return true;
                 }

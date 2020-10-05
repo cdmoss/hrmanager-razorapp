@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MHFoodBank.Common.Services
@@ -34,27 +35,54 @@ namespace MHFoodBank.Common.Services
         internal static int BYMONTHDAYPOSITION;
         internal static int WEEKLYBYDAYPOS;
         internal static string WEEKLYBYDAY;
-        internal static string EXDATE;
         internal static List<DateTime> exDateList = new List<DateTime>();
+        internal static Nullable<DateTime> UNTIL;
         #endregion
 
-        #region Methods
+        #region Out of the Box Methods
 
         public static IEnumerable<DateTime> GetRecurrenceDateTimeCollection(string RRule, DateTime RecStartDate)
         {
-            var RecDateCollection = new ObservableCollection<DateTime>();
+            var filteredDates = GetRecurrenceDateCollection(RRule, RecStartDate, null, 43);
+            return filteredDates;
+        }
+        public static IEnumerable<DateTime> GetRecurrenceDateTimeCollection(string RRule, DateTime RecStartDate, int NeverCount)
+        {
+            var filteredDates = GetRecurrenceDateCollection(RRule, RecStartDate, null, NeverCount);
+            return filteredDates;
+        }
+
+        public static IEnumerable<DateTime> GetRecurrenceDateTimeCollection(string RRule, DateTime RecStartDate, string RecException)
+        {
+            var filteredDates = GetRecurrenceDateCollection(RRule, RecStartDate, RecException, 43);
+            return filteredDates;
+        }
+
+        public static IEnumerable<DateTime> GetRecurrenceDateTimeCollection(string RRule, DateTime RecStartDate, string RecException, int NeverCount)
+        {
+            var filteredDates = GetRecurrenceDateCollection(RRule, RecStartDate, RecException, NeverCount);
+            return filteredDates;
+        }
+
+        public static IEnumerable<DateTime> GetRecurrenceDateCollection(string RRule, DateTime RecStartDate, string RecException, int NeverCount)
+        {
+            List<DateTime> RecDateCollection = new List<DateTime>();
             DateTime startDate = RecStartDate;
             var ruleSeperator = new[] { '=', ';', ',' };
             var weeklySeperator = new[] { ';' };
             string[] ruleArray = RRule.Split(ruleSeperator);
-            FindKeyIndex(ruleArray);
+            FindKeyIndex(ruleArray, RecStartDate);
             string[] weeklyRule = RRule.Split(weeklySeperator);
             FindWeeklyRule(weeklyRule);
-            FindExdateList(weeklyRule);
+            if (RecException != null)
+            {
+                FindExdateList(RecException);
+            }
             if (ruleArray.Length != 0 && RRule != "")
             {
                 DateTime addDate = startDate;
-                int recCount = int.Parse(RECCOUNT);
+                int recCount;
+                int.TryParse(RECCOUNT, out recCount);
 
                 #region DAILY
                 if (DAILY == "DAILY")
@@ -63,22 +91,31 @@ namespace MHFoodBank.Common.Services
                     if ((ruleArray.Length > 4 && INTERVAL == "INTERVAL") || ruleArray.Length == 4)
                     {
                         int DyDayGap = ruleArray.Length == 4 ? 1 : int.Parse(INTERVALCOUNT);
-                        for (int i = 0; i < recCount; i++)
+                        if (recCount == 0 && UNTIL == null)
                         {
-                            RecDateCollection.Add(addDate.Date);
-                            addDate = addDate.AddDays(DyDayGap);
+                            recCount = NeverCount;
                         }
-                    }
-                    else if (ruleArray.Length > 4 && BYDAY == "BYDAY")
-                    {
-                        while (RecDateCollection.Count < recCount)
+                        if (recCount > 0)
                         {
-                            if (addDate.DayOfWeek != DayOfWeek.Sunday && addDate.DayOfWeek != DayOfWeek.Saturday)
+                            for (int i = 0; i < recCount; i++)
                             {
-
                                 RecDateCollection.Add(addDate.Date);
+                                addDate = addDate.AddDays(DyDayGap);
                             }
-                            addDate = addDate.AddDays(1);
+                        }
+                        else if (UNTIL != null)
+                        {
+                            bool IsUntilDateReached = false;
+                            while (!IsUntilDateReached)
+                            {
+                                RecDateCollection.Add(addDate.Date);
+                                addDate = addDate.AddDays(DyDayGap);
+                                int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                if (statusValue != -1)
+                                {
+                                    IsUntilDateReached = true;
+                                }
+                            }
                         }
                     }
                 }
@@ -89,68 +126,31 @@ namespace MHFoodBank.Common.Services
                 {
                     int WyWeekGap = ruleArray.Length > 4 && INTERVAL == "INTERVAL" ? int.Parse(INTERVALCOUNT) : 1;
                     bool isweeklyselected = weeklyRule[WEEKLYBYDAYPOS].Length > 6;
-                    while (RecDateCollection.Count < recCount && isweeklyselected)
+                    if (recCount == 0 && UNTIL == null)
                     {
-                        switch (addDate.DayOfWeek)
+                        recCount = NeverCount;
+                    }
+                    if (recCount > 0)
+                    {
+                        while (RecDateCollection.Count < recCount && isweeklyselected)
                         {
-                            case DayOfWeek.Sunday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("SU") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Monday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("MO") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Tuesday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("TU") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Wednesday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("WE") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Thursday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("TH") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Friday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("FR") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
-                            case DayOfWeek.Saturday:
-                                {
-                                    if (weeklyRule[WEEKLYBYDAYPOS].Contains("SA") && RecDateCollection.Count < recCount)
-                                    {
-                                        RecDateCollection.Add(addDate.Date);
-                                    }
-                                    break;
-                                }
+                            GetWeeklyDateCollection(addDate, weeklyRule, RecDateCollection);
+                            addDate = addDate.DayOfWeek == DayOfWeek.Saturday ? addDate.AddDays(((WyWeekGap - 1) * 7) + 1) : addDate.AddDays(1);
                         }
-                        addDate = addDate.DayOfWeek == DayOfWeek.Saturday ? addDate.AddDays(((WyWeekGap - 1) * 7) + 1) : addDate.AddDays(1);
+                    }
+                    else if (UNTIL != null)
+                    {
+                        bool IsUntilDateReached = false;
+                        while (!IsUntilDateReached && isweeklyselected)
+                        {
+                            GetWeeklyDateCollection(addDate, weeklyRule, RecDateCollection);
+                            addDate = addDate.DayOfWeek == DayOfWeek.Saturday ? addDate.AddDays(((WyWeekGap - 1) * 7) + 1) : addDate.AddDays(1);
+                            int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                            if (statusValue != -1)
+                            {
+                                IsUntilDateReached = true;
+                            }
+                        }
                     }
                 }
                 #endregion
@@ -163,66 +163,265 @@ namespace MHFoodBank.Common.Services
                     if (BYMONTHDAY == "BYMONTHDAY")
                     {
                         int monthDate = int.Parse(BYMONTHDAYCOUNT);
-                        if (monthDate < 30)
+                        if (monthDate <= 30)
                         {
                             int currDate = int.Parse(startDate.Day.ToString());
                             var temp = new DateTime(addDate.Year, addDate.Month, monthDate);
                             addDate = monthDate < currDate ? temp.AddMonths(1) : temp;
-                            for (int i = 0; i < recCount; i++)
+                            if (recCount == 0 && UNTIL == null)
                             {
-                                if (addDate.Month == 2 && monthDate > 28)
+                                recCount = NeverCount;
+                            }
+                            if (recCount > 0)
+                            {
+                                for (int i = 0; i < recCount; i++)
                                 {
-                                    addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, 2));
-                                    RecDateCollection.Add(addDate.Date);
-                                    addDate = addDate.AddMonths(MyMonthGap);
-                                    addDate = new DateTime(addDate.Year, addDate.Month, monthDate);
+                                    addDate = GetByMonthDayDateCollection(addDate, RecDateCollection, monthDate, MyMonthGap);
                                 }
-                                else
+                            }
+                            else if (UNTIL != null)
+                            {
+                                bool IsUntilDateReached = false;
+                                while (!IsUntilDateReached)
                                 {
-                                    RecDateCollection.Add(addDate.Date);
-                                    addDate = addDate.AddMonths(MyMonthGap);
+                                    addDate = GetByMonthDayDateCollection(addDate, RecDateCollection, monthDate, MyMonthGap);
+                                    int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                    if (statusValue != -1)
+                                    {
+                                        IsUntilDateReached = true;
+                                    }
                                 }
                             }
                         }
                         else
                         {
-                            addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, addDate.Month));
-                            for (int i = 0; i < recCount; i++)
+                            if (recCount == 0 && UNTIL == null)
                             {
-                                RecDateCollection.Add(addDate.Date);
-                                addDate = addDate.AddMonths(MyMonthGap);
-                                addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, addDate.Month));
+                                recCount = NeverCount;
+                            }
+                            if (recCount > 0)
+                            {
+                                for (int i = 0; i < recCount; i++)
+                                {
+                                    if (addDate.Day == startDate.Day)
+                                    {
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    else
+                                    {
+                                        i = i - 1;
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                    addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, addDate.Month));
+                                }
+                            }
+                            else if (UNTIL != null)
+                            {
+                                bool IsUntilDateReached = false;
+                                while (!IsUntilDateReached)
+                                {
+                                    if (addDate.Day == startDate.Day)
+                                    {
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                    addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, addDate.Month));
+                                    int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                    if (statusValue != -1)
+                                    {
+                                        IsUntilDateReached = true;
+                                    }
+                                }
                             }
                         }
-
                     }
                     else if (BYDAY == "BYDAY")
                     {
-                        while (RecDateCollection.Count < recCount)
+                        if (recCount == 0 && UNTIL == null)
                         {
-                            var monthStart = new DateTime(addDate.Year, addDate.Month, 1);
-                            DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
-                            var monthStartWeekday = (int)(monthStart.DayOfWeek);
-                            int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
-                            int nthWeek;
-                            if (monthStartWeekday <= nthweekDay)
+                            recCount = NeverCount;
+                        }
+                        if (recCount > 0)
+                        {
+                            while (RecDateCollection.Count < recCount)
                             {
-                                nthWeek = int.Parse(BYSETPOSCOUNT) - 1;
+                                var weekCount = MondaysInMonth(addDate);
+                                var monthStart = new DateTime(addDate.Year, addDate.Month, 1);
+                                DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
+                                var monthStartWeekday = (int)(monthStart.DayOfWeek);
+                                int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
+                                int nthWeek;
+                                int bySetPos = 0;
+                                int setPosCount;
+                                int.TryParse(BYSETPOSCOUNT, out setPosCount);
+                                if (monthStartWeekday <= nthweekDay)
+                                {
+                                    if (setPosCount < 1)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    if (setPosCount < 0)
+                                    {
+                                        nthWeek = bySetPos;
+                                    }
+                                    else
+                                    {
+                                        nthWeek = bySetPos - 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (setPosCount < 0)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    nthWeek = bySetPos;
+                                }
+                                addDate = weekStartDate.AddDays((nthWeek) * 7);
+                                addDate = addDate.AddDays(nthweekDay);
+                                if (addDate.CompareTo(startDate.Date) < 0)
+                                {
+                                    addDate = addDate.AddMonths(1);
+                                    continue;
+                                }
+                                if (weekCount == 6 && addDate.Day == 23)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.Month == 2)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
+                                else if (weekCount == 6 && addDate.Day == 24)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.AddDays(7).Day != days)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
+                                else if (!(addDate.Day <= 23 && int.Parse(BYSETPOSCOUNT) == -1))
+                                {
+                                    RecDateCollection.Add(addDate.Date);
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
                             }
-                            else
+                        }
+                        else if (UNTIL != null)
+                        {
+                            bool IsUntilDateReached = false;
+                            while (!IsUntilDateReached)
                             {
-                                nthWeek = int.Parse(BYSETPOSCOUNT);
+                                var weekCount = MondaysInMonth(addDate);
+                                var monthStart = new DateTime(addDate.Year, addDate.Month, 1);
+                                DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
+                                var monthStartWeekday = (int)(monthStart.DayOfWeek);
+                                int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
+                                int nthWeek;
+                                int bySetPos = 0;
+                                int setPosCount;
+                                int.TryParse(BYSETPOSCOUNT, out setPosCount);
+                                if (monthStartWeekday <= nthweekDay)
+                                {
+                                    if (setPosCount < 1)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    if (setPosCount < 0)
+                                    {
+                                        nthWeek = bySetPos;
+                                    }
+                                    else
+                                    {
+                                        nthWeek = bySetPos - 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (setPosCount < 0)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    nthWeek = bySetPos;
+                                }
+                                addDate = weekStartDate.AddDays((nthWeek) * 7);
+                                addDate = addDate.AddDays(nthweekDay);
+                                if (addDate.CompareTo(startDate.Date) < 0)
+                                {
+                                    addDate = addDate.AddMonths(1);
+                                    continue;
+                                }
+                                if (weekCount == 6 && addDate.Day == 23)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.Month == 2)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
+                                else if (weekCount == 6 && addDate.Day == 24)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.AddDays(7).Day != days)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
+                                else if (!(addDate.Day <= 23 && int.Parse(BYSETPOSCOUNT) == -1))
+                                {
+                                    RecDateCollection.Add(addDate.Date);
+                                    addDate = addDate.AddMonths(MyMonthGap);
+                                }
+                                int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                if (statusValue != -1)
+                                {
+                                    IsUntilDateReached = true;
+                                }
                             }
-                            addDate = weekStartDate.AddDays((nthWeek) * 7);
-                            addDate = addDate.AddDays(nthweekDay);
-                            if (addDate.CompareTo(startDate) < 0)
-                            {
-                                addDate = addDate.AddMonths(1);
-                                continue;
-                            }
-
-                            RecDateCollection.Add(addDate.Date);
-                            addDate = addDate.AddMonths(MyMonthGap);
                         }
                     }
                 }
@@ -247,19 +446,36 @@ namespace MHFoodBank.Common.Services
                                 {
                                     addDate = specificDate;
                                     addDate = addDate.AddYears(1);
-
                                 }
                                 else
                                 {
                                     addDate = specificDate;
                                 }
-
-                                for (int i = 0; i < recCount; i++)
+                                if (recCount == 0 && UNTIL == null)
                                 {
-
-
-                                    RecDateCollection.Add(addDate.Date);
-                                    addDate = addDate.AddYears(YyYearGap);
+                                    recCount = NeverCount;
+                                }
+                                if (recCount > 0)
+                                {
+                                    for (int i = 0; i < recCount; i++)
+                                    {
+                                        RecDateCollection.Add(addDate.Date);
+                                        addDate = addDate.AddYears(YyYearGap);
+                                    }
+                                }
+                                else if (UNTIL != null)
+                                {
+                                    bool IsUntilDateReached = false;
+                                    while (!IsUntilDateReached)
+                                    {
+                                        RecDateCollection.Add(addDate.Date);
+                                        addDate = addDate.AddYears(YyYearGap);
+                                        int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                        if (statusValue != -1)
+                                        {
+                                            IsUntilDateReached = true;
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -267,78 +483,321 @@ namespace MHFoodBank.Common.Services
                     else if (BYDAY == "BYDAY")
                     {
                         int monthIndex = int.Parse(BYMONTHCOUNT);
-                        while (RecDateCollection.Count < recCount)
+                        if (recCount == 0 && UNTIL == null)
                         {
-                            var monthStart = new DateTime(addDate.Year, monthIndex, 1);
-                            DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
-                            var monthStartWeekday = (int)(monthStart.DayOfWeek);
-                            int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
-                            int nthWeek;
-                            if (monthStartWeekday <= nthweekDay)
+                            recCount = NeverCount;
+                        }
+                        if (recCount > 0)
+                        {
+                            while (RecDateCollection.Count < recCount)
                             {
-                                nthWeek = int.Parse(BYSETPOSCOUNT) - 1;
+                                var weekCount = MondaysInMonth(addDate);
+                                var monthStart = new DateTime(addDate.Year, monthIndex, 1);
+                                DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
+                                var monthStartWeekday = (int)(monthStart.DayOfWeek);
+                                int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
+                                int nthWeek;
+                                int bySetPos = 0;
+                                int setPosCount;
+                                int.TryParse(BYSETPOSCOUNT, out setPosCount);
+                                if (monthStartWeekday <= nthweekDay)
+                                {
+                                    if (setPosCount < 1)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    if (setPosCount < 0)
+                                    {
+                                        nthWeek = bySetPos;
+                                    }
+                                    else
+                                    {
+                                        nthWeek = bySetPos - 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (setPosCount < 0)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    nthWeek = bySetPos;
+                                }
+                                addDate = weekStartDate.AddDays((nthWeek) * 7);
+                                addDate = addDate.AddDays(nthweekDay);
+                                if (addDate.CompareTo(startDate.Date) < 0)
+                                {
+                                    addDate = addDate.AddYears(1);
+                                    continue;
+                                }
+                                if (weekCount == 6 && addDate.Day == 23)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.Month == 2)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
+                                else if (weekCount == 6 && addDate.Day == 24)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.AddDays(7).Day != days)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
+                                else if (!(addDate.Day <= 23 && int.Parse(BYSETPOSCOUNT) == -1))
+                                {
+                                    RecDateCollection.Add(addDate.Date);
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
                             }
-                            else
+                        }
+                        else if (UNTIL != null)
+                        {
+                            bool IsUntilDateReached = false;
+                            while (!IsUntilDateReached)
                             {
-                                nthWeek = int.Parse(BYSETPOSCOUNT);
+                                var weekCount = MondaysInMonth(addDate);
+                                var monthStart = new DateTime(addDate.Year, monthIndex, 1);
+                                DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
+                                var monthStartWeekday = (int)(monthStart.DayOfWeek);
+                                int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
+                                int nthWeek;
+                                int bySetPos = 0;
+                                int setPosCount;
+                                int.TryParse(BYSETPOSCOUNT, out setPosCount);
+                                if (monthStartWeekday <= nthweekDay)
+                                {
+                                    if (setPosCount < 1)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    if (setPosCount < 0)
+                                    {
+                                        nthWeek = bySetPos;
+                                    }
+                                    else
+                                    {
+                                        nthWeek = bySetPos - 1;
+                                    }
+                                }
+                                else
+                                {
+                                    if (setPosCount < 0)
+                                    {
+                                        bySetPos = weekCount + setPosCount;
+                                    }
+                                    else
+                                    {
+                                        bySetPos = setPosCount;
+                                    }
+                                    nthWeek = bySetPos;
+                                }
+                                addDate = weekStartDate.AddDays((nthWeek) * 7);
+                                addDate = addDate.AddDays(nthweekDay);
+                                if (addDate.CompareTo(startDate.Date) < 0)
+                                {
+                                    addDate = addDate.AddYears(1);
+                                    continue;
+                                }
+                                if (weekCount == 6 && addDate.Day == 23)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.Month == 2)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
+                                else if (weekCount == 6 && addDate.Day == 24)
+                                {
+                                    int days = DateTime.DaysInMonth(addDate.Year, addDate.Month);
+                                    bool flag = true;
+                                    if (addDate.AddDays(7).Day != days)
+                                    {
+                                        flag = false;
+                                    }
+                                    if (flag)
+                                    {
+                                        addDate = addDate.AddDays(7);
+                                        RecDateCollection.Add(addDate.Date);
+                                    }
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
+                                else if (!(addDate.Day <= 23 && int.Parse(BYSETPOSCOUNT) == -1))
+                                {
+                                    RecDateCollection.Add(addDate.Date);
+                                    addDate = addDate.AddYears(YyYearGap);
+                                }
+                                int statusValue = DateTime.Compare(addDate.Date, Convert.ToDateTime(UNTIL));
+                                if (statusValue != -1)
+                                {
+                                    IsUntilDateReached = true;
+                                }
                             }
-                            addDate = weekStartDate.AddDays((nthWeek) * 7);
-                            addDate = addDate.AddDays(nthweekDay);
-                            if (addDate.CompareTo(startDate) < 0)
-                            {
-                                addDate = addDate.AddYears(1);
-                                continue;
-                            }
-
-                            RecDateCollection.Add(addDate.Date);
-                            addDate = addDate.AddYears(YyYearGap);
-
                         }
                     }
                 }
                 #endregion
             }
-            return RecDateCollection.Except(exDateList).ToList();
+            var filteredDates = RecDateCollection.Except(exDateList).ToList();
+            return filteredDates;
         }
 
-        public static List<DateTime> FindExcludedDates(string rrule)
+        public static int MondaysInMonth(DateTime thisMonth)
         {
-            string[] weeklyRule = rrule.Split(';');
-            FindExdateList(weeklyRule);
+            DateTime today = thisMonth;
+            //extract the month
+            int daysInMonth = DateTime.DaysInMonth(today.Year, today.Month);
+            DateTime firstOfMonth = new DateTime(today.Year, today.Month, 1);
+            //days of week starts by default as Sunday = 0
+            int firstDayOfMonth = (int)firstOfMonth.DayOfWeek;
+            int weeksInMonth = (int)Math.Ceiling((firstDayOfMonth + daysInMonth) / 7.0);
+            return weeksInMonth;
+        }
 
-            var exList = new List<DateTime>();
-            foreach (var date in exDateList)
+        private static void GetWeeklyDateCollection(DateTime addDate, string[] weeklyRule, List<DateTime> RecDateCollection)
+        {
+            switch (addDate.DayOfWeek)
             {
-                exList.Add(date);
-            }
-
-            return exList;
-        }
-
-        public static string AddToExcludedDates(string rrule, DateTime exDate)
-        {
-            rrule += $"\\nEXDATE:{exDate.ToString("yyyyMMdd'T'HHmmss", CultureInfo.InvariantCulture)}Z";
-            return rrule;
-        }
-
-        private static void FindExdateList(string[] weeklyRule)
-        {
-            for (int i = 0; i < weeklyRule.Length; i++)
-            {
-                if (weeklyRule[i].Contains("EXDATE"))
-                {
-                    EXDATE = weeklyRule[i];
-                    var _rule = weeklyRule[i].Split('=');
-                    if (_rule[0] == "EXDATE")
+                case DayOfWeek.Sunday:
                     {
-                        var exDates = _rule[1].Split(',');
-                        for (var j = 0; j < exDates.Length; j++)
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("SU"))
                         {
-                            exDateList.Add(DateTime.ParseExact(exDates[j], "dd/MM/yyyy", CultureInfo.InvariantCulture));
+                            RecDateCollection.Add(addDate.Date);
                         }
+                        break;
                     }
-                    break;
-                }
+                case DayOfWeek.Monday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("MO"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+                case DayOfWeek.Tuesday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("TU"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+                case DayOfWeek.Wednesday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("WE"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+                case DayOfWeek.Thursday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("TH"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+                case DayOfWeek.Friday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("FR"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+                case DayOfWeek.Saturday:
+                    {
+                        if (weeklyRule[WEEKLYBYDAYPOS].Contains("SA"))
+                        {
+                            RecDateCollection.Add(addDate.Date);
+                        }
+                        break;
+                    }
+            }
+        }
+
+        private static DateTime GetByMonthDayDateCollection(DateTime addDate, List<DateTime> RecDateCollection, int monthDate, int MyMonthGap)
+        {
+            if (addDate.Month == 2 && monthDate > 28)
+            {
+                addDate = new DateTime(addDate.Year, addDate.Month, DateTime.DaysInMonth(addDate.Year, 2));
+                // RecDateCollection.Add(addDate.Date);
+                addDate = addDate.AddMonths(MyMonthGap);
+                addDate = new DateTime(addDate.Year, addDate.Month, monthDate);
+            }
+            else
+            {
+                RecDateCollection.Add(addDate.Date);
+                addDate = addDate.AddMonths(MyMonthGap);
+            }
+            return addDate;
+        }
+
+        private static DateTime GetByDayDateValue(DateTime addDate, DateTime monthStart)
+        {
+            DateTime weekStartDate = monthStart.AddDays(-(int)(monthStart.DayOfWeek));
+            var monthStartWeekday = (int)(monthStart.DayOfWeek);
+            int nthweekDay = GetWeekDay(BYDAYVALUE) - 1;
+            int nthWeek;
+            if (monthStartWeekday <= nthweekDay)
+            {
+                nthWeek = int.Parse(BYSETPOSCOUNT) - 1;
+            }
+            else
+            {
+                nthWeek = int.Parse(BYSETPOSCOUNT);
+            }
+            addDate = weekStartDate.AddDays((nthWeek) * 7);
+            addDate = addDate.AddDays(nthweekDay);
+            return addDate;
+        }
+        private static void FindExdateList(string ruleException)
+        {
+            exDateList = new List<DateTime>();
+            var exDates = ruleException.Split(',');
+            for (int i = 0; i < exDates.Length; i++)
+            {
+                StringBuilder sb = new StringBuilder(exDates[i]);
+                sb.Insert(4, '-'); sb.Insert(7, '-'); sb.Insert(13, ':'); sb.Insert(16, ':');
+                DateTimeOffset value = DateTimeOffset.ParseExact(sb.ToString(), "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                                                       CultureInfo.InvariantCulture);
+                exDateList.Add(value.DateTime.Date);
             }
         }
 
@@ -391,7 +850,7 @@ namespace MHFoodBank.Common.Services
             }
         }
 
-        private static void FindKeyIndex(string[] ruleArray)
+        private static void FindKeyIndex(string[] ruleArray, DateTime startDate)
         {
             RECCOUNT = "";
             DAILY = "";
@@ -410,6 +869,7 @@ namespace MHFoodBank.Common.Services
             BYMONTH = "";
             BYMONTHCOUNT = "";
             WEEKLYBYDAY = "";
+            UNTIL = null;
 
             for (int i = 0; i < ruleArray.Length; i++)
             {
@@ -417,8 +877,17 @@ namespace MHFoodBank.Common.Services
                 {
                     COUNT = ruleArray[i];
                     RECCOUNT = ruleArray[i + 1];
-
                 }
+
+                if (ruleArray[i].Contains("UNTIL"))
+                {
+                    StringBuilder sb = new StringBuilder(ruleArray[i + 1]);
+                    sb.Insert(4, '-'); sb.Insert(7, '-'); sb.Insert(13, ':'); sb.Insert(16, ':');
+                    DateTimeOffset value = DateTimeOffset.ParseExact(sb.ToString(), "yyyy-MM-dd'T'HH:mm:ss'Z'",
+                                                           CultureInfo.InvariantCulture);
+                    UNTIL = value.DateTime.Date;
+                }
+
                 if (ruleArray[i].Contains("DAILY"))
                 {
                     DAILY = ruleArray[i];
@@ -444,6 +913,7 @@ namespace MHFoodBank.Common.Services
                 if (ruleArray[i].Contains("BYSETPOS"))
                 {
                     BYSETPOS = ruleArray[i];
+                    var weekCount = MondaysInMonth(startDate);
                     BYSETPOSCOUNT = ruleArray[i + 1];
                 }
                 if (ruleArray[i].Contains("BYDAY"))
@@ -464,9 +934,15 @@ namespace MHFoodBank.Common.Services
                     BYMONTHCOUNT = ruleArray[i + 1];
                 }
             }
-
-
         }
         #endregion
+
+        public static DateTime ConvertExDateStringToDateTime(string exDateString)
+        {
+            int newExDateYear = Convert.ToInt32(exDateString.Substring(0, 4));
+            int newExDateMonth = Convert.ToInt32(exDateString.Substring(4, 2));
+            int newExDateDay = Convert.ToInt32(exDateString.Substring(6, 2));
+            return new DateTime(newExDateYear, newExDateMonth, newExDateDay);
+        }
     }
 }
