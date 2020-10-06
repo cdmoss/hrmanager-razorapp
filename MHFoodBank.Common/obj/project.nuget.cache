@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uEIOnEgb25jvWBmMKnJUXnsmvmmOrr/UF1d5IKT+ZrZmyFrs2pvnihs/0zX1XnXtKbXtyWMuF1Gle4qf/0NyAg==",
+  "dgSpecHash": "JLw47Vmchc1Qz43mY0UAsCTli2UGmkPHdN1xn4kKc0Now45lmVNMNTOX56PIWZgobrbJRtLPWENNKt93TzbKsg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+  "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.aspnetcore.authentication.abstractions\\2.2.0\\microsoft.aspnetcore.authentication.abstractions.2.2.0.nupkg.sha512",

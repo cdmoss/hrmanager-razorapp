@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "ZVPUjJl72gigQ1M5hnvAuEhQz7oj6LAzb2SE9xMe8S8fsgbur4OSEYia4NLOf5YgZwAE4WG1weRXh8RsjYUqeg==",
+  "dgSpecHash": "peyHKFEN+0wy+H9f1x7JpaFaQwi7AvXzaH+9F8BWOTK1cBQHHPpeqAhu0zXiINAqRdT5i+i+QY9fD2bYue4WMw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
+  "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Chase\\.nuget\\packages\\dryioc.dll\\4.0.7\\dryioc.dll.4.0.7.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.aspnetcore.authentication\\2.2.0\\microsoft.aspnetcore.authentication.2.2.0.nupkg.sha512",

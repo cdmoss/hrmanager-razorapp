@@ -10,48 +10,67 @@
     Layout = "~/Areas/Volunteer/Pages/Shared/_Layout.cshtml";
 }
 
-@{
-    var myShiftManager = new DataManager
+<script>
+    var shifts;
+</script>
+
+@{ 
+    var shiftManager = new DataManager
     {
-        Url = "VolunteerCalendar?handler=GetMyShifts",
         Adaptor = "UrlAdaptor",
+        Url = "VolunteerCalendar?handler=GetShifts",
         CrossDomain = true,
         Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
     };
 
-    var openShiftManager = new DataManager
+    var positionManager = new DataManager
     {
-        Url = "VolunteerCalendar?handler=GetOpenShifts",
         Adaptor = "UrlAdaptor",
+        Url = "VolunteerCalendar?handler=GetPosition",
         CrossDomain = true,
         Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
     };
 }
 
-<div style="width: 97%; margin: auto;">
-    <ul class="nav nav-tabs" id="schedules" role="tablist">
-        <li class="nav-item">
-            <a data-toggle="tab" id="open-tab-tab" href="#open-tab" role="tab" class="nav-link active" aria-controls="open-tab" aria-selected="false">Open Shifts</a>
-        </li>
-        <li class="nav-item">
-            <a data-toggle="tab" id="my-tab-tab" href="#my-tab" role="tab" class="nav-link" aria-controls="my-tab" aria-selected="true">My Shifts</a>
-        </li>
-    </ul>
+<div style="width: 97%; height: 85vh; margin: auto;">
+    <button type="button" onclick="showOpenShifts()">show open shifts</button>
+    <button type="button" onclick="showPrivateShifts()">show private shifts</button>
+    <ejs-schedule id="schedule" selectedDate="DateTime.Now" width="100%" height="100%" readonly="true" created="initializeDataManager">
+        <e-schedule-resources>
+            <e-schedule-resource dataSource="Model.Positions" field="PositionId" title="Positions" allowMultiple="false" idField="Id" textField="Name" name="Positions"></e-schedule-resource>
+        </e-schedule-resources>
+        <e-schedule-eventsettings dataSource="shiftManager"></e-schedule-eventsettings>
+    </ejs-schedule>
 
-    <div class="tab-content mt-3">
-        <div id="open-tab" style="height: 85vh;" class="tab-pane fade show active" role="tabpanel" aria-labelledby="open-tab-tab">
-            <ejs-schedule id="open-schedule" selectedDate="DateTime.Now" width="100%" height="100%">
-                <e-schedule-eventsettings dataSource="openShiftManager">
-                </e-schedule-eventsettings>
-            </ejs-schedule>
-        </div>
-        <div id="my-tab" style="height: 85vh;" class="tab-pane fade" role="tabpanel" aria-labelledby="my-tab-tab">
-            <ejs-schedule id="my-schedule" selectedDate="DateTime.Now" width="100%" height="100%" readonly="true">
-                <e-schedule-eventsettings dataSource="myShiftManager">
-                </e-schedule-eventsettings>
-            </ejs-schedule>
-        </div>
-    </div>
 </div>
+
+<script>
+    var dataManager;
+    function initializeDataManager() {
+        let schedule = document.getElementById('schedule').ej2_instances[0];
+        dataManager = schedule.dataModule.dataManager;
+    }
+
+     function showOpenShifts() {
+        let schedule = document.getElementById('schedule').ej2_instances[0];
+        dataManager.executeQuery(new ej.data.Query().addParams('type', 'open')).then(function (e) {
+            schedule.eventSettings.dataSource = e.result;
+            schedule.dataBind();
+        });
+         schedule.currentView = "TimelineDay";
+         schedule.views = ['TimelineDay', 'TimelineWeek', 'TimelineMonth'];
+         schedule.group.resources = ["Positions"];
+     }
+
+    function showPrivateShifts() {
+        let schedule = document.getElementById('schedule').ej2_instances[0];
+        dataManager.executeQuery(new ej.data.Query().addParams('type', 'private')).then(function (e) {
+            schedule.eventSettings.dataSource = e.result;
+            schedule.dataBind();
+        });
+        schedule.currentView = "Week";
+        schedule.views = ['Day', 'Week', 'Month'];
+    }
+</script>
 
 @*selectedDate="DateTime.Now" showQuickInfo="false" width="100%" height="100%" popupOpen="onPopupOpen" editorTemplate="#ShiftEditorTemplate" actionBegin="onActionBegin"*@

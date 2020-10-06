@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj": {}
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
         "projectName": "MHFoodBank.Common",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj",
         "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\obj\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -74,14 +74,14 @@
         }
       }
     },
-    "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
         "projectName": "MHFoodBank.TimeClock.iOS",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
         "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\obj\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\obj\\",
         "projectStyle": "PackageReference",
         "skipContentFileWrite": true,
         "fallbackFolders": [
@@ -102,8 +102,8 @@
         "frameworks": {
           "xamarinios10": {
             "projectReferences": {
-              "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
-                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
+              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
+                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
               }
             }
           }
@@ -139,14 +139,14 @@
         }
       }
     },
-    "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
+    "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+        "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
         "projectName": "MHFoodBank.TimeClock",
-        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
+        "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj",
         "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
+        "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -166,8 +166,8 @@
         "frameworks": {
           "netstandard2.1": {
             "projectReferences": {
-              "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
-                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
+              "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+                "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
               }
             }
           }

@@ -67,6 +67,15 @@
         };
     }
 
+    <button onclick="refreshCalendar()">Refresh</button>
+
+    <script>
+        function refreshCalendar() {
+            let schedule = document.getElementById('schedule').ej2_instances[0];
+            schedule.refresh();
+        }
+    </script>
+
     <div style="height: 80vh;">
         <ejs-schedule id="schedule" selectedDate="DateTime.Now" currentView="TimelineWeek" showQuickInfo="false" width="100%" height="100%" popupOpen="onPopupOpen" editorTemplate="#ShiftEditorTemplate" actionBegin="onActionBegin">
             <!--adding byGroupId="false" fixes the issues that prevents shifts from being added-->

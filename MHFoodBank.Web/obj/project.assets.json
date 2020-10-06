@@ -9861,11 +9861,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+      "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
       "projectName": "MHFoodBank.Web",
-      "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
+      "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Web\\MHFoodBank.Web.csproj",
       "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Web\\obj\\",
+      "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Web\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Microsoft\\Xamarin\\NuGet\\"
@@ -9885,8 +9885,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
-              "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
+            "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj": {
+              "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\FBWebsite-V3\\MHFoodBank.Common\\MHFoodBank.Common.csproj"
             }
           }
         }
