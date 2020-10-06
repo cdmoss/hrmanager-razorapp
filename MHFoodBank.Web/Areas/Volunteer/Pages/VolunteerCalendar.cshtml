@@ -14,19 +14,11 @@
     var shifts;
 </script>
 
-@{ 
+@{
     var shiftManager = new DataManager
     {
         Adaptor = "UrlAdaptor",
         Url = "VolunteerCalendar?handler=GetShifts",
-        CrossDomain = true,
-        Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
-    };
-
-    var positionManager = new DataManager
-    {
-        Adaptor = "UrlAdaptor",
-        Url = "VolunteerCalendar?handler=GetPosition",
         CrossDomain = true,
         Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
     };
@@ -35,11 +27,13 @@
 <div style="width: 97%; height: 85vh; margin: auto;">
     <button type="button" onclick="showOpenShifts()">show open shifts</button>
     <button type="button" onclick="showPrivateShifts()">show private shifts</button>
-    <ejs-schedule id="schedule" selectedDate="DateTime.Now" width="100%" height="100%" readonly="true" created="initializeDataManager">
+    <ejs-schedule id="schedule" selectedDate="DateTime.Now" width="100%" height="100%" readonly="false" popupOpen="onPopupOpen" created="initializeDataManager">
         <e-schedule-resources>
             <e-schedule-resource dataSource="Model.Positions" field="PositionId" title="Positions" allowMultiple="false" idField="Id" textField="Name" name="Positions"></e-schedule-resource>
         </e-schedule-resources>
         <e-schedule-eventsettings dataSource="shiftManager"></e-schedule-eventsettings>
+        <e-schedule-quickinfotemplates header="#headerTemplate" content="#contentTemplate" footer="#footerTemplate">
+        </e-schedule-quickinfotemplates>
     </ejs-schedule>
 
 </div>
@@ -51,16 +45,16 @@
         dataManager = schedule.dataModule.dataManager;
     }
 
-     function showOpenShifts() {
+    function showOpenShifts() {
         let schedule = document.getElementById('schedule').ej2_instances[0];
         dataManager.executeQuery(new ej.data.Query().addParams('type', 'open')).then(function (e) {
             schedule.eventSettings.dataSource = e.result;
             schedule.dataBind();
         });
-         schedule.currentView = "TimelineDay";
-         schedule.views = ['TimelineDay', 'TimelineWeek', 'TimelineMonth'];
-         schedule.group.resources = ["Positions"];
-     }
+        schedule.currentView = "TimelineDay";
+        schedule.views = ['TimelineDay', 'TimelineWeek', 'TimelineMonth'];
+        schedule.group.resources = ["Positions"];
+    }
 
     function showPrivateShifts() {
         let schedule = document.getElementById('schedule').ej2_instances[0];
@@ -70,6 +64,65 @@
         });
         schedule.currentView = "Week";
         schedule.views = ['Day', 'Week', 'Month'];
+    }
+
+</script>
+
+<script id="headerTemplate" type="text/x-template">
+    ${if (elementType !== 'cell')}
+    <div class="e-header-icon-wrapper">
+        <button class="e-close" title="CLOSE"></button>
+    </div>
+    <div class="e-subject-wrap">
+        ${if (Subject)}
+        <div class="e-subject e-text-ellipsis">${Subject}</div>
+        ${/if}
+    </div>
+    ${/if}
+</script>
+<script id="contentTemplate" type="text/x-template">
+    <div>
+        ${if (elementType !== "cell")}
+        <div class="e-cell-content">
+            ${if (StartTime)}
+                <input id="StartTime" class="e-field" type="text" name="StartTime" />
+            ${/if}
+            ${if (Position)}
+                <div class="e-resource"><div class="e-resource-icon e-icons"></div><div class="e-resource-details e-text-ellipsis">${Position}</div></div>
+            ${/if}
+            <button class="e-control e-btn e-lib e-primary e-event-save e-flat e-center">Work This Shift</button>
+        </div>
+        ${/if}
+    </div>
+</script>
+<script id="footerTemplate" type="text/x-template">
+    <div>
+        ${if (elementType === 'cell')}
+        <div class="e-cell-footer">
+            <button class="e-event-details" title="Extra Details">Extra Details</button>
+            <button class="e-event-create" title="Add">Add</button>
+        </div>
+        ${else}
+        <div class="e-event-footer">
+            <button class="e-event-edit" title="Edit">Edit</button>
+            <button class="e-event-delete" title="Delete">Delete</button>
+        </div>
+        ${/if}
+    </div>
+</script>
+
+<script>
+    function onPopupOpen(args) {
+        if (args.type === "QuickInfo") {
+            var startTimeElement = args.element.querySelector('#StartTime');
+            if (startTimeElement.classList.contains('e-field')) {
+                startTimeObject = new DateTimePicker({
+                    value: startTimeElement.value,
+                    allowEdit: false,
+                });
+                startTimeObject.appendTo(startTimeElement);
+            }
+        }
     }
 </script>
 
