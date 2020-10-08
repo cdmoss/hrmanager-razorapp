@@ -70,6 +70,39 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
                     displayedShifts = FilterShiftsByDate(userShifts);
                 }
             }
+            else if (model.Params.ContainsKey("shiftId"))
+            {
+                var user = await _userManager.GetUserAsync(User);
+                await _context.Entry(user).Reference(u => u.VolunteerProfile).LoadAsync();
+                int shiftId = Convert.ToInt32(model.Params["shiftId"]);
+                Shift selectedShift = await _context.Shifts.FirstOrDefaultAsync(s => s.Id == shiftId);
+                if (model.Params.ContainsKey("startDate"))
+                {
+                    var selectedStartDate = ConvertSyncfusionDateStringToDateTime(model.Params["startDate"].ToString());
+                    var excludedShift = new Shift()
+                    {
+                        StartTime = selectedStartDate,
+                        EndTime = selectedStartDate + selectedShift.EndTime.Date.TimeOfDay,
+                        IsAllDay = selectedShift.IsAllDay,
+                        IsBlock = selectedShift.IsBlock,
+                        Subject = selectedShift.Subject,
+                        Position = selectedShift.Position,
+                        Volunteer = user.VolunteerProfile,
+                        RecurrenceID = selectedShift.Id
+                    };
+
+                    selectedShift.RecurrenceException += RecurrenceHelper.ConvertDateTimeToExDateString(selectedStartDate);
+                    _context.Add(excludedShift);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    selectedShift.Volunteer = user.VolunteerProfile;
+                }
+
+                var openShifts = _context.Shifts.Where(s => s.VolunteerProfileId == null).ToList();
+                displayedShifts = FilterShiftsByDate(openShifts);
+            }   
             else
             {
                 var user = await _userManager.GetUserAsync(User);
@@ -104,6 +137,38 @@ namespace MHFoodBank.Web.Areas.Volunteer.Pages
             }
 
             return displayedShifts;
+        
+        }
+
+        private DateTime ConvertSyncfusionDateStringToDateTime(string inputString)
+        {
+            var splitInput = inputString.Split(' ');
+            var month = splitInput[1];
+            var day = Convert.ToInt32(splitInput[2]);
+            var year = Convert.ToInt32(splitInput[3]);
+            var time = splitInput[4];
+
+            var splitTime = time.Split(':');
+            var hour = Convert.ToInt32(splitTime[0]);
+            var minute = Convert.ToInt32(splitTime[1]);
+            var second = Convert.ToInt32(splitTime[2]);
+
+            Dictionary<string, int> monthNumbers = new Dictionary<string, int>();
+            monthNumbers.Add("Jan", 1);
+            monthNumbers.Add("Feb", 2);
+            monthNumbers.Add("Mar", 3);
+            monthNumbers.Add("Apr", 4);
+            monthNumbers.Add("May", 5);
+            monthNumbers.Add("Jun", 6);
+            monthNumbers.Add("Jul", 7);
+            monthNumbers.Add("Aug", 8);
+            monthNumbers.Add("Sep", 9);
+            monthNumbers.Add("Oct", 10);
+            monthNumbers.Add("Nov", 11);
+            monthNumbers.Add("Dec", 12);
+
+            int monthNumber = monthNumbers.GetValueOrDefault(month);
+            return new DateTime(year, monthNumber, day, hour, minute, second);
         }
 
         private async Task<VolunteerProfile> PrepareModel()

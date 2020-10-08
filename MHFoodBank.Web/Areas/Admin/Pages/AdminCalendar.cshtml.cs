@@ -166,7 +166,11 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             }
             newShift.IsRecurrence = !string.IsNullOrWhiteSpace(newShift.RecurrenceRule);
 
-            bool multipleShifts = Convert.ToBoolean(shiftDto.Params["multiShifts"]);
+            bool multipleShifts = false;
+            if (shiftDto.Params.ContainsKey("multiShifts"))
+            {
+                multipleShifts = Convert.ToBoolean(shiftDto.Params["multiShifts"]);
+            }
             if (multipleShifts)
             {
                 var positions = _context.Positions.Where(p => p.Name != "All").ToList();
@@ -259,6 +263,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var newShiftDto = (shiftDto.Action == "update") ? shiftDto.Value : shiftDto.Changed[0];
             var shiftBeingUpdated = _context.Shifts.FirstOrDefault(c => c.Id == Convert.ToInt32(newShiftDto.Id));
 
+            // this method cancels the reminder for the shift being removed as a side effect
             bool shiftIsBeingRemovedFromRecurringSet = CheckIfShiftIsBeingRemovedFromRecurringSet(newShiftDto, shiftBeingUpdated);
 
             if (shiftBeingUpdated != null && !shiftIsBeingRemovedFromRecurringSet)

@@ -944,5 +944,10 @@ namespace MHFoodBank.Common.Services
             int newExDateDay = Convert.ToInt32(exDateString.Substring(6, 2));
             return new DateTime(newExDateYear, newExDateMonth, newExDateDay);
         }
+
+        public static string ConvertDateTimeToExDateString(DateTime date)
+        {
+            return $"{date.Year}{date.Month:00}{date.Day:00}T{date.Hour:00}{date.Minute:00}{date.Second:00}Z";
+        }
     }
 }

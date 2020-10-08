@@ -5353,24 +5353,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\dofus\\.nuget\\packages\\": {},
-    "D:\\Microsoft\\Xamarin\\NuGet\\": {}
+    "C:\\Users\\Chase\\.nuget\\packages\\": {},
+    "C:\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\dofus\\Downloads\\VS Proj\\FB-HR-Manager\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
+      "projectUniqueName": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
       "projectName": "MHFoodBank.TimeClock.iOS",
-      "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FB-HR-Manager\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
-      "packagesPath": "C:\\Users\\dofus\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FB-HR-Manager\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\obj\\",
+      "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
+      "packagesPath": "C:\\Users\\Chase\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [
-        "D:\\Microsoft\\Xamarin\\NuGet\\"
+        "C:\\Microsoft\\Xamarin\\NuGet\\"
       ],
       "configFilePaths": [
-        "C:\\Users\\dofus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Chase\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
@@ -5384,8 +5384,8 @@
       "frameworks": {
         "xamarinios10": {
           "projectReferences": {
-            "C:\\Users\\dofus\\Downloads\\VS Proj\\FB-HR-Manager\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
-              "projectPath": "C:\\Users\\dofus\\Downloads\\VS Proj\\FB-HR-Manager\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
+            "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj": {
+              "projectPath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.csproj"
             }
           }
         }
