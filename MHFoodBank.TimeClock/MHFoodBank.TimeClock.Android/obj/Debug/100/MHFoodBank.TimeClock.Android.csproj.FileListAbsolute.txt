@@ -1176,7 +1176,6 @@ C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.T
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\R.txt
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\R.cs.flag
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\MHFoodBank.TimeClock.Android.csproj.CoreCompileInputs.cache
-C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\XamlC.stamp
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\MHFoodBank.TimeClock.Android.csproj.CopyComplete
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\MHFoodBank.TimeClock.Android.dll
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\MHFoodBank.TimeClock.Android.pdb
@@ -1331,8 +1330,6 @@ C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.T
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.Annotation.pdb
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.dll
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.pdb
-C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.Resources.dll
-C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.Resources.pdb
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.Arch.Core.Common.dll
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.Arch.Core.Common.pdb
 C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.Arch.Core.Runtime.dll
@@ -1772,3 +1769,25 @@ C:\Users\Chase\Desktop\Programming\fbwebsite-v3\MHFoodBank.TimeClock\MHFoodBank.
 C:\Users\Chase\Desktop\Programming\fbwebsite-v3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\compressed_assemblies.armeabi-v7a.o
 C:\Users\Chase\Desktop\Programming\fbwebsite-v3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\compressed_assemblies.x86.o
 C:\Users\Chase\Desktop\Programming\fbwebsite-v3\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\compressed_assemblies.x86_64.o
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.AppCompatResources.dll
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\assets\Xamarin.AndroidX.AppCompat.AppCompatResources.pdb
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\AndroidManifest.xml
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\DragAndDropGestureHandler.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\EllipseRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\EllipseView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\GradientStrokeDrawable.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\GradientStrokeDrawable_GradientShaderFactory.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\LineRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\LineView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PathRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PathView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PolygonRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PolygonView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PolylineRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\PolylineView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\RadioButtonRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\RectangleRenderer.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\RectView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\ShapeRenderer_2.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\ShapeView.java
+C:\Users\dofus\Downloads\VS Proj\FB-HR-Manager\MHFoodBank.TimeClock\MHFoodBank.TimeClock.Android\obj\Debug\100\android\src\crc643f46942d9dd1fff9\ViewCellRenderer_ViewCellContainer_TapGestureListener.java

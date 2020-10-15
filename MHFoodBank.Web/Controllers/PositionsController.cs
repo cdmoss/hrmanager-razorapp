@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MHFoodBank.Api.Repositories;
 using MHFoodBank.Common;
+using MHFoodBank.Web.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MHFoodBank.Api.Controllers
 {
@@ -14,17 +15,17 @@ namespace MHFoodBank.Api.Controllers
     [ApiController]
     public class PositionsController : ControllerBase
     {
-        private readonly IPositionRepo _positionRepo;
+        private readonly FoodBankContext _context;
 
-        public PositionsController(IPositionRepo positionRepo)
+        public PositionsController(FoodBankContext context)
         {
-            _positionRepo = positionRepo;
+            _context = context;
         }
 
         [HttpGet("all")]
         public async Task<IActionResult> GetAllPositionsAsync()
         {
-            var positions = await _positionRepo.GetAllPositions();
+            var positions = await _context.Positions.Where(p => p.Name != "All").ToListAsync();
 
             return Ok(positions);
         }

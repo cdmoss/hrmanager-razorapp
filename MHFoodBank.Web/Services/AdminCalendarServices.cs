@@ -36,11 +36,12 @@ namespace MHFoodBank.Web.Services
         private readonly IMapper _mapper;
         private readonly ILogger<AdminCalendarService> _logger;
 
-        public AdminCalendarService(FoodBankContext context, IMapper mapper, IReminderManager reminderManager)
+        public AdminCalendarService(ILogger<AdminCalendarService> logger, FoodBankContext context, IMapper mapper, IReminderManager reminderManager)
         {
             _context = context;
             _mapper = mapper;
             _reminderManager = reminderManager;
+            _logger = logger;
         }
 
         // interface methods
@@ -58,8 +59,8 @@ namespace MHFoodBank.Web.Services
         public async Task<string> CreateShift(ShiftReadEditDto newShiftDto, IDictionary<string, object> insertParams)
         {
             bool incompleteShift =
-                newShiftDto.StartTime == null ||
-                newShiftDto.EndTime == null ||
+                newShiftDto.StartTime.Year == 1 ||
+                newShiftDto.EndTime.Year == 1 ||
                 ((newShiftDto.PositionId == null || newShiftDto.PositionId == 0) && newShiftDto.PositionWorked == null);
 
             if (incompleteShift)
@@ -99,13 +100,14 @@ namespace MHFoodBank.Web.Services
 
         private async Task CreateSingleShift(Shift newShift)
         {
-            var chosenPosition = newShift.Position;
+            string positionName = (await GetPositionsWithoutAll()).FirstOrDefault(p => p.Id == newShift.PositionId).Name;
             var chosenVolunteer = newShift.VolunteerProfileId != null || newShift.VolunteerProfileId > 0 ? _context.VolunteerProfiles
                 .Where(p => p.Id == newShift.VolunteerProfileId).FirstOrDefault() : null;
+            string volunteerName = chosenVolunteer.FirstName + " " + chosenVolunteer.LastName;
 
             newShift.Subject = newShift.VolunteerProfileId == null ?
-                $"Open - {chosenPosition.Name}" :
-                $"{chosenVolunteer.FirstName} {chosenVolunteer.LastName} - {chosenPosition.Name}";
+                $"Open - {positionName}" :
+                $"{volunteerName} - {positionName}";
 
             _context.Shifts.Add(newShift);
 
@@ -203,18 +205,33 @@ namespace MHFoodBank.Web.Services
             return "The shift was successfully removed from the recurring set.";
         }
 
-        public async Task DeleteShifts(List<ShiftReadEditDto> shiftDtos)
+        public async Task<string> DeleteShifts(List<ShiftReadEditDto> shiftDtos)
         {
-            foreach (var shift in shiftDtos)
+            try
             {
-                var newShift = await _context.Shifts.Where(c => c.Id == shift.Id).FirstOrDefaultAsync();
-                if (newShift != null)
+                foreach (var shift in shiftDtos)
                 {
-                    _reminderManager.CancelReminder(newShift);
-                    _context.Shifts.Remove(newShift);
+                    var newShift = await _context.Shifts.Where(c => c.Id == shift.Id).FirstOrDefaultAsync();
+
+                    if (newShift == null)
+                    {
+                        return $"Something went wrong when finding a shift with id {shift.Id}";
+                    }
+
+                    if (newShift != null)
+                    {
+                        _reminderManager.CancelReminder(newShift);
+                        _context.Shifts.Remove(newShift);
+                    }
                 }
+                await _context.SaveChangesAsync();
             }
-            await _context.SaveChangesAsync();
+            catch (Exception ex)
+            {
+                return $"Something went wrong when trying to delete a shift. \nError Message:\n {ex.Message}";
+            }
+
+            return "Shift(s) were successfully deleted";
         }
 
         public async Task<string> CreatePosition(string newPositionName, string newPositionColor)

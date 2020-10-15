@@ -40,7 +40,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty(Name = nameof(ShiftAmounts))] public Dictionary<int, int> ShiftAmounts { get; set; }
         #endregion
 
-        public AdminCalendar(IAdminCalendarService calendarService, string currentPage = "Scheduling") : base(currentPage)
+        public AdminCalendar(IAdminCalendarService calendarService, FoodBankContext context, string currentPage = "Scheduling") : base(context, currentPage)
         {
             _calendarService.ReportAlertCount();
             _calendarService = calendarService;

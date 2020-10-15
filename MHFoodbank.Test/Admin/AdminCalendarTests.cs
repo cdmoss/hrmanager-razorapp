@@ -10,6 +10,7 @@ using System;
 using MHFoodBank.Common;
 using MHFoodBank.Common.Dtos;
 using System.Collections.Generic;
+using NuGet.Frameworks;
 
 namespace MHFoodbank.Test
 {
@@ -24,10 +25,11 @@ namespace MHFoodbank.Test
             var contextOptionsBuilder = new DbContextOptionsBuilder<FoodBankContext>()
                 .UseMySql(config.GetConnectionString("MainDevConnection"));
             var context = new FoodBankContext(contextOptionsBuilder.Options);
-            var logger = new NullLoggerFactory().CreateLogger<ReminderManager>();
+            var loggerReminderManager = new NullLoggerFactory().CreateLogger<ReminderManager>();
+            var loggerAdminCalendar = new NullLoggerFactory().CreateLogger<AdminCalendarService>();
             var emailSender = new TestEmailSender();
-            var reminderManager = new ReminderManager(context, logger, emailSender);
-            return new AdminCalendarService(context, mapper, reminderManager);
+            var reminderManager = new ReminderManager(context, loggerReminderManager, emailSender, true);
+            return new AdminCalendarService(loggerAdminCalendar, context, mapper, reminderManager);
         }
 
         [Fact]
@@ -49,13 +51,41 @@ namespace MHFoodbank.Test
         }
 
         [Fact]
-        public async Task CreateShift_ReportsErrorAndReturns_IfStartTimeIsMissing()
+        public async Task CreateShift_ReportsSuccessAndPopulatesDB_IfSingleShiftCreationWasSuccessful()
         {
             var calendarService = GetCalendarService();
-            var newShift = new ShiftReadEditDto() { StartTime = DateTime.Now.AddHours(6), EndTime = DateTime.Now.AddHours(12), };
+
             var insertParams = new Dictionary<string, object>();
+            var newShift = new ShiftReadEditDto() 
+            { 
+                StartTime = DateTime.Now.AddHours(6), 
+                EndTime = DateTime.Now.AddHours(12),
+                PositionId = 3
+            };
             string result = await calendarService.CreateShift(newShift, insertParams);
-            Assert.Equal("The provided data for the new shift was missing either a StartTime, Endtime or Position", result);
+
+            var shifts = (await calendarService.GetShifts());
+
+            Assert.Equal(DateTime.Now.AddHours(6), shifts[0].StartTime);
+            Assert.Equal(DateTime.Now.AddHours(12), shifts[0].EndTime);
+            Assert.Equal(3, shifts[0].PositionId);
+            Assert.Equal("A new shift has successfully been created", result);
+
+            var testServiceProvider = new TestServiceProvider();
+            var config = testServiceProvider.GetConfig();
+            var contextOptionsBuilder = new DbContextOptionsBuilder<FoodBankContext>()
+                .UseMySql(config.GetConnectionString("MainDevConnection"));
+            var context = new FoodBankContext(contextOptionsBuilder.Options);
+
+            using(context)
+            {
+                foreach (var shift in shifts)
+                {
+                    var currentShift = await context.Shifts.FirstOrDefaultAsync(s => s.Id == shift.Id);
+                    context.Remove(currentShift);
+                }
+                await context.SaveChangesAsync();
+            }
         }
 
         [Fact]
