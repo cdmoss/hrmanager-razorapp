@@ -961,7 +961,6 @@ C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\bin\Debug\netcor
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.csprojAssemblyReference.cache
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.AssemblyInfoInputs.cache
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.AssemblyInfo.cs
-C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.csproj.CoreCompileInputs.cache
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.csproj.CopyComplete
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.dll
 C:\Users\Chase\Desktop\Programming\FBWebsite-V3\MHFoodbank.Test\obj\Debug\netcoreapp3.1\MHFoodbank.Test.pdb

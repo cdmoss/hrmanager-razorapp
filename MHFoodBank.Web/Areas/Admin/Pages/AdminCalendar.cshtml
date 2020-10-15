@@ -59,8 +59,7 @@
         var shiftManager = new DataManager
         {
             Url = "AdminCalendar?handler=GetShifts",
-            CrudUrl = "AdminCalendar?handler=UpdateShifts",
-            InsertUrl = "AdminCalendar?handler=InsertShift",
+            CrudUrl = "AdminCalendar?handler=HandleShiftCrudRequest",
             Adaptor = "UrlAdaptor",
             CrossDomain = true,
             Headers = new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }
@@ -81,7 +80,7 @@
             <!--adding byGroupId="false" fixes the issues that prevents shifts from being added-->
             <e-schedule-group byGroupID="false" resources="Model.ResourceNames"></e-schedule-group>
             <e-schedule-resources>
-                <e-schedule-resource dataSource="Model.Positions" field="PositionId" title="Positions" allowMultiple="false" idField="Id" textField="Name" name="Positions"></e-schedule-resource>
+                <e-schedule-resource dataSource="Model.PositionsWithoutAll" field="PositionId" title="Positions" allowMultiple="false" idField="Id" textField="Name" name="Positions"></e-schedule-resource>
                 <e-schedule-resource dataSource="Model.Volunteers" field="VolunteerProfileId" title="Volunteers" allowMultiple="false" idField="Id" textField="FullNameWithID" name="Volunteers"></e-schedule-resource>
             </e-schedule-resources>
             <e-schedule-views>
@@ -126,7 +125,7 @@
                     <td id="position-section" colspan="4">
                         <input type="text" id="PositionId" placeholder="Select a position..." name="PositionId" class="e-field" style="width: 100%" />
                         <div id="multi-position-selector" style="display: none;">
-                            @foreach (var position in Model.Positions)
+                            @foreach (var position in Model.PositionsWithoutAll)
                             {
                                 <text>
                                     <div class="d-flex">
@@ -198,10 +197,10 @@
                 let queryObj = new ej.data.Query().from('Events');
                 queryObj.addParams('multiShifts', multiShifts);
                 if (multiShifts == true) {
-                    @for (int i = 0; i < Model.Positions.Count(); i++)
+                    @for (int i = 0; i < Model.PositionsWithoutAll.Count(); i++)
                     {
                         <text>
-                        queryObj.addParams('@Model.Positions[i].Name-amount', document.getElementById('@Model.Positions[i].Name-amount').value);
+                        queryObj.addParams('@Model.PositionsWithoutAll[i].Name-amount', document.getElementById('@Model.PositionsWithoutAll[i].Name-amount').value);
                         </text>
                     }
                 }
@@ -227,7 +226,7 @@
             if (args.type === 'Editor') {
                 var volunteers = @Html.Raw(Json.Serialize(Model.Volunteers));
                 volunteers.push({ "Id": 0, "FullNameWithID": "Open" });
-                var positions = @Html.Raw(Json.Serialize(Model.Positions));
+                var positions = @Html.Raw(Json.Serialize(Model.PositionsWithoutAll));
                 var schedule = document.getElementById('schedule').ej2_instances[0];
                 var startElement = args.element.querySelector('#StartTime');
                 if (!startElement.classList.contains('e-datetimepicker')) {
@@ -340,11 +339,11 @@
                            required>
                     <br />
                     <label style="margin-top: 3px; padding-right: 10px;" for="">New Position Name</label>
-                    <input type="text" class="form-control" id="edit-position-name" asp-for="@Model.SelectedPositionName">
+                    <input type="text" class="form-control" id="edit-position-name" asp-for="@Model.NewSelectedPositionName">
                     <br />
                     <label style="margin-top: 3px; padding-right: 10px;" for="position-add">New Color</label>
                     <br />
-                    <input type="color" id="position-color" class=" w-25" asp-for="@Model.SelectedPositionColor" />
+                    <input type="color" id="position-color" class=" w-25" asp-for="@Model.NewSelectedPositionColor" />
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" asp-page-handler="EditPosition">Submit Changes</button>
@@ -398,7 +397,7 @@
     document.getElementById('volunteers').innerHTML = options;
 
     let positions = new Array();
-    @foreach (var position in Model.Positions.Where(p => p.Name != "All" && !p.Deleted))
+    @foreach (var position in Model.PositionsWithoutAll)
     {
         <text>positions.push('</text>@position.Name<text>');</text>
     }

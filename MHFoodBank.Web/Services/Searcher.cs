@@ -9,42 +9,11 @@ using MHFoodBank.Common.Dtos;
 namespace MHFoodBank.Web.Data
 {
     public class Searcher
-    {
-        private readonly FoodBankContext _context;
-
-        public Searcher(FoodBankContext context)
-        {
-            _context = context;
-        }
-
-        private bool CheckIfNameWasSearched(string name)
-        {
-            bool check = false;
-            if (!String.IsNullOrWhiteSpace(name))
-            {
-                check = true;
-                name = name.ToLower();
-            }
-            return check;
-        }
-
-        private bool CheckIfPositionWasSearched(Position position)
-        {
-            bool check = false;
-            if (position != null)
-            {
-                if (position.Id != 4)
-                {
-                    check = true;
-                }
-            }
-            return check;
-        }
-
+    { 
         public List<VolunteerProfile> FilterVolunteersBySearch(List<VolunteerProfile> volunteers, string name, Position searchedPosition)
         {
-            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
-            bool nameWasSearched = CheckIfNameWasSearched(name);
+            bool positionWasSearched = searchedPosition == null ? false : searchedPosition.Id != 4;
+            bool nameWasSearched = !string.IsNullOrWhiteSpace(name);
 
             if (positionWasSearched && nameWasSearched)
             {
@@ -70,8 +39,8 @@ namespace MHFoodBank.Web.Data
 
         public List<ShiftReadEditDto> FilterShiftsBySearch(List<ShiftReadEditDto> shifts, string name, Position searchedPosition)
         {
-            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
-            bool nameWasSearched = CheckIfNameWasSearched(name);
+            bool positionWasSearched = searchedPosition == null ? false : searchedPosition.Id != 4;
+            bool nameWasSearched = !string.IsNullOrWhiteSpace(name);
 
             if (positionWasSearched && nameWasSearched)
             {
@@ -108,8 +77,8 @@ namespace MHFoodBank.Web.Data
             DateTime start,
             DateTime end)
         {
-            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
-            bool nameWasSearched = CheckIfNameWasSearched(name);
+            bool positionWasSearched = searchedPosition == null ? false : searchedPosition.Id != 4;
+            bool nameWasSearched = !string.IsNullOrWhiteSpace(name);
 
             clockedTimes = clockedTimes.Where(ct =>
                 ct.StartTime >= start &&
@@ -142,8 +111,8 @@ namespace MHFoodBank.Web.Data
         string name,
         Position searchedPosition)
         {
-            bool positionWasSearched = CheckIfPositionWasSearched(searchedPosition);
-            bool nameWasSearched = CheckIfNameWasSearched(name);
+            bool positionWasSearched = searchedPosition == null ? false : searchedPosition.Id != 4;
+            bool nameWasSearched = !string.IsNullOrWhiteSpace(name);
 
             if (positionWasSearched && nameWasSearched)
             {
@@ -165,19 +134,6 @@ namespace MHFoodBank.Web.Data
             }
 
             return clockedTimes;
-        }
-
-        public Position GetSearchedPosition(HttpRequest request)
-        {
-            int searchedPositionId = -1;
-
-            // records id of searched position if position was entered
-            if (request.Form["searchedposition"] != "All")
-            {
-                searchedPositionId = Convert.ToInt32(request.Form["searchedposition"]);
-            }
-            Position position = _context.Positions.FirstOrDefault(p => p.Id == searchedPositionId);
-            return position;
         }
     }
 }

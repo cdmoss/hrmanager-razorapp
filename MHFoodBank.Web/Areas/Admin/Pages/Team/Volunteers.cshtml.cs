@@ -17,12 +17,8 @@ using Microsoft.EntityFrameworkCore;
 namespace MHFoodBank.Web.Areas.Admin.Pages
 {
     [Authorize(Roles = "Staff, Admin")]
-    //https://openidauthority.com/how-to-prevent-the-back-button-after-logout-in-asp-net-core/
-    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class MainModel : AdminPageModel
     {
-        private readonly SignInManager<AppUser> _signInManager;
-        private readonly UserManager<AppUser> _userManager;
         private readonly IMapper _mapper;
 
         [BindProperty]
@@ -50,8 +46,6 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public MainModel(SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, IMapper mapper, FoodBankContext context, string currentPage = "Volunteers") : base(context, currentPage)
         {
-            _signInManager = signInManager;
-            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -65,27 +59,14 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             StatusMessage = statusMessage;
             var volunteerDomainModels = await PrepareModel();
 
-            var newList = new List<VolunteerProfile>();
+            volunteerDomainModels = FilterVolunteers(
+                volunteerDomainModels, 
+                approvedFilter, 
+                pendingFilter, 
+                notApprovedFilter, 
+                archivedFilter);
 
-            ApprovedFilter = approvedFilter;
-            PendingFilter = pendingFilter;
-            NotApprovedFilter = notApprovedFilter;
-            ArchivedFilter = archivedFilter;
-
-            foreach (var volunteer in volunteerDomainModels)
-            {
-                bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter && ApprovedFilter;
-                bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter && PendingFilter;
-                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter && NotApprovedFilter;
-                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == ArchivedFilter && ArchivedFilter;
-
-                if (passedapproved || passedpending || passednotapproved || passeddeleted)
-                {
-                    newList.Add(volunteer);
-                }
-            }
-
-            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(newList);
+            Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
         }
 
         public async Task OnPost()
@@ -112,7 +93,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         {
             var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == SearchedPositionId);
             var volunteerDomainModels = await PrepareModel();
-            Searcher searcher = new Searcher(_context);
+            Searcher searcher = new Searcher();
             volunteerDomainModels = searcher.FilterVolunteersBySearch(volunteerDomainModels, SearchedName, searchedPosition);
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
         }
@@ -133,6 +114,35 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             await _context.SaveChangesAsync();
 
             return RedirectToPage(new { statusMessage = $"You have successfully deleted {user.VolunteerProfile.FirstName} {user.VolunteerProfile.LastName} volunteer." });
+        }
+
+        private List<VolunteerProfile> FilterVolunteers(List<VolunteerProfile> volunteers,
+            bool approvedFilter = true,
+            bool pendingFilter = true,
+            bool notApprovedFilter = false,
+            bool archivedFilter = false)
+        {
+            var newList = new List<VolunteerProfile>();
+
+            ApprovedFilter = approvedFilter;
+            PendingFilter = pendingFilter;
+            NotApprovedFilter = notApprovedFilter;
+            ArchivedFilter = archivedFilter;
+
+            foreach (var volunteer in volunteers)
+            {
+                bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter && ApprovedFilter;
+                bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter && PendingFilter;
+                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter && NotApprovedFilter;
+                bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == ArchivedFilter && ArchivedFilter;
+
+                if (passedapproved || passedpending || passednotapproved || passeddeleted)
+                {
+                    newList.Add(volunteer);
+                }
+            }
+
+            return newList;
         }
 
         private async Task<List<VolunteerProfile>> PrepareModel()

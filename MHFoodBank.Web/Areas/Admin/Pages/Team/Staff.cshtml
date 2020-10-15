@@ -31,7 +31,7 @@
     </div>
 </form>
 <br />
-@if (@Model.Volunteers.Count() > 0)
+@if (@Model.Staff.Count() > 0)
 {
     <table class="table">
         <colgroup>
@@ -48,36 +48,36 @@
                 <th>Actions</th>
             </tr>
         </thead>
-        @foreach (VolunteerMinimalDto volunteer in Model.Volunteers)
+        @foreach (VolunteerMinimalDto s in Model.Staff)
         {
-            <tr @if (volunteer.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text>  } else { <text></text> }>
-                <td>@volunteer.FirstName <input type="hidden" value="@volunteer.Id" id="volunteer-id-@volunteer.Id" /></td>
-                <td>@volunteer.LastName</td>
+            <tr @if (s.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text>  } else { <text></text> }>
+                <td>@s.FirstName <input type="hidden" value="@s.Id" id="volunteer-id-@s.Id" /></td>
+                <td>@s.LastName</td>
                 <td>
-                    @Enum.GetName(typeof(ApprovalStatus), volunteer.ApprovalStatus)
+                    @Enum.GetName(typeof(ApprovalStatus), s.ApprovalStatus)
                 </td>
                 <td>
                     <form method="post">
                         <div class="btn-group w-100">
-                            <a class="btn btn-sm btn-primary" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@volunteer.Id">See Details</a>
+                            <a class="btn btn-sm btn-primary" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@s.Id">See Details</a>
                             <button class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             </button>
                             <div class="dropdown-menu">
-                                @if (volunteer.ApprovalStatus != ApprovalStatus.Approved)
+                                @if (s.ApprovalStatus != ApprovalStatus.Approved)
                                 {
                                     <button class="btn-light-custom btn-sm btn w-100 h-100"
                                             asp-page-handler="ChangeStatus"
-                                            asp-route-volId="@volunteer.Id"
+                                            asp-route-volId="@s.Id"
                                             asp-route-status="0"
                                             asp-route-archivedFilter="@Model.ArchivedFilter">
                                         Set Active
                                     </button>
                                 }
-                                @if (volunteer.ApprovalStatus != ApprovalStatus.Archived)
+                                @if (s.ApprovalStatus != ApprovalStatus.Archived)
                                 {
                                     <button class="btn-light-custom btn-sm btn w-100 h-100"
                                             asp-page-handler="ChangeStatus"
-                                            asp-route-volId="@volunteer.Id"
+                                            asp-route-volId="@s.Id"
                                             asp-route-status="3"
                                             asp-route-archivedFilter="@Model.ArchivedFilter">
                                         Archive
@@ -86,7 +86,7 @@
                                 <div class="dropdown-divider"></div>
                                 @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
                                 {
-                                    <button type="button" class="btn-light-custom btn-sm btn w-100 h-100" onclick="openDeleteModal(@volunteer.Id)">Delete</button>
+                                    <button type="button" class="btn-light-custom btn-sm btn w-100 h-100" onclick="openDeleteModal(@s.Id)">Delete</button>
                                 }
                             </div>
                         </div>
@@ -99,7 +99,7 @@
 
 <form method="post">
     <div id="delete-volunteer-prompt" class="modal fade">
-        <input type="hidden" asp-for="@Model.SelectedVolunteerId" id="volunteer-id-modal" value="" />
+        <input type="hidden" asp-for="@Model.SelectedStaffId" id="volunteer-id-modal" value="" />
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

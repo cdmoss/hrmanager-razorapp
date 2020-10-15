@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ZVPUjJl72gigQ1M5hnvAuEhQz7oj6LAzb2SE9xMe8S8fsgbur4OSEYia4NLOf5YgZwAE4WG1weRXh8RsjYUqeg==",
+  "dgSpecHash": "0RXqsM+tpgHuObUAzckQ0RPcvA2Hbt+Pnh2cPjizrykMPeemggBrFfel19BDaECxSb3oRFGyO+9Q7gDUKyundg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodBank.TimeClock\\MHFoodBank.TimeClock.iOS\\MHFoodBank.TimeClock.iOS.csproj",
   "expectedPackageFiles": [
@@ -67,21 +67,7 @@
     "C:\\Users\\Chase\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.2\\system.threading.tasks.extensions.4.5.2.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\xamarin.essentials\\1.5.2\\xamarin.essentials.1.5.2.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\xamarin.essentials.interfaces\\1.5.2\\xamarin.essentials.interfaces.1.5.2.nupkg.sha512",
-    "C:\\Users\\Chase\\.nuget\\packages\\xamarin.forms\\4.5.0.617\\xamarin.forms.4.5.0.617.nupkg.sha512"
+    "C:\\Users\\Chase\\.nuget\\packages\\xamarin.forms\\4.8.0.1534\\xamarin.forms.4.8.0.1534.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "NU1605",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Detected package downgrade: Xamarin.Forms from 4.7.0.1179 to 4.5.0.617. Reference the package directly from the project to select a different version. \r\n MHFoodBank.TimeClock.iOS -> MHFoodBank.TimeClock -> Xamarin.Forms (>= 4.7.0.1179) \r\n MHFoodBank.TimeClock.iOS -> Xamarin.Forms (>= 4.5.0.617)",
-      "libraryId": "Xamarin.Forms",
-      "targetGraphs": [
-        "Xamarin.iOS,Version=v1.0",
-        "Xamarin.iOS,Version=v1.0/win",
-        "Xamarin.iOS,Version=v1.0/win-x64",
-        "Xamarin.iOS,Version=v1.0/win-x86"
-      ]
-    }
-  ]
+  "logs": []
 }

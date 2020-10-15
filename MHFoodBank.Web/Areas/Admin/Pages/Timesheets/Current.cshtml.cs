@@ -149,7 +149,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.TimeClock
             int searchedPosId = SearchedPositionId;
             await PrepareModel();
 
-            var searcher = new Searcher(_context);
+            var searcher = new Searcher();
             var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
             ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, searchedPosition);
         }

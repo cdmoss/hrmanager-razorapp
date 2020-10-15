@@ -190,7 +190,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             var startDate = SearchedStartDate + SearchedStartTime;
             var endDate = SearchedEndDate + SearchedEndTime;
 
-            var searcher = new Searcher(_context);
+            var searcher = new Searcher();
             var searchedPosition = await _context.Positions.FirstOrDefaultAsync(p => p.Id == searchedPosId);
             ClockedTimes = searcher.FilterTimeSheetBySearch(ClockedTimes, SearchedName, searchedPosition, startDate, endDate);
         }

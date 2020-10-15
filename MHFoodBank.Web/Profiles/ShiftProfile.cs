@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MHFoodBank.Web;
+﻿using MHFoodBank.Common;
 using MHFoodBank.Common.Dtos;
 using AutoMapper;
-using MHFoodBank.Common;
 
-namespace MHFoodBank.Api.Profiles
+namespace MHFoodBank.Web.Profiles
 {
     public class ShiftProfile : Profile
     {

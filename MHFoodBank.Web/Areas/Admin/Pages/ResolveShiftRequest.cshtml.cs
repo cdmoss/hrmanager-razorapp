@@ -44,8 +44,8 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             _mapper = mapper;
         }
 
-        public async Task OnGet(int alertId, string requestType)
-        {
+        //public async Task OnGet(int alertId, string requestType)
+        //{
             //var requestAlert = await LoadAlertForDisplay(alertId);
 
             //ShiftRequest = _mapper.Map<ShiftRequestReadDto>(requestAlert);
@@ -419,5 +419,5 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         //            .FirstOrDefault(s => s.Id == excludedShift.ParentRecurringShiftId).RecurrenceRule += excludedDateString;
         //    }
         //}
-    }
+    //}
 }

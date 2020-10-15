@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace MHFoodBank.Common.Services
@@ -937,12 +935,40 @@ namespace MHFoodBank.Common.Services
         }
         #endregion
 
-        public static DateTime ConvertExDateStringToDateTime(string exDateString)
+        public static List<DateTime> ConvertExDateStringToDateTimes(string exDateString)
         {
-            int newExDateYear = Convert.ToInt32(exDateString.Substring(0, 4));
-            int newExDateMonth = Convert.ToInt32(exDateString.Substring(4, 2));
-            int newExDateDay = Convert.ToInt32(exDateString.Substring(6, 2));
-            return new DateTime(newExDateYear, newExDateMonth, newExDateDay);
+            string[] exDateStrings = new string[0];
+            if (!string.IsNullOrWhiteSpace(exDateString))
+            {
+                 exDateStrings = exDateString.Split(',');
+            }
+
+            var exDates = new List<DateTime>();
+            if (exDateStrings.Length > 0)
+            {
+                foreach (var date in exDateStrings)
+                {
+                    int newExDateYear = Convert.ToInt32(date.Substring(0, 4));
+                    int newExDateMonth = Convert.ToInt32(date.Substring(4, 2));
+                    int newExDateDay = Convert.ToInt32(date.Substring(6, 2));
+                    int newExDateHour = Convert.ToInt32(date.Substring(9, 2));
+                    int newExDateMinute = Convert.ToInt32(date.Substring(11, 2));
+                    int newExDateSecond = Convert.ToInt32(date.Substring(13, 2));
+                    exDates.Add(new DateTime(newExDateYear, newExDateMonth, newExDateDay));
+                }
+            }
+            return exDates;
+        }
+
+        public static string ConvertDateTimesToExDateString(List<DateTime> dates)
+        {
+            string exDateString = "";
+            foreach (var date in dates)
+            {
+                exDateString += $"{date.Year}{date.Month:00}{date.Day:00}T{date.Hour:00}{date.Minute:00}{date.Second:00}Z,";
+            }
+
+            return exDateString.Trim(',');
         }
 
         public static string ConvertDateTimeToExDateString(DateTime date)

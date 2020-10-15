@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "p9CpLNs0VMXJ/Qg7cDCb75SJ/Ow0pD+iyoqJvpKKUpgL6TOqLp2Pqy5gspjr2+nfrQ8sd5YCDckJRZ1ggET6Gg==",
+  "dgSpecHash": "CxruTkQyLG1iyZeoaP0ahWgHkD6/hhgJoR9qlyRSgqIY1wE8iv8zOxQLvhktGcAdfydHzo+usheJdGCZ0RETHA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Chase\\Desktop\\Programming\\fbwebsite-v3\\MHFoodbank.Test\\MHFoodbank.Test.csproj",
   "expectedPackageFiles": [
@@ -73,7 +73,7 @@
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.identity.core\\3.1.2\\microsoft.extensions.identity.core.3.1.2.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.identity.stores\\3.1.2\\microsoft.extensions.identity.stores.3.1.2.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.logging\\3.1.3\\microsoft.extensions.logging.3.1.3.nupkg.sha512",
-    "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.3\\microsoft.extensions.logging.abstractions.3.1.3.nupkg.sha512",
+    "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\3.1.8\\microsoft.extensions.logging.abstractions.3.1.8.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.objectpool\\2.2.0\\microsoft.extensions.objectpool.2.2.0.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.options\\3.1.3\\microsoft.extensions.options.3.1.3.nupkg.sha512",
     "C:\\Users\\Chase\\.nuget\\packages\\microsoft.extensions.primitives\\3.1.3\\microsoft.extensions.primitives.3.1.3.nupkg.sha512",

@@ -44,4 +44,14 @@ namespace MHFoodBank.Web.Services
             await client.DisconnectAsync(true);
         }
     }
+
+    public class TestEmailSender : IEmailSender
+    {
+        private readonly EmailSettings _emailSettings;
+
+        public async Task SendEmailAsync(string recipientEmail, string subject, string message)
+        {
+            Console.WriteLine("Test Email Sent");
+        }
+    }
 }

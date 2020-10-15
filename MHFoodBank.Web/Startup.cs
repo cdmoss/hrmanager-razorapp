@@ -13,9 +13,7 @@ using Hangfire.MySql.Core;
 using AutoMapper;
 using MHFoodBank.Web.Repositories;
 using MHFoodBank.Common;
-using MHFoodBank.Api.Repositories;
 using MHFoodBank.Web.Services;
-using Microsoft.AspNetCore.Http;
 
 namespace MHFoodBank.Web
 {
@@ -34,7 +32,7 @@ namespace MHFoodBank.Web
             services.AddDbContext<FoodBankContext>(options =>
             {
                 options.UseMySql(
-                    Configuration.GetConnectionString("DefaultConnection"));
+                    Configuration.GetConnectionString("MainDevConnection"));
             });
 
             services.AddIdentity<AppUser, IdentityRole<int>>(options =>
@@ -47,7 +45,7 @@ namespace MHFoodBank.Web
                 .UseSerializerSettings(new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore })
                 .UseStorage(
                     new MySqlStorage(
-                        Configuration.GetConnectionString("HangfireConnection"),
+                        Configuration.GetConnectionString("HangfireDevConnection"),
                         new MySqlStorageOptions
                         {
                             TransactionIsolationLevel = System.Data.IsolationLevel.ReadCommitted,
@@ -85,7 +83,7 @@ namespace MHFoodBank.Web
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IClockedTimeRepo, ClockedTimeRepo>();
-            services.AddScoped<IPositionRepo, MySqlPositionRepo>();
+            services.AddScoped<IDbSeeder, DbSeeder>();
 
             services
                 .AddRazorPages()
@@ -99,7 +97,7 @@ namespace MHFoodBank.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<AppUser> userManager, RoleManager<IdentityRole<int>> roleManager, FoodBankContext context, IServiceProvider serviceProvider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbSeeder seeder, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -115,7 +113,7 @@ namespace MHFoodBank.Web
 
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("MzE5MzQ4QDMxMzgyZTMyMmUzMEI2L0VJSnNCS1ZaaUh1WjUyditEWUsvMzZHaDJmc1IzQTBKZkxaTGM2Vzg9");
 
-            DbSeeder.Seed(roleManager, userManager, context, env);
+            seeder.Seed(env.IsDevelopment());
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -100,9 +100,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             IdentityResult accountCreationResult = null;
             IdentityResult addToRoleResult = null;
 
-            // this are initialized to "success" but will be actually evaluated in the methods below
-            bool ConfirmationEmailSentResult = true;
-
             if (user.VolunteerProfile.Availabilities != null)
             {
                 accountCreationResult = await _userManager.CreateAsync(user, Volunteer.Password);
@@ -123,7 +120,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                     catch (Exception ex)
                     {
                         ModelState.AddModelError(String.Empty, "Email failed to send.");
-
+                        _logger.LogError(ex.Message);
                     }
                 }
                 else

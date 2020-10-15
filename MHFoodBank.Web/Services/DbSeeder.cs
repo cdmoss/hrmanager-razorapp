@@ -1,62 +1,86 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Threading.Tasks;
 using MHFoodBank.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Microsoft.Extensions.Hosting;
 
 namespace MHFoodBank.Web.Data
 {
-    public static class DbSeeder
+    public interface IDbSeeder
     {
-        static RoleManager<IdentityRole<int>> roleManager;
-        static UserManager<AppUser> userManager;
-        public static bool Seed(RoleManager<IdentityRole<int>> roleManager, UserManager<AppUser> userManager, FoodBankContext foodBankContext, IWebHostEnvironment env)
-        {
-            DbSeeder.roleManager = roleManager;
-            DbSeeder.userManager = userManager;
+        bool Seed(bool isDev);
+    }
 
+    public class DbSeeder : IDbSeeder
+    {
+        private readonly RoleManager<IdentityRole<int>> _roleManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly FoodBankContext _context;
+
+        public DbSeeder(RoleManager<IdentityRole<int>> roleManager, UserManager<AppUser> userManager, FoodBankContext foodBankContext)
+        {
+            _roleManager = roleManager;
+            _userManager = userManager;
+            _context = foodBankContext;
+        }
+
+        public bool TestSeed()
+        {
             bool result = true;
 
             result &= SeedRoles();
 
-            if (env.IsDevelopment())
+            result &= SeedTestVolunteer();
+            result &= SeedStaff();
+
+            result &= SeedAdmin();
+            result &= SeedPositions();
+
+            return result;
+        }
+
+        public bool Seed(bool isDev)
+        {
+            bool result = true;
+
+            result &= SeedRoles();
+
+            if (isDev)
             {
                 result &= SeedTestVolunteer();
                 result &= SeedStaff();
             }
 
             result &= SeedAdmin();
-            result &= SeedPositions(foodBankContext);
+            result &= SeedPositions();
 
             return result;
         }
 
-        private static bool RoleExists(string roleName)
+        private bool RoleExists(string roleName)
         {
-            return roleManager.FindByNameAsync(roleName).Result != null;
+            return _roleManager.FindByNameAsync(roleName).Result != null;
         }
 
-        private static bool UserExists(string userName)
+        private bool UserExists(string userName)
         {
-            return userManager.FindByNameAsync(userName).Result != null;
+            return _userManager.FindByNameAsync(userName).Result != null;
         }
 
-        private static IdentityResult CreateRole(string roleName)
+        private IdentityResult CreateRole(string roleName)
         {
             var role = new IdentityRole<int>(roleName)
             {
                 NormalizedName = roleName.ToUpper()
             };
 
-            return roleManager.CreateAsync(role).Result;
+            return _roleManager.CreateAsync(role).Result;
         }
 
-        private static bool CreateUser(string userName, string userRole)
+        private bool CreateUser(string userName, string userRole)
         {
             var user = new AppUser()
             {
@@ -65,7 +89,7 @@ namespace MHFoodBank.Web.Data
                 EmailConfirmed = true
             };
 
-            IdentityResult result = userManager.CreateAsync(user, "P@$$W0rd").Result;
+            IdentityResult result = _userManager.CreateAsync(user, "P@$$W0rd").Result;
 
             if (result.Succeeded)
                 SetUserToRole(user, userRole);
@@ -75,7 +99,7 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static bool CreateVolunteer(string userName, string userRole)
+        private bool CreateVolunteer(string userName, string userRole)
         {
             var volunteer = new AppUser()
             {
@@ -139,7 +163,7 @@ namespace MHFoodBank.Web.Data
             vi.WorkExperiences = workExperiences;
             volunteer.VolunteerProfile = vi;
 
-            IdentityResult result = userManager.CreateAsync(volunteer, "P@$$W0rd").Result;
+            IdentityResult result = _userManager.CreateAsync(volunteer, "P@$$W0rd").Result;
 
             if (result.Succeeded)
                 SetUserToRole(volunteer, userRole);
@@ -149,12 +173,12 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static void SetUserToRole(AppUser user, string userRole)
+        private void SetUserToRole(AppUser user, string userRole)
         {
-            userManager.AddToRoleAsync(user, userRole).Wait();
+            _userManager.AddToRoleAsync(user, userRole).Wait();
         }
 
-        private static bool SeedAdmin()
+        private bool SeedAdmin()
         {
             if (!UserExists(Constants.UserNames.Admin))
             {
@@ -166,7 +190,7 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static bool SeedStaff()
+        private bool SeedStaff()
         {
             if (!UserExists(Constants.UserNames.Staff))
             {
@@ -178,7 +202,7 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static bool SeedTestVolunteer()
+        private bool SeedTestVolunteer()
         {
             if (!UserExists(Constants.UserNames.Volunteer))
             {
@@ -190,7 +214,7 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static bool SeedRoles()
+        private bool SeedRoles()
         {
             if (!RoleExists(Constants.RoleNames.Admin))
             {
@@ -222,9 +246,9 @@ namespace MHFoodBank.Web.Data
             return true;
         }
 
-        private static bool SeedPositions(FoodBankContext context)
+        private bool SeedPositions()
         {
-            if (context.Positions.Count() == 0)
+            if (_context.Positions.Count() == 0)
             {
                 try
                 {
@@ -236,15 +260,15 @@ namespace MHFoodBank.Web.Data
                     Position specialevents = new Position() { Name = "Special Events", Color = "#cc0099" };
                     Position communityrelations = new Position() { Name = "Community Relations", Color = "#ff6600" };
 
-                    context.Add(all);
-                    context.Add(warehouse);
-                    context.Add(frontstock);
-                    context.Add(janitorial);
-                    context.Add(generalmaintenance);
-                    context.Add(specialevents);
-                    context.Add(communityrelations);
+                    _context.Add(all);
+                    _context.Add(warehouse);
+                    _context.Add(frontstock);
+                    _context.Add(janitorial);
+                    _context.Add(generalmaintenance);
+                    _context.Add(specialevents);
+                    _context.Add(communityrelations);
 
-                    context.SaveChanges();
+                    _context.SaveChanges();
                 }
                 catch (Exception ex)
                 {

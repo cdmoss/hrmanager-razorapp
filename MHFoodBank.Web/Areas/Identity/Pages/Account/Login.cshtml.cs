@@ -23,7 +23,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
     public class LoginModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole<int>> _roleManager;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly ILogger<LoginModel> _logger;
         private readonly IEmailConfirmationService _emailConfirm;
@@ -35,7 +34,6 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             IEmailConfirmationService emailConfirm)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailConfirm = emailConfirm;
@@ -137,7 +135,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(user.UserName, Input.Password, false, false);
                 if (result.Succeeded)
                 {
-                    return await RedirectUserBasedOnRole(userRoles);
+                    return RedirectUserBasedOnRole(userRoles);
                 }
 
                 ModelState.AddModelError(String.Empty, "Invalid login attempt. Make sure you entered the right credentials.");
@@ -149,7 +147,7 @@ namespace MHFoodBank.Web.Areas.Identity.Pages.Account
             }
         }
 
-        private async Task<IActionResult> RedirectUserBasedOnRole(IList<string> userRoles)
+        private IActionResult RedirectUserBasedOnRole(IList<string> userRoles)
         {
             if (userRoles.Contains("Volunteer"))
             {
