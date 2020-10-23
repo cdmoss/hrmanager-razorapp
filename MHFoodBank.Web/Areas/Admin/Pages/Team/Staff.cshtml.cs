@@ -11,7 +11,10 @@ using MHFoodBank.Web.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.TagHelpers;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Syncfusion.EJ2.Base;
 
 namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
 {
@@ -56,6 +59,113 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
         {
             await OnGet("", ArchivedFilter);
         }
+
+        public class Data
+        {
+            public bool requiresCounts { get; set; }
+            public int skip { get; set; }
+
+            public int EmployeeID { get; set; }
+            public int EmployeeName { get; set; }
+            public int take { get; set; }
+            [HtmlAttributeName("sorted")]
+            [JsonProperty("sorted")]
+            public List<Sort> Sorted { get; set; }
+            [HtmlAttributeName("search")]
+            [JsonProperty("search")]
+            public List<SearchFilter> Search { get; set; }
+            [HtmlAttributeName("where")]
+            [JsonProperty("where")]
+            public List<WhereFilter> Where { get; set; }
+        }
+
+        public async Task<JsonResult> OnPostDelete([FromBody] CRUDModel<VolunteerAdminReadEditDto> crudRequest)
+        {
+            if(crudRequest.Action == "remove")
+            {
+                var selectedStaff = await _context.VolunteerProfiles.FirstOrDefaultAsync(s => s.Id == Convert.ToInt32(crudRequest.Key));
+                _context.VolunteerProfiles.Remove(selectedStaff);
+            }
+            else if(crudRequest.Action == "batch")
+            {
+                foreach (var staff in crudRequest.Deleted)
+                {
+                    var selectedStaff = await _context.VolunteerProfiles.FirstOrDefaultAsync(s => s.Id == staff.Id);
+                    _context.VolunteerProfiles.Remove(selectedStaff);
+                }
+            }
+
+            return new JsonResult(crudRequest);
+        }
+
+        public async Task<JsonResult> OnPostGetStaff([FromBody] Data dm)
+        {
+            var allStaff = await _context.VolunteerProfiles.Where(s => s.IsStaff).ToListAsync();
+
+            if(dm.Where != null)
+            {
+                foreach (var predicate in dm.Where[0].predicates)
+                {
+                    if(predicate.Field == "FirstName")
+                    {
+                        allStaff = allStaff.Where(f => f.FirstName.ToLower().Contains(predicate.value.ToString().ToLower())).ToList();
+                    }
+                    else if(predicate.Field == "LastName")
+                    {
+                        allStaff =  allStaff.Where(f => f.LastName.ToLower().Contains(predicate.value.ToString().ToLower())).ToList();
+                    }
+                }
+            }
+
+            if (dm.Sorted != null)
+            {
+                //foreach (var predicate in dm.Where[0].predicates)
+                //{
+                //    if (predicate.Field == "FirstName")
+                //    {
+                //        allStaff.Where(f => f.FirstName == predicate.value.ToString());
+                //    }
+                //    else if (predicate.Field == "LastName")
+                //    {
+                //        allStaff.Where(f => f.FirstName == predicate.value.ToString());
+                //    }
+                //}
+            }
+
+
+            var dto = _mapper.Map<List<VolunteerAdminReadEditDto>>(allStaff);
+
+            int count = dto.Cast<VolunteerAdminReadEditDto>().Count();
+            return dm.requiresCounts ? new JsonResult(new { result = dto.Skip(dm.skip).Take(dm.take), count = count }) : new JsonResult(dto);
+        }
+
+        //public JsonResult OnPostGetStaff([FromBody]Data crudRequest)
+        //{
+        //    IEnumerable DataSource = OrdersDetails.GetAllRecords();
+        //    DataOperations operation = new DataOperations();
+        //    if (crudRequest.Search != null && crudRequest.Search.Count > 0)
+        //    {
+        //        DataSource = operation.PerformSearching(DataSource, crudRequest.Search);  //Search
+        //    }
+        //    if (crudRequest.Sorte != null && crudRequest.Sorted.Count > 0) //Sorting
+        //    {
+        //        DataSource = operation.PerformSorting(DataSource, crudRequest.Sorted);
+        //    }
+        //    if (crudRequest.Where != null && crudRequest.Where.Count > 0) //Filtering
+        //    {
+        //        DataSource = operation.PerformFiltering(DataSource, crudRequest.Where, crudRequest.Where[0].Operator);
+        //    }
+        //    int count = DataSource.Cast<OrdersDetails>().Count();
+        //    if (crudRequest.Skip != 0)
+        //    {
+        //        DataSource = operation.PerformSkip(DataSource, crudRequest.Skip);   //Paging
+        //    }
+        //    if (crudRequest.Take != 0)
+        //    {
+        //        DataSource = operation.PerformTake(DataSource, crudRequest.Take);
+        //    }
+        //    return crudRequest.RequiresCounts ? Json(new { result = DataSource, count = count }) : Json(DataSource);
+        //}
 
         public async Task OnPostSearch()
         {

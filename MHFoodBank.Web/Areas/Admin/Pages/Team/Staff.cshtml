@@ -2,9 +2,12 @@
 @model MHFoodBank.Web.Areas.Admin.Pages.Teams.StaffModel
 @using MHFoodBank.Common
 @using MHFoodBank.Common.Dtos
+@using Microsoft.AspNetCore.Antiforgery;
+@using Syncfusion.EJ2
 @inject Microsoft.AspNetCore.Identity.UserManager<MHFoodBank.Common.AppUser> userManager
 @{ Layout = "~/Areas/Admin/Pages/Team/_Layout.cshtml";
     ViewData["Title"] = "Staff"; }
+@inject IAntiforgery antiForgery
 
 @section Styles {
     <link href="~/css/stafflist.css" rel="stylesheet" />
@@ -33,6 +36,18 @@
 <br />
 @if (@Model.Staff.Count() > 0)
 {
+    <ejs-grid id="Grid" allowFiltering="true" allowSorting="true" toolbar="@(new List<string>() { "Edit", "Delete" })" allowPaging="true">
+        <e-data-manager crossDomain="true" headers="new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }" removeUrl="Staff?handler=Delete" url="Staff?handler=GetStaff" adaptor="UrlAdaptor"></e-data-manager>
+        <e-grid-editSettings allowDeleting="true" allowEditing="false"></e-grid-editSettings>
+        <e-grid-selectionsettings type="Multiple"></e-grid-selectionsettings>
+        <e-grid-columns>
+            <e-grid-column allowFiltering="false" field="Id" headerText="Id" isPrimaryKey="true" width="20"></e-grid-column>
+            <e-grid-column allowFiltering="true" field="FirstName" headerText="First Name" width="100"></e-grid-column>
+            <e-grid-column allowFiltering="true" field="LastName" headerText="Last Name" type="string" width="120"></e-grid-column>
+            <e-grid-column allowFiltering="false" field="MainPhone" headerText="Phone Number" width="150"></e-grid-column>
+        </e-grid-columns>
+    </ejs-grid>
+
     <table class="table">
         <colgroup>
             <col style="width: 20%" />
