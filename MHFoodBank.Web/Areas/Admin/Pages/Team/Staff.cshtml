@@ -15,20 +15,19 @@
 
 <partial name="_AdminStatusMessage" for="StatusMessage" />
 <div asp-validation-summary="All" class="text-danger"></div>
-<form id="container" method="post">
-    <button id="add-staff" type="button" class="btn btn-sm btn-primary" onclick="$('#add-staff-modal').modal();"><i class="fas fa-plus"></i> Staff Member</button>
-    <div id="status-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
-        <label id="archived" class="btn btn-reverse-primary">
-            <input type="checkbox" asp-for="ArchivedFilter" onchange="changeStatus(this)" value="@Model.ArchivedFilter" /> Include Archived
-        </label>
-    </div>
-</form>
-<br />
 @if (@Model.Staff.Count() > 0)
 {
-<ejs-grid id="Grid" allowFiltering="true" allowSorting="true" toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Search" })" allowPaging="true">
+    List<string> contextItems = new List<string>()
+    {
+        "Edit",
+        "Delete",
+        "SortAscending",
+        "SortDescending"
+    };
+
+<ejs-grid id="Grid" contextMenuItems="contextItems" actionBegin="onActionBegin" allowFiltering="true" allowSorting="true" toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Search" })" allowPaging="true">
     <e-data-manager crossDomain="true" headers="new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }" removeUrl="Staff?handler=Delete" url="Staff?handler=GetStaff" adaptor="UrlAdaptor"></e-data-manager>
-    <e-grid-editSettings allowDeleting="true" allowEditing="false"></e-grid-editSettings>
+    <e-grid-editSettings showDeleteConfirmDialog="true" allowAdding="true" allowDeleting="true" allowEditing="true"></e-grid-editSettings>
     <e-grid-selectionsettings type="Multiple"></e-grid-selectionsettings>
     <e-grid-searchsettings></e-grid-searchsettings>
     <e-grid-filtersettings type="Menu"></e-grid-filtersettings>
@@ -244,6 +243,19 @@
 <script src="~/js/checkboxes.js"></script>
 <script src="~/js/caplock_check.js"></script>
 <script>
+    function onActionBegin(args) {
+        console.log(args.requestType);
+        if (args.requestType == "add") {
+            args.cancel = true;
+            $('#add-staff-modal').modal();
+        }
+        else if (args.requestType == "beginEdit") {
+            args.cancel = true;
+            var selectedStaffId = args.rowData.Id;
+            window.location.href = "../VolunteerDetails/" + selectedStaffId;
+        }
+    }
+
     function changeStatus(filter) {
         filter.value = filter.checked;
         filter.form.submit();

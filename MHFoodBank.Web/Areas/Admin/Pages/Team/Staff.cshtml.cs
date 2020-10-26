@@ -83,19 +83,28 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
         {
             if(crudRequest.Action == "remove")
             {
-                var selectedStaff = await _context.VolunteerProfiles.FirstOrDefaultAsync(s => s.Id == Convert.ToInt32(crudRequest.Key));
+                var selectedStaffId = JsonConvert.DeserializeObject<VolunteerAdminReadEditDto>(crudRequest.Key.ToString()).Id;
+                var selectedStaff = await _context.VolunteerProfiles.FirstOrDefaultAsync(s => s.Id == selectedStaffId);
+                await _context.Entry(selectedStaff).Reference(u => u.User).LoadAsync();
+                var selectedStaffUserLogin = await _context.Users.FirstOrDefaultAsync(u => u.Id == selectedStaff.User.Id);
                 _context.VolunteerProfiles.Remove(selectedStaff);
+                _context.Users.Remove(selectedStaffUserLogin);
             }
             else if(crudRequest.Action == "batch")
             {
                 foreach (var staff in crudRequest.Deleted)
                 {
                     var selectedStaff = await _context.VolunteerProfiles.FirstOrDefaultAsync(s => s.Id == staff.Id);
+                    await _context.Entry(selectedStaff).Reference(u => u.User).LoadAsync();
+                    var selectedStaffUserLogin = await _context.Users.FirstOrDefaultAsync(u => u.Id == selectedStaff.User.Id);
                     _context.VolunteerProfiles.Remove(selectedStaff);
+                    _context.Users.Remove(selectedStaffUserLogin);
                 }
             }
 
-            return new JsonResult(crudRequest);
+            await _context.SaveChangesAsync();
+
+            return await OnPostGetStaff(new Data());
         }
 
         public async Task<JsonResult> OnPostGetStaff([FromBody] Data dm)
