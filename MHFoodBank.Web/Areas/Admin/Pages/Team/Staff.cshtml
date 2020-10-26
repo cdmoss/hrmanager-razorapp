@@ -16,16 +16,6 @@
 <partial name="_AdminStatusMessage" for="StatusMessage" />
 <div asp-validation-summary="All" class="text-danger"></div>
 <form id="container" method="post">
-    @if (String.IsNullOrWhiteSpace(Model.SearchedName))
-    {
-        <input id="search-name" class="form-control" placeholder="Search by name..." asp-for="@Model.SearchedName" />
-    }
-    else
-    {
-        <input id="search-name" class="form-control" value="@Model.SearchedName" asp-for="@Model.SearchedName" />
-    }
-
-    <button id="search" class="btn btn-sm btn-primary" asp-page-handler="Search"><i class="fas fa-search"></i></button>
     <button id="add-staff" type="button" class="btn btn-sm btn-primary" onclick="$('#add-staff-modal').modal();"><i class="fas fa-plus"></i> Staff Member</button>
     <div id="status-radios" class="btn-group btn-group-toggle" data-toggle="buttons">
         <label id="archived" class="btn btn-reverse-primary">
@@ -36,80 +26,20 @@
 <br />
 @if (@Model.Staff.Count() > 0)
 {
-    <ejs-grid id="Grid" allowFiltering="true" allowSorting="true" toolbar="@(new List<string>() { "Edit", "Delete" })" allowPaging="true">
-        <e-data-manager crossDomain="true" headers="new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }" removeUrl="Staff?handler=Delete" url="Staff?handler=GetStaff" adaptor="UrlAdaptor"></e-data-manager>
-        <e-grid-editSettings allowDeleting="true" allowEditing="false"></e-grid-editSettings>
-        <e-grid-selectionsettings type="Multiple"></e-grid-selectionsettings>
-        <e-grid-columns>
-            <e-grid-column allowFiltering="false" field="Id" headerText="Id" isPrimaryKey="true" width="20"></e-grid-column>
-            <e-grid-column allowFiltering="true" field="FirstName" headerText="First Name" width="100"></e-grid-column>
-            <e-grid-column allowFiltering="true" field="LastName" headerText="Last Name" type="string" width="120"></e-grid-column>
-            <e-grid-column allowFiltering="false" field="MainPhone" headerText="Phone Number" width="150"></e-grid-column>
-        </e-grid-columns>
-    </ejs-grid>
-
-    <table class="table">
-        <colgroup>
-            <col style="width: 20%" />
-            <col style="width: 20%" />
-            <col style="width: 50%" />
-            <col style="width: 10%" />
-        </colgroup>
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        @foreach (VolunteerMinimalDto s in Model.Staff)
-        {
-            <tr @if (s.ApprovalStatus == ApprovalStatus.Archived) { <text> style="background-color: #d3d3d3" </text>  } else { <text></text> }>
-                <td>@s.FirstName <input type="hidden" value="@s.Id" id="volunteer-id-@s.Id" /></td>
-                <td>@s.LastName</td>
-                <td>
-                    @Enum.GetName(typeof(ApprovalStatus), s.ApprovalStatus)
-                </td>
-                <td>
-                    <form method="post">
-                        <div class="btn-group w-100">
-                            <a class="btn btn-sm btn-primary" asp-page="/VolunteerDetails" asp-area="Admin" asp-route-id="@s.Id">See Details</a>
-                            <button class="btn btn-primary btn-sm dropdown-toggle dropdown-toggle-split" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            </button>
-                            <div class="dropdown-menu">
-                                @if (s.ApprovalStatus != ApprovalStatus.Approved)
-                                {
-                                    <button class="btn-light-custom btn-sm btn w-100 h-100"
-                                            asp-page-handler="ChangeStatus"
-                                            asp-route-volId="@s.Id"
-                                            asp-route-status="0"
-                                            asp-route-archivedFilter="@Model.ArchivedFilter">
-                                        Set Active
-                                    </button>
-                                }
-                                @if (s.ApprovalStatus != ApprovalStatus.Archived)
-                                {
-                                    <button class="btn-light-custom btn-sm btn w-100 h-100"
-                                            asp-page-handler="ChangeStatus"
-                                            asp-route-volId="@s.Id"
-                                            asp-route-status="3"
-                                            asp-route-archivedFilter="@Model.ArchivedFilter">
-                                        Archive
-                                    </button>
-                                }
-                                <div class="dropdown-divider"></div>
-                                @if (await userManager.IsInRoleAsync(await userManager.FindByIdAsync(userManager.GetUserId(User)), "Admin"))
-                                {
-                                    <button type="button" class="btn-light-custom btn-sm btn w-100 h-100" onclick="openDeleteModal(@s.Id)">Delete</button>
-                                }
-                            </div>
-                        </div>
-                    </form>
-                </td>
-            </tr>
-        }
-    </table>
+<ejs-grid id="Grid" allowFiltering="true" allowSorting="true" toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Search" })" allowPaging="true">
+    <e-data-manager crossDomain="true" headers="new object[] { new { RequestVerificationToken = antiForgery.GetTokens(HttpContext).RequestToken } }" removeUrl="Staff?handler=Delete" url="Staff?handler=GetStaff" adaptor="UrlAdaptor"></e-data-manager>
+    <e-grid-editSettings allowDeleting="true" allowEditing="false"></e-grid-editSettings>
+    <e-grid-selectionsettings type="Multiple"></e-grid-selectionsettings>
+    <e-grid-searchsettings></e-grid-searchsettings>
+    <e-grid-filtersettings type="Menu"></e-grid-filtersettings>
+    <e-grid-columns>
+        <e-grid-column allowFiltering="false" field="FirstName" headerText="First Name" width="100"></e-grid-column>
+        <e-grid-column allowFiltering="false" field="LastName" headerText="Last Name" width="120"></e-grid-column>
+        <e-grid-column allowFiltering="false" field="Email" headerText="Email" width="150"></e-grid-column>
+        <e-grid-column allowFiltering="false" field="MainPhone" headerText="Phone Number" width="150"></e-grid-column>
+        <e-grid-column allowFiltering="true" filter="@(new { type="CheckBox"})" field="DisplayStatus" headerText="Status" width="150"></e-grid-column>
+    </e-grid-columns>
+</ejs-grid>
 }
 
 <form method="post">

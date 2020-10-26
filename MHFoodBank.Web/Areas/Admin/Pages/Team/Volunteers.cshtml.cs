@@ -26,7 +26,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         [BindProperty]
         public bool PendingFilter { get; set; }
         [BindProperty]
-        public bool NotApprovedFilter { get; set; }
+        public bool DeclinedFilter { get; set; }
         [BindProperty]
         public bool ArchivedFilter { get; set; }
         [BindProperty(SupportsGet = true)] 
@@ -53,7 +53,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
             string statusMessage, 
             bool approvedFilter = true, 
             bool pendingFilter = true, 
-            bool notApprovedFilter = false, 
+            bool DeclinedFilter = false, 
             bool archivedFilter = false)
         {
             StatusMessage = statusMessage;
@@ -63,7 +63,7 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
                 volunteerDomainModels, 
                 approvedFilter, 
                 pendingFilter, 
-                notApprovedFilter, 
+                DeclinedFilter, 
                 archivedFilter);
 
             Volunteers = _mapper.Map<List<VolunteerMinimalDto>>(volunteerDomainModels);
@@ -71,22 +71,22 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
 
         public async Task OnPost()
         {
-            await OnGet("", ApprovedFilter, PendingFilter, NotApprovedFilter, ArchivedFilter);
+            await OnGet("", ApprovedFilter, PendingFilter, DeclinedFilter, ArchivedFilter);
         }
 
-        public async Task<IActionResult> OnPostChangeStatus(int volId, int status, bool approvedFilter, bool pendingFilter, bool notApprovedFilter, bool archivedFilter)
+        public async Task<IActionResult> OnPostChangeStatus(int volId, int status, bool approvedFilter, bool pendingFilter, bool DeclinedFilter, bool archivedFilter)
         {
             var volunteer = await _context.VolunteerProfiles.FirstOrDefaultAsync(v => v.Id == volId);
             _context.Update(volunteer);
             volunteer.ApprovalStatus = (ApprovalStatus)status;
             await _context.SaveChangesAsync();
 
-            if(volunteer.ApprovalStatus == ApprovalStatus.NotApproved)
+            if(volunteer.ApprovalStatus == ApprovalStatus.Declined)
             {
-                return RedirectToPage(new { statusMessage = $"You have successfully changed the status of {volunteer.FirstName} {volunteer.LastName} to Not Approved", approvedFilter, pendingFilter, notApprovedFilter, archivedFilter });
+                return RedirectToPage(new { statusMessage = $"You have successfully changed the status of {volunteer.FirstName} {volunteer.LastName} to Not Approved", approvedFilter, pendingFilter, DeclinedFilter, archivedFilter });
             }
 
-            return RedirectToPage(new { statusMessage = $"You have successfully changed the status of {volunteer.FirstName} {volunteer.LastName} to {Enum.GetName(typeof(ApprovalStatus), status)}", approvedFilter, pendingFilter, notApprovedFilter, archivedFilter });
+            return RedirectToPage(new { statusMessage = $"You have successfully changed the status of {volunteer.FirstName} {volunteer.LastName} to {Enum.GetName(typeof(ApprovalStatus), status)}", approvedFilter, pendingFilter, DeclinedFilter, archivedFilter });
         }
 
         public async Task OnPostSearch()
@@ -119,24 +119,24 @@ namespace MHFoodBank.Web.Areas.Admin.Pages
         private List<VolunteerProfile> FilterVolunteers(List<VolunteerProfile> volunteers,
             bool approvedFilter = true,
             bool pendingFilter = true,
-            bool notApprovedFilter = false,
+            bool DeclinedFilter = false,
             bool archivedFilter = false)
         {
             var newList = new List<VolunteerProfile>();
 
             ApprovedFilter = approvedFilter;
             PendingFilter = pendingFilter;
-            NotApprovedFilter = notApprovedFilter;
+            DeclinedFilter = DeclinedFilter;
             ArchivedFilter = archivedFilter;
 
             foreach (var volunteer in volunteers)
             {
                 bool passedapproved = (volunteer.ApprovalStatus == ApprovalStatus.Approved) == ApprovedFilter && ApprovedFilter;
                 bool passedpending = (volunteer.ApprovalStatus == ApprovalStatus.Pending) == PendingFilter && PendingFilter;
-                bool passednotapproved = (volunteer.ApprovalStatus == ApprovalStatus.NotApproved) == NotApprovedFilter && NotApprovedFilter;
+                bool passedDeclined = (volunteer.ApprovalStatus == ApprovalStatus.Declined) == DeclinedFilter && DeclinedFilter;
                 bool passeddeleted = (volunteer.ApprovalStatus == ApprovalStatus.Archived) == ArchivedFilter && ArchivedFilter;
 
-                if (passedapproved || passedpending || passednotapproved || passeddeleted)
+                if (passedapproved || passedpending || passedDeclined || passeddeleted)
                 {
                     newList.Add(volunteer);
                 }

@@ -8,7 +8,7 @@ namespace MHFoodBank.Common
     {
         Approved,
         Pending,
-        NotApproved,
+        Declined,
         Archived
     }
 

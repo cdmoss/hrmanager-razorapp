@@ -100,43 +100,77 @@ namespace MHFoodBank.Web.Areas.Admin.Pages.Teams
 
         public async Task<JsonResult> OnPostGetStaff([FromBody] Data dm)
         {
-            var allStaff = await _context.VolunteerProfiles.Where(s => s.IsStaff).ToListAsync();
+            
+            var allStaff = await _context.VolunteerProfiles.Include(p => p.User).Where(s => s.IsStaff).ToListAsync();
 
-            if(dm.Where != null)
+            if (dm.Search != null)
+            {
+                allStaff = allStaff.Where(s => s.FirstName.ToLower().Contains(dm.Search[0].Key.ToLower()) ||
+                                               s.LastName.ToLower().Contains(dm.Search[0].Key.ToLower()) ||
+                                               s.User.Email.ToLower().Contains(dm.Search[0].Key.ToLower())).ToList();
+            }
+
+            if (dm.Where != null)
             {
                 foreach (var predicate in dm.Where[0].predicates)
                 {
-                    if(predicate.Field == "FirstName")
+                    if (predicate.Field == "DisplayStatus")
                     {
-                        allStaff = allStaff.Where(f => f.FirstName.ToLower().Contains(predicate.value.ToString().ToLower())).ToList();
-                    }
-                    else if(predicate.Field == "LastName")
-                    {
-                        allStaff =  allStaff.Where(f => f.LastName.ToLower().Contains(predicate.value.ToString().ToLower())).ToList();
+                        allStaff = allStaff.Where(f => f.DisplayStatus == predicate.value.ToString()).ToList();
                     }
                 }
             }
 
             if (dm.Sorted != null)
             {
-                //foreach (var predicate in dm.Where[0].predicates)
-                //{
-                //    if (predicate.Field == "FirstName")
-                //    {
-                //        allStaff.Where(f => f.FirstName == predicate.value.ToString());
-                //    }
-                //    else if (predicate.Field == "LastName")
-                //    {
-                //        allStaff.Where(f => f.FirstName == predicate.value.ToString());
-                //    }
-                //}
+                foreach (var sortCondition in dm.Sorted)
+                {
+                    if (sortCondition.Name == "FirstName")
+                    {
+                        if (sortCondition.Direction == "ascending")
+                        {
+                            allStaff = allStaff.OrderBy(s => s.FirstName).ToList();
+                        }
+                        else
+                        {
+                            allStaff = allStaff.OrderByDescending(s => s.FirstName).ToList();
+                        }
+                    }
+                    if (sortCondition.Name == "LastName")
+                    {
+                        if (sortCondition.Direction == "ascending")
+                        {
+                            allStaff = allStaff.OrderBy(s => s.LastName).ToList();
+                        }
+                        else
+                        {
+                            allStaff = allStaff.OrderByDescending(s => s.LastName).ToList();
+                        }
+                    }
+                    else if (sortCondition.Name== "Email")
+                    {
+                        if (sortCondition.Direction == "ascending")
+                        {
+                            allStaff = allStaff.OrderBy(s => s.User.Email).ToList();
+                        }
+                        else
+                        {
+                            allStaff = allStaff.OrderByDescending(s => s.User.Email).ToList();
+                        }
+                    }
+                }
             }
 
 
-            var dto = _mapper.Map<List<VolunteerAdminReadEditDto>>(allStaff);
+            var dtos = _mapper.Map<List<VolunteerAdminReadEditDto>>(allStaff);
 
-            int count = dto.Cast<VolunteerAdminReadEditDto>().Count();
-            return dm.requiresCounts ? new JsonResult(new { result = dto.Skip(dm.skip).Take(dm.take), count = count }) : new JsonResult(dto);
+            foreach (var dto in dtos)
+            {
+                dto.Email = allStaff.FirstOrDefault(s => s.Id == dto.Id).User.Email;
+            }
+
+            int count = dtos.Cast<VolunteerAdminReadEditDto>().Count();
+            return dm.requiresCounts ? new JsonResult(new { result = dtos.Skip(dm.skip).Take(dm.take), count = count }) : new JsonResult(dtos);
         }
 
         //public JsonResult OnPostGetStaff([FromBody]Data crudRequest)

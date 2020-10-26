@@ -254,6 +254,17 @@ namespace MHFoodBank.Common.Dtos
         public bool ConfirmationOfProfessionalDesignation { get; set; }
         public bool ChildWelfareCheck { get; set; }
         public ApprovalStatus ApprovalStatus { get; set; }
+        public string DisplayStatus 
+        {
+            get
+            {
+                if (IsStaff && ApprovalStatus == ApprovalStatus.Approved)
+                {
+                    return "Active";
+                }
+                return Enum.GetName(typeof(ApprovalStatus), ApprovalStatus);
+            }
+        }
         public IList<ReferenceDto> References { get; set; }
         public IList<WorkExperienceDto> WorkExperiences { get; set; }
         public IList<AvailabilityDto> Availabilities { get; set; }
