@@ -1,4 +1,4 @@
-# HR Manager - Razor Pages Version
+# HR Manager - Razor Pages Version (Deprecated)
 This is a student project resulting from a collaboration between the Medicine Hat College and the Medicine Hat Food Bank. It is an app designed to streamline the following HR processes:
 - hiring volunteers,
 - managing volunteer information,
